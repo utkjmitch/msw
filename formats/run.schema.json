@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "out_dir": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "live",
+            "test"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "allowed_for_transact": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+    "payment_test_mode": {
+      "default": false,
+      "type": "boolean"
+    },
+    "mask_personal_data": {
+      "default": true,
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "out_dir",
+    "environment",
+    "allowed_for_transact",
+    "payment_test_mode",
+    "mask_personal_data"
+  ],
+  "additionalProperties": false
+}

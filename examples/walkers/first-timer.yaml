@@ -1,0 +1,27 @@
+id: first-timer
+name: Pat
+summary: A curious neighbor visiting for the first time
+role: visitor
+story: Pat heard about the organization from a neighbor and has a few minutes before catching the bus. Pat wants to understand its work well enough to tell a sister about it.
+hopes:
+  - Understand who benefits from the work
+  - Find a concrete example to share
+fears:
+  - Being asked for money before understanding the work
+background: Retired shop assistant who keeps in touch with family by phone
+motivation: Decide whether this is something the family would care about
+frustrations:
+  - Small text
+  - Vague promises without examples
+tech_literacy:
+  level: low
+  note: Uses a phone for messages and reading but avoids complicated forms
+prior_knowledge:
+  - A neighbor thinks the organization does useful work
+devices: [phone]
+locale: en-US
+patience: 8
+leave_triggers:
+  - Asked to create an account before learning what the organization does
+  - Asked for payment details before deciding to give
+  - Unable to read the text comfortably
