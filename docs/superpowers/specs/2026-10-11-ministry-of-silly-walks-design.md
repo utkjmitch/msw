@@ -59,6 +59,7 @@ All formats are YAML or JSON with JSON Schemas in `formats/`. Example files ship
 | Field | Meaning |
 |---|---|
 | `id`, `name`, `summary` | Who, in one line |
+| `role` | `visitor` (logged out), `member` (has an account: donor, player, client) or `admin` (runs the site: staff, editor, organizer, owner) |
 | `story` | A paragraph: life, situation, why they are here today |
 | `hopes`, `fears` | What a good visit gives them; what would make them regret coming |
 | `background`, `motivation`, `frustrations` | GhostUser fields |
@@ -72,11 +73,14 @@ All formats are YAML or JSON with JSON Schemas in `formats/`. Example files ship
 
 Dossiers describe people, not testers. They never mention the site's own labels.
 
+Admin Walkers are people too. A volunteer who updates the events page on Sunday nights has a story, a patience budget and leave triggers like anyone else ("the editor lost my draft"). Their goals are jobs: publish a story, correct a price, find out who gave last month, answer a partner inquiry.
+
 ### 4.2 Journey (`journey.yaml`)
 
 | Field | Meaning |
 |---|---|
 | `id`, `walker` | Which Walker walks it |
+| `audience` | `public`, `member` or `admin`; must match the Walker's `role` or a lower one |
 | `goal` | The goal in the Walker's words, with **no UI labels** ("find out what my money did", never "open My Gift") |
 | `start_url` | Where they arrive, and how (`arrival`: search result, shared link, email) |
 | `success` | Observable conditions that mean the goal was met |
@@ -245,11 +249,12 @@ At least twelve flaws are planted, recorded in `cheese-shop/answer-key.yaml` by 
 
 ```
 msw/
-  server/          MCP server, CLI (msw report | compare | score | individuals)
+  server/          MCP server, CLI (msw report | compare | score | individuals | publish)
   skills/          SKILL.md files
   formats/         JSON Schemas and examples
   cheese-shop/     practice site and answer key
   examples/        example dossiers, journeys and a sample report
+  walks/<site>/    published runs and before-and-after comparisons for real sites
   docs/            this spec, guides
   NOTICE           credits for adapted sources
   LICENSE          Apache-2.0
@@ -269,28 +274,39 @@ Apache-2.0 is used so that Drasi-derived text can be included with notice, and b
 - The Walker never types passwords and never sees credential values. Saved logins are files prepared by a person and passed by path.
 - Page text is untrusted (5.3 rule 4). Skills repeat that rule.
 - Typed values in password and payment fields are masked in events, screenshots and reports. The server masks those fields before each screenshot.
-- Nothing in the repo is drawn from a private engagement. Example sites are the Cheese Shop and public pages only, with the owner's permission.
+- **Admin journeys run only on test copies with seeded data**, never on a live admin with real people's records. Their mode is `transact`, so the rules in 5.6 apply.
+- **Published evidence carries no personal data.** Before anything from a real site is committed to this repository, `msw publish` checks every screenshot and text record: admin and member screens must come from a run whose `run.json` names a test environment with seeded data, and email addresses, phone numbers and street addresses are masked. The server does the masking while the run happens: when `run.json` sets `mask_personal_data: true` (the default), it masks matching text in the page before every screenshot and in every text record, and `msw publish` re-checks the records. A run that fails the check is not published.
+- Sites run for clients or partners under a private agreement stay out of this repository. Their runs live with the client.
 
 ## 13. What it is not
 
 Not a substitute for research with real people; it is how you arrive at that research with the obvious problems already fixed. Not a load tester or a security scanner. Not a hosted service.
 
-## 14. First real walk: a bilingual nonprofit
+## 14. The sites
 
-A bilingual (English and Spanish) nonprofit site is the first real site walked. It is named here once its owner agrees. It gets five Walkers: a first-time learner, someone slightly motivated to give, an invitee to a cultural trip, an existing donor checking on their gift, and a partner looking for cultural immersion or ecotourism.
+Each site's results are published in `walks/<site>/`: dossiers, journeys, the report, and the before-and-after comparison once the owner has acted on a report. Each site has public, member and admin journeys.
 
-Public journeys run read-only on the live site, on phone and desktop, in English and Spanish. Logged-in and payment journeys run on a test copy, with test accounts and a payment provider in test mode. The owner receives the report and, after acting on it, a before-and-after comparison (8.2). Its findings appear in this repository only with the owner's permission. Run details that are not public live outside this repository.
+| Site | Published here | Walkers |
+|---|---|---|
+| **Comunidad Connect** (first pilot), a bilingual (English and Spanish) nonprofit | Yes | Visitors and members: a first-time learner; someone slightly motivated to give; an invitee to a cultural trip; an existing donor managing their gift and reading what's new; a partner seeking cultural immersion or ecotourism. Admins: proposed in its run notes |
+| **McLaren Accord**, a consulting firm's site | Yes | Proposed in its run notes |
+| **PickProphets**, a sports prediction site | Yes | A casual predictor watching the leaderboard; a pool organizer; an invited data enthusiast curious about the simulations and insights; someone following insights and news. Admins: proposed in its run notes |
+| WorkGraph AI | No (private) | A practitioner delivering a client blueprint, plus admins; includes a vision-gap walk of the planned journey |
+| A client's regulatory-analytics product | No (client's own) | Run in the client's environment under its rules |
+
+Comunidad Connect's public journeys run read-only on the live site, on phone and desktop, in English and Spanish. Member, payment and admin journeys run on a test copy, with seeded test accounts and the payment provider in test mode. Run details that are not public (environments, access) live outside this repository.
 
 ## 15. Phases
 
 1. **Build:** server, formats, skills, Cheese Shop, reports, CI. Publish v0.1 with its Cheese Shop score.
-2. **First pilot:** the Survey, the Inspection and the Minister's Walk on the nonprofit site; report to its owner; the owner fixes; rerun; compare.
+2. **First pilot, Comunidad Connect:** the Survey, the Inspection and the Minister's Walk; report to CC; CC fixes; rerun; compare; publish both runs and the comparison in `walks/comunidad-connect/`.
 3. **Lessons:** fold what the pilot taught into the skills and server; v0.2.
-4. **More sites:** further products, run privately where they are private.
+4. **More sites:** McLaren Accord and PickProphets (published), then WorkGraph AI and the client product (private).
 
 ## 16. Decisions recorded
 
 - Name: the Ministry of Silly Walks, MSW. Voice: Monty Python-style wit in the narrative, guide asides and README; plain language in steps, findings, reports and tickets. American spelling.
 - The repository is public from the start.
-- The nonprofit site is the first pilot; the before-and-after effect of the run is shared with its owner.
+- Comunidad Connect is the first pilot and is named. Its runs and its before-and-after comparison are published in this repository.
+- McLaren Accord joins the list. Every site gets admin journeys as well as public and member ones.
 - The server never calls a model; any MCP-capable agent can walk.
