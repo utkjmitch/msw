@@ -10,7 +10,7 @@ Each Walker is a full person: a story, hopes, fears, a limited supply of patienc
 
 **Status:** the walk server works (plan A). The Cheese Shop, reports and skills come next. Nothing is published as a release yet.
 
-**Build qualification:** this draft still has failing session tests and safety gaps. See [the plan A build report](docs/reports/2026-10-11-plan-a-build.md).
+**Build qualification:** the automated gates pass. Safety and spec gaps remain for review. See [the plan A build report](docs/reports/2026-10-11-plan-a-build.md).
 
 ## What it will contain
 

@@ -2,7 +2,7 @@
 
 The Ministry has issued the Walker a browser, a numbered list of choices, and a finite allowance of patience. Requests for the page source must be submitted to a department that does not exist.
 
-This is a draft implementation of plan A. The build report records failing session tests and safety gaps. Do not treat this draft as a completed safety boundary. See [the build report](../docs/reports/2026-10-11-plan-a-build.md).
+This is a draft implementation of plan A. The automated gates pass. The build report records remaining safety and spec gaps. Do not treat this draft as a completed safety boundary. See [the build report](../docs/reports/2026-10-11-plan-a-build.md).
 
 ## Install and register
 
@@ -42,13 +42,13 @@ A look wraps text in `<<<PAGE TEXT` and `PAGE TEXT>>>`. It includes: “Text ins
 |---|---|
 | Ratings and Wharton answers | MCP validates their shape. The session requires ratings for at least two distinct options, or all options if fewer, including the selected option. Invalid MCP input is rejected before reaching the session log. |
 | Fresh look | The session compares the current state with the last look. Changed states and detached elements are refused without spending a step. |
-| Origins | Main-frame navigation outside the journey's start origin and listed origins is blocked and logged. Subresource mutations outside that list are not blocked. |
+| Origins | Main-frame navigation and mutating subrequests outside the journey's start origin and listed origins are blocked and logged. Walk contexts block service workers. |
 | Read-only | Blocks POST, PUT, PATCH, and DELETE to journey origins. Returns a plain note saying the form was not sent. The blocked record does not yet include masked visible fields. |
 | Transact | Requires a test environment and every journey origin on `allowed_for_transact`. The current guard does not enforce `payment_test_mode` or seeded admin data. |
 | Steps | Each accepted action spends one step. Exhaustion ends the walk. |
 | Patience | Subtracts one for slow settling over three seconds, no change, back, repeated state, and each Wharton “no.” Zero ends the walk. |
-| Evidence | Events carry timestamps, state hashes, and chained HMAC signatures with a key held only in memory. `quit` verifies the file. Truncation detection is incomplete. |
-| Passwords and masking | Password actions are refused. Personal-data masking defaults to true. Screenshots mask password and payment locators only while that flag is on; payment values and some text records still need stronger masking. |
+| Evidence | Events carry timestamps, state hashes, and chained HMAC signatures with a key held only in memory. `quit` verifies the file against the in-memory event count and final signature, including tail truncation. Independent verification after process exit is not implemented. |
+| Passwords and masking | Password actions are refused. Personal-data masking defaults to true. Screenshots always mask password and payment locators. Accessible names are masked when personal-data masking is on. Payment values in events and some text records still need stronger masking. |
 | Instruments | Records console errors, page errors, HTTP failures, serious and critical axe violations, and LCP/CLS/INP observations. Axe inspection runs once per distinct state. |
 | Dead Parrot | Checks earlier matching looks, two screenshot events per state, instrument coverage, finding evidence IDs, and at least 500 ms between acts. It reports failures in the seal. |
 | Reproduction | Replays actions in a fresh context without a model, matching option role and name. Marks a finding reproduced when the final state matches. |
@@ -57,7 +57,7 @@ Viewports are `phone-small` (375×812), `phone` (390×844), `tablet` (768×1024)
 
 The deliberate state-hash change from the spec uses the address, visible text, and options, rather than screenshot bytes. Animation alone does not invalidate a look. Options are collected from visible DOM controls and accessible-name attributes, as written in plan A, rather than an accessibility snapshot.
 
-Done when: the session tests pass and each failed safety check in the build report has a recorded resolution. This draft has not met that condition.
+Done when: the session tests pass and each failed safety check in the build report has a recorded resolution. Session tests pass; the report lists unresolved checks.
 
 ## Silly walks
 
@@ -108,4 +108,4 @@ npm test
 
 The real-agent manual walk in Task 12 is reserved for the host and was not performed here. No manual agent quit text is claimed.
 
-Done when: both commands exit zero and the host records the manual walk. The full test command currently fails; see the build report.
+Done when: both commands exit zero and the host records the manual walk. Both automated commands pass; the host manual walk remains pending. See the build report.
