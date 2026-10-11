@@ -6,7 +6,7 @@
 
 **Architecture:** One Node process per walk, speaking MCP over stdio. Pure modules (formats, rules, budget, events, parrot, masking, reading order) are unit-tested without a browser. Browser modules wrap Playwright Chromium and are tested against a small local fixture site. `WalkSession` ties them together; `server.ts` only maps MCP tools to `WalkSession` methods.
 
-**Tech Stack:** Node 22, TypeScript (ESM), `@modelcontextprotocol/sdk` 1.32, `playwright` 1.64, `@axe-core/playwright` 4.13, `zod` 4, `yaml` 2, `vitest` 5, `tsx`.
+**Tech Stack:** Node 22, TypeScript (ESM), `@modelcontextprotocol/sdk` 1.32, `playwright` 1.63.0 (pinned exactly), `@axe-core/playwright` 4.13, `zod` 4, `yaml` 2, `vitest` 5, `tsx`.
 
 **Spec:** `docs/superpowers/specs/2026-10-11-ministry-of-silly-walks-design.md` (sections 4, 5, 6.2, 12). Read sections 5 and 6.2 before starting.
 
@@ -15,6 +15,7 @@
 ## Global Constraints
 
 - Node 22; ESM only (`"type": "module"`); TypeScript strict.
+- Playwright is pinned to exactly `1.63.0`, because the build box's preinstalled Chromium (build 1243, at `PLAYWRIGHT_BROWSERS_PATH=/ms-playwright`) matches it and the box cannot download browsers. Do not upgrade it in this plan.
 - The server never calls a model and never returns page source, DOM, scripts, cookies or network data to the Walker.
 - Read-only is the default mode. Mutating methods: `POST`, `PUT`, `PATCH`, `DELETE`.
 - Viewports exactly: `phone-small` 375×812 touch, `phone` 390×844 touch, `tablet` 768×1024 touch, `desktop` 1440×900 no touch.
@@ -92,7 +93,7 @@ formats/*.schema.json         generated from zod (Task 2)
   "dependencies": {
     "@axe-core/playwright": "^4.13.0",
     "@modelcontextprotocol/sdk": "^1.32.1",
-    "playwright": "^1.64.0",
+    "playwright": "1.63.0",
     "yaml": "^2.9.1",
     "zod": "^4.6.5"
   },
@@ -136,7 +137,7 @@ test("chromium launches", async () => {
 
 - [ ] **Step 4: Install and run**
 
-Run: `cd server && npm install && npx playwright install chromium && npm test`
+Run: `cd server && npm install && npm test`. On a machine without the preinstalled browser, run `npx playwright install chromium` first; in the build box, don't (it is already at `/ms-playwright`, and downloads are blocked).
 Expected: 1 passed.
 
 - [ ] **Step 5: Write `.github/workflows/ci.yml` and `.gitignore`**
