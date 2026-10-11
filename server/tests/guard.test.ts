@@ -8,28 +8,33 @@ afterAll(async () => { await browser.close(); await s.close(); });
 
 test("read-only blocks form posts to the site and records them", async () => {
   const ctx = await browser.newContext(); const blocked: Blocked[] = [];
-  await installGuard(ctx, { mode: "read-only", origins: [s.url], onBlocked: b => blocked.push(b) });
-  const p = await ctx.newPage(); await p.goto(s.url);
-  await p.fill("#nm", "Test"); await p.click("text=Donate"); await p.waitForTimeout(500);
-  expect(s.posts).toEqual([]); expect(blocked[0]).toMatchObject({ why: "would-submit", method: "POST" });
-  await ctx.close();
+  try {
+    await installGuard(ctx, { mode: "read-only", origins: [s.url], onBlocked: b => blocked.push(b) });
+    const p = await ctx.newPage(); await p.goto(s.url);
+    await p.fill("#nm", "Test");
+    await Promise.all([p.waitForEvent("requestfailed", r => r.method() === "POST"), p.click("text=Donate")]);
+    expect(s.posts).toEqual([]); expect(blocked[0]).toMatchObject({ why: "would-submit", method: "POST" });
+  } finally { await ctx.close(); }
 });
 test("navigation to an origin not on the list is blocked", async () => {
   const ctx = await browser.newContext(); const blocked: Blocked[] = [];
-  await installGuard(ctx, { mode: "read-only", origins: [s.url], onBlocked: b => blocked.push(b) });
-  const p = await ctx.newPage(); await p.goto(s.url);
-  await p.click("text=Partner portal").catch(() => {}); await p.waitForTimeout(500);
-  expect(blocked.some(b => b.why === "left-site")).toBe(true);
-  await ctx.close();
+  try {
+    await installGuard(ctx, { mode: "read-only", origins: [s.url], onBlocked: b => blocked.push(b) });
+    const p = await ctx.newPage(); await p.goto(s.url);
+    await Promise.all([p.waitForEvent("requestfailed", r => r.url().includes("localhost")), p.click("text=Partner portal")]);
+    expect(blocked.some(b => b.why === "left-site")).toBe(true);
+  } finally { await ctx.close(); }
 });
 test("transact on an allowed second origin passes", async () => {
   const ctx = await browser.newContext(); const blocked: Blocked[] = [];
-  await installGuard(ctx, { mode: "transact", origins: [s.url, s.otherOrigin], onBlocked: b => blocked.push(b) });
-  const p = await ctx.newPage(); await p.goto(s.url);
-  await p.click("text=Partner portal"); await p.waitForURL(/localhost/);
-  await p.goto(s.url); await p.fill("#nm", "Test"); await p.click("text=Donate"); await p.waitForTimeout(500);
-  expect(blocked).toEqual([]); expect(s.posts).toContain("/donate");
-  await ctx.close();
+  try {
+    await installGuard(ctx, { mode: "transact", origins: [s.url, s.otherOrigin], onBlocked: b => blocked.push(b) });
+    const p = await ctx.newPage(); await p.goto(s.url);
+    await Promise.all([p.waitForURL(/localhost/), p.click("text=Partner portal")]);
+    await p.goto(s.url); await p.fill("#nm", "Test");
+    await Promise.all([p.waitForURL(/thanks.html/), p.click("text=Donate")]);
+    expect(blocked).toEqual([]); expect(s.posts).toContain("/donate");
+  } finally { await ctx.close(); }
 });
 test("transactAllowed needs a test environment and listed origins", () => {
   const j = { mode: "transact", origins: ["https://dev.a.test/"], start_url: "https://dev.a.test/" } as any;

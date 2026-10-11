@@ -49,18 +49,23 @@ export class WalkSession {
     this.log = new EventLog(join(this.dir, "events.jsonl"));
     this.budget = new Budget(this.journey.step_budget, this.walker.patience);
     this.browser = await chromium.launch({ headless: this.headless });
-    this.context = await this.browser.newContext(contextOptions(this.viewport, this.locale, this.cond, this.journey.storage_state));
-    await this.context.addInitScript(VITALS_INIT);
-    await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], onBlocked: b => this.onBlocked(b) });
-    // axe opens a temporary page without an opener during analysis.
-    this.context.on("page", async p => { if (await p.opener()) this.adopt(p); });
-    const page = await this.context.newPage(); this.adopt(page);
-    if (this.moves.includes("wait")) await page.clock.install();
-    const notes = await setupConditions(this.context, page, this.cond);
-    this.log.append("start", { walker: this.walker.id, journey: this.journey.id, viewport: this.viewport, locale: this.locale,
-      mode: this.journey.mode, conditions: this.cond, moves: this.moves, notes });
-    await page.goto(this.journey.start_url).catch(e => this.pending.push(`The page did not load: ${String(e.message).split("\n")[0]}`));
-    return this.arrive();
+    try {
+      this.context = await this.browser.newContext(contextOptions(this.viewport, this.locale, this.cond, this.journey.storage_state));
+      await this.context.addInitScript(VITALS_INIT);
+      await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], onBlocked: b => this.onBlocked(b) });
+      // axe opens a temporary page without an opener during analysis.
+      this.context.on("page", async p => { if (await p.opener()) this.adopt(p); });
+      const page = await this.context.newPage(); this.adopt(page);
+      if (this.moves.includes("wait")) await page.clock.install();
+      const notes = await setupConditions(this.context, page, this.cond);
+      this.log.append("start", { walker: this.walker.id, journey: this.journey.id, viewport: this.viewport, locale: this.locale,
+        mode: this.journey.mode, conditions: this.cond, moves: this.moves, notes });
+      await page.goto(this.journey.start_url).catch(e => this.pending.push(`The page did not load: ${String(e.message).split("\n")[0]}`));
+      return await this.arrive();
+    } catch (error) {
+      await this.browser.close(); this.browser = undefined;
+      throw error;
+    }
   }
 
   async look(): Promise<LookResult> {
@@ -107,8 +112,8 @@ export class WalkSession {
 
   async quit(reason: "done" | "run-away" | "stuck", detail?: string): Promise<QuitResult> {
     if (!this.browser) throw new Error("no walk in progress");
-    this.log.append("quit", { reason, detail: detail ?? null, ended: this.ended ?? null });
-    await this.browser.close(); this.browser = undefined;
+    try { this.log.append("quit", { reason, detail: detail ?? null, ended: this.ended ?? null }); }
+    finally { await this.browser.close(); this.browser = undefined; }
     const ctx = { run: this.run.id, walker: this.walker.id, journey: this.journey.id, viewport: this.viewport, locale: this.locale };
     this.findings.push(...instrumentFindings(this.instrument, ctx));
     if (this.reproduceFindings) {
@@ -210,6 +215,23 @@ export class WalkSession {
     }
     const touch = VIEWPORTS[this.viewport].touch;
     const press = () => (touch ? h.tap({ timeout: 5_000 }) : h.click({ timeout: 5_000 }));
-    await press(); if (a.how === "double-tap") await press().catch(() => {});
+    // Touch taps do not wait for navigation. Register the wait before pressing.
+    const target = await h.evaluate((el: Element) => {
+      const link = el.closest<HTMLAnchorElement>("a[href]");
+      const control = el as HTMLButtonElement | HTMLInputElement;
+      const form = ["BUTTON", "INPUT"].includes(el.tagName) && control.type === "submit"
+        && control.form?.checkValidity() ? control.form : null;
+      if (!link && !form) return null;
+      return link?.target || control.getAttribute("formtarget") || form?.target || "_self";
+    });
+    const navigation = target === "_blank"
+      ? page.waitForEvent("popup", { timeout: 5_000 }).then(async p => {
+        this.adopt(p); await p.waitForLoadState("domcontentloaded");
+      })
+      : target ? page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 5_000 }) : null;
+    // An aborted navigation is expected when the guard blocks a request.
+    const settled = navigation?.catch(() => {});
+    try { await press(); if (a.how === "double-tap") await press().catch(() => {}); }
+    finally { await settled; }
   }
 }

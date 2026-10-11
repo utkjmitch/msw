@@ -11,10 +11,10 @@ export async function installGuard(context: BrowserContext,
     let mainNav = false;
     try { mainNav = req.isNavigationRequest() && req.frame() === req.frame().page().mainFrame(); } catch { mainNav = false; }
     if (mainNav && !allowed.has(origin)) {
-      o.onBlocked({ why: "left-site", method: req.method(), url: req.url() }); return route.abort("blockedbyclient");
+      o.onBlocked({ why: "left-site", method: req.method(), url: req.url() }); return route.abort("aborted");
     }
     if (o.mode === "read-only" && MUTATING.has(req.method()) && allowed.has(origin)) {
-      o.onBlocked({ why: "would-submit", method: req.method(), url: req.url() }); return route.abort("blockedbyclient");
+      o.onBlocked({ why: "would-submit", method: req.method(), url: req.url() }); return route.abort("aborted");
     }
     return route.continue();
   });
