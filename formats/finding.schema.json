@@ -1,0 +1,138 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "run": {
+      "type": "string"
+    },
+    "walker": {
+      "type": "string"
+    },
+    "journey": {
+      "type": "string"
+    },
+    "step": {
+      "type": "integer",
+      "minimum": -9007199254740991,
+      "maximum": 9007199254740991
+    },
+    "viewport": {
+      "type": "string",
+      "enum": [
+        "phone-small",
+        "phone",
+        "tablet",
+        "desktop"
+      ]
+    },
+    "locale": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "usability",
+        "function",
+        "content",
+        "accessibility",
+        "performance",
+        "vision-gap"
+      ]
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "walker",
+        "instrument"
+      ]
+    },
+    "severity": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "what_happened": {
+      "type": "string"
+    },
+    "expected": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": -9007199254740991,
+        "maximum": 9007199254740991
+      }
+    },
+    "repro": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step": {
+            "type": "string"
+          },
+          "event": {
+            "type": "integer",
+            "minimum": -9007199254740991,
+            "maximum": 9007199254740991
+          }
+        },
+        "required": [
+          "step",
+          "event"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "reproduced": {
+      "default": false,
+      "type": "boolean"
+    },
+    "fingerprint": {
+      "default": "",
+      "type": "string"
+    },
+    "silly": {
+      "type": "string",
+      "enum": [
+        "impatient-fingers",
+        "wandering-attention",
+        "unusual-arrivals",
+        "language-and-text",
+        "body-and-device",
+        "privacy-minded",
+        "unusual-intent",
+        "admin-mishaps"
+      ]
+    }
+  },
+  "required": [
+    "id",
+    "run",
+    "walker",
+    "journey",
+    "step",
+    "viewport",
+    "locale",
+    "kind",
+    "source",
+    "severity",
+    "title",
+    "what_happened",
+    "expected",
+    "evidence",
+    "repro",
+    "reproduced",
+    "fingerprint"
+  ],
+  "additionalProperties": false
+}

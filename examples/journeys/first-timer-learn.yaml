@@ -1,0 +1,10 @@
+id: first-timer-learn
+walker: first-timer
+audience: public
+goal: Work out what this organization actually does, and whether I'd tell my sister about it
+start_url: http://127.0.0.1:4810/
+arrival: shared-link
+success:
+  - can say in one sentence what the organization does
+  - knows of one way a person could help, without having given anything
+step_budget: 25
