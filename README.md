@@ -8,7 +8,7 @@ The Ministry sends them in first.
 
 Each Walker is a full person: a story, hopes, fears, a limited supply of patience, and a short list of things that make them leave. They walk the site the way that person would. They see only what a person sees, and the Ministry's server makes it impossible for them to cheat. Afterward, a second agent who has never met the site follows the resulting guide to the letter, and stops the moment it is unclear. Then a human walks it. The Ministry does not certify a walk no human has taken.
 
-**Status:** design stage. The design is in [`docs/superpowers/specs/`](docs/superpowers/specs/). Nothing is runnable yet.
+**Status:** the walk server works (plan A). The Cheese Shop, reports and skills come next. Nothing is published as a release yet.
 
 ## What it will contain
 
