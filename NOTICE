@@ -1,0 +1,24 @@
+The Ministry of Silly Walks
+Copyright 2026 Jimmy Mitchell
+
+This project adapts ideas and, where noted in the source, text from:
+
+- jezweb/claude-skills, ux-audit skill (MIT)
+  https://github.com/jezweb/claude-skills
+- Drasi project, tutorial-evaluation prompt (Apache-2.0)
+  https://github.com/drasi-project/learning
+- vercel-labs/agent-browser, dogfood skill (Apache-2.0)
+  https://github.com/vercel-labs/agent-browser
+- mastepanoski/claude-skills, cognitive-walkthrough skill (MIT)
+  https://github.com/mastepanoski/claude-skills
+- savkevip/ghostuser, persona fields (MIT)
+  https://github.com/savkevip/ghostuser
+
+Ideas only, no code or text copied:
+- UXAgent (Lu et al., 2025), https://arxiv.org/abs/2502.12561
+- Vizron, https://ceur-ws.org/Vol-4249/paper5.pdf
+- Nielsen Norman Group, severity ratings,
+  https://www.nngroup.com/articles/how-to-rate-the-severity-of-usability-problems/
+
+"Monty Python" and the Ministry of Silly Walks sketch belong to their owners.
+This project is an affectionate homage and is not affiliated with them.
