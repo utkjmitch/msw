@@ -46,7 +46,7 @@ MSW's answer is to make the over-competent paths impossible rather than discoura
 |---|---|---|---|
 | **1. The Survey** | An agent with the walk skill, one run per Walker per journey | Walker dossiers and journeys | Findings, evidence, and a draft walkthrough guide |
 | **2. The Inspection** | A different agent with no shared context, different model if available, web blocked | The draft guide only | `## STATUS: PASS` or `## STATUS: FAIL at step N`, evidence, then a proposed guide diff |
-| **3. The Minister's Walk** | A person | The guide after Inspection fixes are applied | Their own notes, recorded with `msw note` or on paper, and their ruling on the findings |
+| **3. The Minister's Walk** | One or more people per site, named in the site's run notes (a site's owner, staff or partner) | The guide after Inspection fixes are applied | Their own notes, recorded with `msw note` or on paper, and their ruling on the findings |
 
 The guide is rewritten after walk 2 and walked again by a fresh Inspector until it passes or the failures are real site problems rather than guide problems; those become findings. Walk 3 always happens: the Ministry does not certify a walk that no human has taken.
 
@@ -73,7 +73,9 @@ All formats are YAML or JSON with JSON Schemas in `formats/`. Example files ship
 
 Dossiers describe people, not testers. They never mention the site's own labels.
 
-Admin Walkers are people too. A volunteer who updates the events page on Sunday nights has a story, a patience budget and leave triggers like anyone else ("the editor lost my draft"). Their goals are jobs: publish a story, correct a price, find out who gave last month, answer a partner inquiry.
+Admin Walkers are people too. A volunteer who updates the events page on Sunday nights has a story, a patience budget and leave triggers like anyone else ("the editor lost my draft"). Their goals are jobs: publish a story, correct a price, read the site's reporting and stats (who gave last month, how many people signed up), and file or follow up a site request (a change asked of whoever builds the site). Every site's admin journeys cover those three areas: content, reporting and stats, and site requests.
+
+A dossier is written about a role, never about a real person. When a real person will take the Minister's Walk for that role, the dossier still describes the role, and the person brings themselves.
 
 ### 4.2 Journey (`journey.yaml`)
 
