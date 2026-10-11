@@ -4,7 +4,9 @@
   "private": false,
   "license": "Apache-2.0",
   "type": "module",
-  "bin": { "msw-server": "dist/mcp/server.js" },
+  "bin": {
+    "msw-server": "dist/mcp/server.js"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -23,5 +25,8 @@
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.3"
+  },
+  "overrides": {
+    "playwright-core": "1.63.0"
   }
 }
