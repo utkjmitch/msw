@@ -92,6 +92,7 @@ A dossier is written about a role, never about a real person. When a real person
 | `storage_state` | Optional path to a saved login for a test account |
 | `viewports`, `locales` | Overrides of the dossier |
 | `planned` | `true` for a vision-gap journey: a journey the product is meant to support, possibly not yet built |
+| `silly` | Optional: the silly-walk category (6.2) and the `conditions` and `moves` it uses |
 
 ### 4.3 Finding (`finding.json`)
 
@@ -190,12 +191,37 @@ Each skill is a `SKILL.md` in `skills/`, written in the Ministry's voice with pl
 | `msw-walk` | The Survey. Each step runs perceive (what I see, as me), plan (what I'm trying to do), the options rated as me, the four Wharton questions, choose, act, reflect, and wonder (what I'd ask a friend). Write a finding the moment something is wrong. Run away when the Walker would. Narrate in the first person into `walks/` |
 | `msw-guide` | Compile the guide from successful walks: plain numbered steps, the expected result after each, and a screenshot per step, with the Ministry's asides in italics, kept out of the step text |
 | `msw-inspect` | The Inspection, adapted from Drasi: the guide only, web blocked, follow each step literally, compare each expected result by meaning, stop at the first failure, write `## STATUS:`, then and only then propose a diff |
+| `msw-silly` | Write silly walks (6.2) for each Walker from the category catalog, each with a reason grounded in the dossier |
 | `msw-vision` | A literal walk of a `planned: true` journey. Each step that fails because the feature is not there becomes a `vision-gap` finding stating what was expected |
 | `msw-file` | Turn findings into tickets. Ships a Markdown adapter and a GitHub Issues adapter; others are plugins kept outside the repo |
 
 ### "We are all individuals!"
 
 After all Survey walks for a site, `msw individuals` compares the option sequences across Walkers. If every Walker on a shared journey took the same path to the third step or beyond, the run is flagged: "the Walkers have converged". The dossiers need sharper differences, or the site leaves people no choice, which is itself worth a line in the report.
+
+### 6.2 The silly walks
+
+> Anybody can walk a website the way its designers intended. The Ministry's speciality is the other way: the walk nobody rehearsed, performed by a real person for a perfectly sensible reason.
+
+A silly walk is a journey that tests a situation a site's builders rarely think of. It is still a real person with a real reason, never vandalism for its own sake. The `msw-silly` skill gives the agent a catalog of categories and asks, for each Walker, "what would this person plausibly do that nobody planned for?" It writes two to four silly walks per site, each with a dossier-grounded reason.
+
+| Category | Examples |
+|---|---|
+| **Impatient fingers** | Double-tapping Donate; pressing back in the middle of payment; reloading a form after an error; submitting twice because nothing seemed to happen |
+| **Wandering attention** | Leaving a form half-filled and returning the next day; two tabs on the same gift; the phone locks mid-checkout and the session expires |
+| **Unusual arrivals** | A link from a two-year-old email to a page that has moved; a campaign that has ended; a shared link in the other language |
+| **Language and text** | Switching language halfway through a form; a name with accents, an apostrophe, or 60 characters; pasting from a word processor into an admin editor; browser auto-translate turned on |
+| **The body and the device** | Text at 200%; dark mode; reduced motion; rotating the phone mid-task; keyboard only; a slow 3G connection; going offline for ten seconds |
+| **Privacy-minded** | Declining all cookies; an ad blocker; private browsing, so nothing is remembered |
+| **Unusual intent** | Giving in memory of someone; giving on behalf of a company; a gift for a grandchild; asking for a refund; wanting a receipt for taxes in March |
+| **Admin mishaps** | Two admins editing the same story; an admin's session expiring mid-edit; publishing with an empty Spanish version; filing the same site request twice |
+
+The server supports silly walks in two ways:
+
+- **`conditions`** in the journey, applied by the server: `network` (`slow-3g`, or `offline` at step N for S seconds), `text_scale` (percent), `color_scheme` (`dark`), `reduced_motion`, `cookies` (`declined`: all cookies cleared and blocked), `rotate_at_step` N, `expire_session_at_step` N (cookies for the journey's origins dropped), `translate` (not emulated; recorded as unsupported).
+- **`moves`**, extra options listed for that walk only: `reload`, `double-tap <n>`, `open <n> in a new tab`, `switch tab`, `wait <minutes>` (the server advances the page clock; patience is unaffected).
+
+Findings from silly walks carry `silly: <category>`. The Cheese Shop has at least two flaws that only a silly walk finds: a double-tap that donates twice, and a form that loses everything after the session expires.
 
 ## 7. Severity
 
@@ -243,7 +269,8 @@ At least twelve flaws are planted, recorded in `cheese-shop/answer-key.yaml` by 
 - a Spanish button whose label means something else;
 - a dead link in the footer;
 - a console error on the cart page;
-- an empty catalog for the product people came for (the vision gap).
+- an empty catalog for the product people came for (the vision gap);
+- a double-tap on Donate that donates twice, and a form that loses everything after the session expires (found only by silly walks).
 
 `msw score <run>` matches findings to the answer key and reports recall per kind and per viewport. Every release publishes its Cheese Shop score and the model and agent used. The Ministry's own claim about itself is held to the same standard as everybody else's.
 
@@ -311,4 +338,5 @@ Comunidad Connect's public journeys run read-only on the live site, on phone and
 - The repository is public from the start.
 - Comunidad Connect is the first pilot and is named. Its runs and its before-and-after comparison are published in this repository.
 - McLaren Accord joins the list. Every site gets admin journeys as well as public and member ones.
+- Every site also gets silly walks (6.2): situations others would not think to test.
 - The server never calls a model; any MCP-capable agent can walk.
