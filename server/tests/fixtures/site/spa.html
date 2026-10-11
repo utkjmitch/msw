@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Steps</title></head>
+<body>
+<button id="next">Next</button><button id="gone">Vanishing</button>
+<script>
+document.getElementById("next").addEventListener("click", () => { document.body.innerHTML = "<h1>Step 2</h1><button>Finish</button>"; });
+setTimeout(() => document.getElementById("gone")?.remove(), 1500);
+</script>
+</body></html>
