@@ -18,12 +18,19 @@ export class EventLog {
   all(): MswEvent[] { return [...this.events]; }
   verify(): { ok: boolean; bad: number[] } {
     if (!existsSync(this.file)) return { ok: false, bad: [] };
-    const bad: number[] = []; let prev = "";
-    for (const line of readFileSync(this.file, "utf8").trim().split("\n")) {
-      const e = JSON.parse(line) as MswEvent; const { hmac, ...rest } = e;
-      if (e.prev !== prev || this.sign(rest) !== hmac) bad.push(e.seq);
-      prev = hmac;
+    const bad = new Set<number>(); let prev = "";
+    const text = readFileSync(this.file, "utf8").trim();
+    const lines = text ? text.split("\n") : [];
+    for (const [i, line] of lines.entries()) {
+      try {
+        const e = JSON.parse(line) as MswEvent; const { hmac, ...rest } = e;
+        if (e.seq !== i + 1 || e.prev !== prev || this.sign(rest) !== hmac) bad.add(i + 1);
+        prev = hmac;
+      } catch { bad.add(i + 1); }
     }
-    return { ok: bad.length === 0, bad };
+    // A valid prefix is not the complete run. Anchor it to the in-memory tail.
+    if (lines.length !== this.events.length) bad.add(Math.min(lines.length, this.events.length) + 1);
+    if (prev !== (this.events.at(-1)?.hmac ?? "")) bad.add(this.events.length || 1);
+    return { ok: bad.size === 0, bad: [...bad].sort((a, b) => a - b) };
   }
 }

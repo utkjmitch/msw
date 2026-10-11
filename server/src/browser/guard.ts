@@ -10,7 +10,7 @@ export async function installGuard(context: BrowserContext,
     const req = route.request(); const origin = originOf(req.url());
     let mainNav = false;
     try { mainNav = req.isNavigationRequest() && req.frame() === req.frame().page().mainFrame(); } catch { mainNav = false; }
-    if (mainNav && !allowed.has(origin)) {
+    if ((mainNav || MUTATING.has(req.method())) && !allowed.has(origin)) {
       o.onBlocked({ why: "left-site", method: req.method(), url: req.url() }); return route.abort("aborted");
     }
     if (o.mode === "read-only" && MUTATING.has(req.method()) && allowed.has(origin)) {

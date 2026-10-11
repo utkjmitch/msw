@@ -3,7 +3,7 @@ import { VIEWPORTS, type ViewportName } from "../formats/viewports.js";
 import type { Conditions } from "../formats/schemas.js";
 export function contextOptions(vp: ViewportName, locale: string, c: Conditions, storageState?: string): BrowserContextOptions {
   const v = VIEWPORTS[vp];
-  return { viewport: { width: v.width, height: v.height }, isMobile: v.touch, hasTouch: v.touch, locale,
+  return { viewport: { width: v.width, height: v.height }, isMobile: v.touch, hasTouch: v.touch, locale, serviceWorkers: "block",
     extraHTTPHeaders: { "Accept-Language": locale }, colorScheme: c.color_scheme ?? "light",
     reducedMotion: c.reduced_motion ? "reduce" : "no-preference", ...(storageState ? { storageState } : {}) };
 }
