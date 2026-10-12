@@ -87,3 +87,16 @@ test("a visitor cannot walk an admin journey", async () => {
     await expect(w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" })).rejects.toThrow("a visitor cannot walk a admin journey");
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("a second walk into a folder that already holds events is refused, and the old evidence is untouched", async () => {
+  const f = setup(s.url); const w = new WalkSession(f.run, true, false);
+  let dir = "";
+  try {
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    dir = (await w.quit("done")).dir;
+    const before = readFileSync(join(dir, "events.jsonl"), "utf8");
+    const again = new WalkSession(f.run, true, false);
+    await expect(again.start({ walker: f.walker, journey: f.journey, viewport: "desktop" })).rejects.toThrow(dir);
+    expect(readFileSync(join(dir, "events.jsonl"), "utf8")).toBe(before);
+    await expect(again.quit("done")).rejects.toThrow("no walk in progress");
+  } finally { await w.quit("done").catch(() => {}); }
+});

@@ -124,7 +124,7 @@ Done when: the conditions test passes and the walk's condition records match the
 
 Each walk writes to `<out_dir>/walks/<walker>-<journey>-<viewport>-<locale>/`:
 
-Use a fresh `out_dir` (or run file) for each walk. A second walk with the same Walker, journey, viewport and locale in the same `out_dir` adds to the old `events.jsonl`, and that log will not verify.
+One folder holds one walk. If the walk folder already holds an `events.jsonl`, `start_walk` refuses and names the folder. It never appends to or deletes old evidence. Use a fresh `out_dir` (or run file) to walk the same Walker, journey, viewport and locale again.
 
 | File | What it holds |
 |---|---|

@@ -1,5 +1,5 @@
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
-import { mkdirSync, writeFileSync, appendFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, appendFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { loadWalker, loadJourney } from "../formats/load.js";
@@ -45,6 +45,8 @@ export class WalkSession {
     this.viewport = a.viewport; this.locale = a.locale ?? this.walker.locale;
     this.moves = this.journey.silly?.moves ?? []; this.cond = this.journey.silly?.conditions ?? {};
     this.dir = join(this.run.out_dir, "walks", `${this.walker.id}-${this.journey.id}-${this.viewport}-${this.locale}`);
+    // One folder holds one walk. Never append to, or delete, another walk's evidence.
+    if (existsSync(join(this.dir, "events.jsonl"))) throw new Error(`the walk folder ${this.dir} already holds a walk; use a fresh out_dir`);
     mkdirSync(join(this.dir, "screens"), { recursive: true });
     this.log = new EventLog(join(this.dir, "events.jsonl"));
     this.budget = new Budget(this.journey.step_budget, this.walker.patience);
