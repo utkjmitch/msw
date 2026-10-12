@@ -1,6 +1,6 @@
 import { test, expect } from "vitest";
 import { loadWalker, loadJourney, loadRun } from "../src/formats/load.js";
-import { audienceAllowed, Journey } from "../src/formats/schemas.js";
+import { audienceAllowed, Journey, RunConfig } from "../src/formats/schemas.js";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os"; import { join } from "node:path";
 
@@ -26,4 +26,10 @@ test("invalid file names the file", async () => {
     const p = join(d, "bad.yaml"); writeFileSync(p, "id: x\n");
     await expect(loadWalker(p)).rejects.toThrow(/bad\.yaml/);
   } finally { rmSync(d, { recursive: true }); }
+});
+test("a run names its environment; test_copy and seeded_data default to false", () => {
+  const base = { id: "r", out_dir: "walks", environment: { name: "staging", kind: "test" } };
+  const parsed = RunConfig.parse(base);
+  expect(parsed.environment).toMatchObject({ test_copy: false, seeded_data: false });
+  expect(RunConfig.safeParse({ ...base, environment: { name: "  ", kind: "test" } }).success).toBe(false);
 });

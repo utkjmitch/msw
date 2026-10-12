@@ -66,6 +66,14 @@
     "storage_state": {
       "type": "string"
     },
+    "payment_origins": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
     "viewports": {
       "type": "array",
       "items": {
@@ -205,6 +213,7 @@
     "step_budget",
     "mode",
     "origins",
+    "payment_origins",
     "planned"
   ],
   "additionalProperties": false

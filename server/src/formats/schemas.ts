@@ -39,6 +39,8 @@ export const Journey = z.object({
   success: z.array(z.string()).min(1), step_budget: z.number().int().min(1).max(200),
   mode: z.enum(["read-only", "transact"]).default("read-only"),
   origins: z.array(z.url()).default([]), storage_state: z.string().optional(),
+  // Payment providers a transact walk may write to (spec 5.6). Never used in read-only.
+  payment_origins: z.array(z.url()).default([]),
   viewports: z.array(ViewportNameZ).optional(), locales: z.array(z.string()).optional(),
   planned: z.boolean().default(false),
   silly: z.object({ category: SillyCategory, conditions: Conditions.default({}), moves: z.array(Move).default([]) }).optional(),
@@ -47,7 +49,10 @@ export type Journey = z.infer<typeof Journey>;
 
 export const RunConfig = z.object({
   id: Id, out_dir: z.string().min(1),
-  environment: z.object({ name: z.string(), kind: z.enum(["live", "test"]) }),
+  // test_copy: this is a copy of the site, not the live one. seeded_data: the copy holds only made-up records.
+  // Admin journeys need both (spec 12). The name may not be blank, so the record says which copy was walked.
+  environment: z.object({ name: z.string().trim().min(1), kind: z.enum(["live", "test"]),
+    test_copy: z.boolean().default(false), seeded_data: z.boolean().default(false) }),
   allowed_for_transact: z.array(z.url()).default([]),
   payment_test_mode: z.boolean().default(false),
   mask_personal_data: z.boolean().default(true),

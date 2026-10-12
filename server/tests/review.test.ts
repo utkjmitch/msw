@@ -76,3 +76,17 @@ test("payment screenshot masking stays on when personal-data masking is off", as
     expect(after.png.equals(before.png)).toBe(true);
   } finally { await browser.close(); }
 });
+
+test("option names longer than 120 characters still tell page states apart", async () => {
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage();
+    const long = "Read the full story of how the trust began and what it has done since then ".repeat(3);
+    // The name comes only from aria-label, so the visible text is the same on both pages.
+    await page.setContent(`<button aria-label="${long}one">Go</button>`);
+    const one = await perceive(page, { mask: true, moves: [], tabCount: 1 });
+    await page.setContent(`<button aria-label="${long}two">Go</button>`);
+    const two = await perceive(page, { mask: true, moves: [], tabCount: 1 });
+    expect(one.state).not.toBe(two.state);
+  } finally { await browser.close(); }
+});

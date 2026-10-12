@@ -14,7 +14,8 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "kind": {
           "type": "string",
@@ -22,11 +23,21 @@
             "live",
             "test"
           ]
+        },
+        "test_copy": {
+          "default": false,
+          "type": "boolean"
+        },
+        "seeded_data": {
+          "default": false,
+          "type": "boolean"
         }
       },
       "required": [
         "name",
-        "kind"
+        "kind",
+        "test_copy",
+        "seeded_data"
       ],
       "additionalProperties": false
     },

@@ -40,8 +40,9 @@ export function createServer(run: RunConfig, headless = true): McpServer {
     description: "Do one thing, as your Walker. Rate at least two options (or all, if fewer) from your Walker's point of view, including the one you choose, and answer the four questions for the one you choose.",
     inputSchema: {
       option: z.number().int().min(1), text: z.string().optional(), how: z.enum(["tap", "double-tap", "new-tab"]).optional(),
-      ratings: z.array(z.object({ option: z.number().int().min(1), score: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]), why: z.string().min(1) })),
-      wharton: z.object({ will_try: z.boolean(), notices: z.boolean(), associates: z.boolean(), sees_progress: z.boolean(), note: z.string().optional() }),
+      // Optional here so a missing answer reaches the session, which refuses it and logs the refusal (spec 5.3 rule 1).
+      ratings: z.array(z.object({ option: z.number().int().min(1), score: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]), why: z.string().min(1) })).optional(),
+      wharton: z.object({ will_try: z.boolean(), notices: z.boolean(), associates: z.boolean(), sees_progress: z.boolean(), note: z.string().optional() }).optional(),
     },
   }, async a => guard(async s => {
     const r = await s.act(a);
@@ -50,13 +51,15 @@ export function createServer(run: RunConfig, headless = true): McpServer {
   server.registerTool("note", {
     description: "Record a finding the moment you notice it.",
     inputSchema: { kind: z.enum(["usability", "function", "content", "accessibility", "performance", "vision-gap"]),
-      severity: z.number().int().min(0).max(4), title: z.string().min(1), what_happened: z.string().min(1), expected: z.string().min(1) },
+      severity: z.number().int().min(0).max(4), title: z.string().min(1), what_happened: z.string().min(1), expected: z.string().min(1),
+      blocks_step: z.boolean().optional().describe("true if this stops you finishing a step your goal needs") },
   }, async a => guard(async s => say(`Noted as ${s.note(a).id}.`)));
   server.registerTool("quit", {
     description: "End the walk: done, run-away (say which trigger) or stuck.",
     inputSchema: { reason: z.enum(["done", "run-away", "stuck"]), detail: z.string().optional() },
   }, async a => guard(async s => {
-    const q = await s.quit(a.reason, a.detail); session = null;
+    // A quit that throws has still closed the browser. Never leave the server locked.
+    const q = await s.quit(a.reason, a.detail).finally(() => { session = null; });
     return say(`Walk saved in ${q.dir}. Findings: ${q.findings}. verified: ${q.verified}. alive: ${q.alive}${q.failures.length ? ` (${q.failures.join("; ")})` : ""}.`);
   }));
   return server;
