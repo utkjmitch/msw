@@ -40,8 +40,9 @@ export function createServer(run: RunConfig, headless = true): McpServer {
     description: "Do one thing, as your Walker. Rate at least two options (or all, if fewer) from your Walker's point of view, including the one you choose, and answer the four questions for the one you choose.",
     inputSchema: {
       option: z.number().int().min(1), text: z.string().optional(), how: z.enum(["tap", "double-tap", "new-tab"]).optional(),
-      ratings: z.array(z.object({ option: z.number().int().min(1), score: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]), why: z.string().min(1) })),
-      wharton: z.object({ will_try: z.boolean(), notices: z.boolean(), associates: z.boolean(), sees_progress: z.boolean(), note: z.string().optional() }),
+      // Optional here so a missing answer reaches the session, which refuses it and logs the refusal (spec 5.3 rule 1).
+      ratings: z.array(z.object({ option: z.number().int().min(1), score: z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]), why: z.string().min(1) })).optional(),
+      wharton: z.object({ will_try: z.boolean(), notices: z.boolean(), associates: z.boolean(), sees_progress: z.boolean(), note: z.string().optional() }).optional(),
     },
   }, async a => guard(async s => {
     const r = await s.act(a);

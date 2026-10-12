@@ -63,7 +63,7 @@ There is no tool for page source, the DOM, scripts, typing an address, cookies o
 | Rule | What the server does |
 |---|---|
 | Rate before acting | `act` needs ratings for at least two different options (or the only one, if there is one), including the chosen option. Otherwise it is refused. |
-| Answer the four questions | `act` needs all four Wharton answers. The tool's input schema rejects a call without them. That rejection happens before the session sees the call, so it is not logged as a `refused` event. |
+| Answer the four questions | `act` needs all four Wharton answers. A call with no `ratings` or no `wharton` reaches the session, which refuses it and logs a `refused` event. A call whose `ratings` or `wharton` has the wrong shape is still rejected by the tool's input schema and is not logged. |
 | Act on what you saw | `act` must follow a look of the same page state. If the page changed, or the chosen element is gone, the answer is "the page changed; look again". |
 | No passwords | An `act` on a password field is refused. Logged-in journeys use a saved login (`storage_state`) prepared by a person. |
 | Moves must be allowed | `double-tap` and `new-tab` are refused unless the journey's silly walk lists them. |
