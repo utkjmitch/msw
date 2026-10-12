@@ -118,3 +118,24 @@ test("a page whose load event takes over 3 seconds costs one patience", async ()
     await w.quit("done");
   } finally { await w.quit("done").catch(() => {}); }
 });
+const readEvents = (dir: string) => readFileSync(join(dir, "events.jsonl"), "utf8").trim().split("\n").map(l => JSON.parse(l));
+const lookStates = (events: any[], page: string) => new Set(events.filter(e => e.kind === "look" && e.data.url.endsWith(page)).map(e => e.state));
+test("instrument and blocked records carry the state of the page they came from", async () => {
+  const f = setup(s.url + "links.html"); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const r1 = await w.act({ option: n(r0, "About us"), ratings: R(n(r0, "About us"), n(r0, "News")), wharton: W }) as LookResult;
+    await w.act({ option: n(r1, "back"), ratings: R(n(r1, "back"), n(r1, "scroll down")), wharton: W });
+    const r3 = await w.look();
+    await w.act({ option: n(r3, "News"), ratings: R(n(r3, "News"), n(r3, "About us")), wharton: W });
+    const q = await w.quit("done");
+    const events = readEvents(q.dir);
+    const about = lookStates(events, "about.html"); const news = lookStates(events, "beacon.html");
+    const consoleErr = events.find(e => e.kind === "instrument" && e.data.type === "console");
+    expect(about.has(consoleErr.state)).toBe(true);
+    const missing = events.find(e => e.kind === "instrument" && e.data.type === "http" && e.data.detail.status === 404);
+    expect(about.has(missing.state)).toBe(true);
+    const beacon = events.find(e => e.kind === "blocked" && e.data.url.endsWith("/beacon"));
+    expect(news.has(beacon.state)).toBe(true);
+  } finally { await w.quit("done").catch(() => {}); }
+});

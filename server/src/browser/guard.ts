@@ -1,6 +1,6 @@
 import type { BrowserContext } from "playwright";
 import type { RunConfig, Journey } from "../formats/schemas.js";
-export interface Blocked { why: "would-submit" | "left-site"; method: string; url: string }
+export interface Blocked { why: "would-submit" | "left-site"; method: string; url: string; page?: string }
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 const originOf = (u: string) => new URL(u).origin;
 export async function installGuard(context: BrowserContext,
@@ -8,13 +8,15 @@ export async function installGuard(context: BrowserContext,
   const allowed = new Set(o.origins.map(originOf));
   await context.route("**/*", async route => {
     const req = route.request(); const origin = originOf(req.url());
-    let mainNav = false;
+    let mainNav = false; let page: string | undefined;
     try { mainNav = req.isNavigationRequest() && req.frame() === req.frame().page().mainFrame(); } catch { mainNav = false; }
+    // The page the request came from. A navigation has not committed yet, so this is still the old page.
+    try { page = req.frame().page().url(); } catch { page = undefined; }
     if ((mainNav || MUTATING.has(req.method())) && !allowed.has(origin)) {
-      o.onBlocked({ why: "left-site", method: req.method(), url: req.url() }); return route.abort("aborted");
+      o.onBlocked({ why: "left-site", method: req.method(), url: req.url(), page }); return route.abort("aborted");
     }
     if (o.mode === "read-only" && MUTATING.has(req.method()) && allowed.has(origin)) {
-      o.onBlocked({ why: "would-submit", method: req.method(), url: req.url() }); return route.abort("aborted");
+      o.onBlocked({ why: "would-submit", method: req.method(), url: req.url(), page }); return route.abort("aborted");
     }
     return route.continue();
   });

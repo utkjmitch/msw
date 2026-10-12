@@ -15,7 +15,7 @@ export function attachInquisition(page: Page, sink: (r: InstrumentRecord) => voi
   page.on("response", r => { if (r.status() >= 400) sink({ type: "http", url: r.url(), detail: { status: r.status(), page: page.url() } }); });
   page.on("requestfailed", r => {
     const t = r.failure()?.errorText ?? "";
-    if (!t.includes("BLOCKED_BY_CLIENT")) sink({ type: "requestfailed", url: r.url(), detail: { error: t } });
+    if (!t.includes("BLOCKED_BY_CLIENT")) sink({ type: "requestfailed", url: r.url(), detail: { error: t, page: page.url() } });
   });
 }
 export async function inspectPage(page: Page, sink: (r: InstrumentRecord) => void): Promise<void> {

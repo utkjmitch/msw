@@ -34,6 +34,8 @@ export class WalkSession {
   private seen = new Set<string>(); private inspected = new Set<string>(); private pending: string[] = [];
   private instrument: (InstrumentRecord & { step: number; event: number })[] = [];
   private findings: Finding[] = []; private acts: ReplayStep[] = []; private ended?: string;
+  // Records from a page the walk has not looked at yet wait here for that page's state.
+  private unplaced: { page: string; write: (state?: string) => void }[] = []; private stateAt = new Map<string, string>();
 
   constructor(private run: RunConfig, private headless = true, private reproduceFindings = true) {}
   get lastState(): string | undefined { return this.last?.state; }
@@ -118,6 +120,7 @@ export class WalkSession {
 
   async quit(reason: "done" | "run-away" | "stuck", detail?: string): Promise<QuitResult> {
     if (!this.browser) throw new Error("no walk in progress");
+    this.placeAll();
     try { this.log.append("quit", { reason, detail: detail ?? null, ended: this.ended ?? null }); }
     finally { await this.browser.close(); this.browser = undefined; }
     const ctx = { run: this.run.id, walker: this.walker.id, journey: this.journey.id, viewport: this.viewport, locale: this.locale };
@@ -153,16 +156,35 @@ export class WalkSession {
   }
   private record(r: InstrumentRecord, state?: string) {
     if (!this.log) return;
-    const e = this.log.append("instrument", { ...r }, state ?? this.last?.state);
-    this.instrument.push({ ...r, step: this.steps, event: e.seq });
-    appendFileSync(join(this.dir, "instrument.jsonl"), JSON.stringify({ ...r, step: this.steps, event: e.seq }) + "\n");
+    const step = this.steps;
+    const write = (st?: string) => {
+      const e = this.log.append("instrument", { ...r }, st);
+      this.instrument.push({ ...r, step, event: e.seq });
+      appendFileSync(join(this.dir, "instrument.jsonl"), JSON.stringify({ ...r, step, event: e.seq }) + "\n");
+    };
+    if (state !== undefined) write(state);
+    else this.place(typeof r.detail.page === "string" ? r.detail.page : r.url, write);
   }
   private onBlocked(b: Blocked) {
-    this.log.append("blocked", { ...b }, this.last?.state);
+    this.place(b.page, st => this.log.append("blocked", { ...b }, st));
     this.pending.push(b.why === "would-submit"
       ? "Nothing seemed to happen. This walk is read-only, so the form was not sent; carry on as if it had failed."
       : "That leads off this site, which this walk does not visit.");
   }
+  /** Writes a record with the state of the page it came from, once the walk has looked at that page. */
+  private place(page: string | undefined, write: (state?: string) => void) {
+    if (page === undefined || page === this.last?.url) write(this.last?.state);
+    else this.unplaced.push({ page, write });
+  }
+  private placeSeen() {
+    const waiting = this.unplaced.splice(0);
+    for (const u of waiting) {
+      const st = this.stateAt.get(u.page);
+      if (st !== undefined) u.write(st); else this.unplaced.push(u);
+    }
+  }
+  /** At the end, a record from a page never looked at is written without a state. */
+  private placeAll() { this.placeSeen(); for (const u of this.unplaced.splice(0)) u.write(undefined); }
   private refuse(reason: string, option: number) {
     this.log.append("refused", { reason, option }, this.last?.state);
     return { refused: reason };
@@ -194,7 +216,7 @@ export class WalkSession {
     }
     const e = this.log.append("look", { url: p.url, options: p.options.map(optionLine) }, p.state);
     writeFileSync(join(this.dir, "screens", `${e.seq}.png`), p.png);
-    this.last = { ...p, seq: e.seq }; return this.last;
+    this.last = { ...p, seq: e.seq }; this.stateAt.set(p.url, p.state); this.placeSeen(); return this.last;
   }
   private async inspect(state: string) {
     if (this.inspected.has(state)) return;
