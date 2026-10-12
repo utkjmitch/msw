@@ -35,6 +35,18 @@ test("the inquisition records console errors, 404s, axe violations and vitals", 
   expect(f.find(x => x.kind === "content")?.severity).toBe(2);
   await ctx.close();
 });
+test("session expiry also drops journey-host cookies on deep paths and parent domains", async () => {
+  const ctx = await browser.newContext(); const page = await ctx.newPage();
+  try {
+    await ctx.addCookies([
+      { name: "journey", value: "yes", domain: "site.test", path: "/deep" },
+      { name: "shared", value: "yes", domain: ".site.test", path: "/" },
+      { name: "other", value: "yes", domain: "other.test", path: "/" },
+    ]);
+    await applyStepConditions(ctx, page, 1, { expire_session_at_step: 1 }, { origins: ["https://site.test/"] });
+    expect((await ctx.cookies()).map(c => c.name)).toEqual(["other"]);
+  } finally { await ctx.close(); }
+});
 test("session expiry drops only the journey origins' cookies", async () => {
   const ctx = await browser.newContext(); const p = await ctx.newPage();
   try {

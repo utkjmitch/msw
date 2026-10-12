@@ -23,10 +23,14 @@ export async function setupConditions(context: BrowserContext, page: Page, c: Co
   if (c.translate) notes.push("browser translation is not emulated; the condition was recorded but not applied");
   return notes;
 }
-/** Spec 6.2: an expired session drops the cookies the journey's origins would receive, and no others. */
+/** Spec 6.2: an expired session drops the cookies of the journey's hosts, on any path and from a shared parent domain, and no others. */
 async function expireSession(context: BrowserContext, origins: string[]): Promise<void> {
-  if (!origins.length) return;
-  for (const k of await context.cookies(origins)) await context.clearCookies({ name: k.name, domain: k.domain, path: k.path });
+  const hosts = origins.map(origin => new URL(origin).hostname);
+  for (const k of await context.cookies()) {
+    const domain = k.domain.replace(/^\./, "");
+    if (hosts.some(host => host === domain || (k.domain.startsWith(".") && host.endsWith(`.${domain}`))))
+      await context.clearCookies({ name: k.name, domain: k.domain, path: k.path });
+  }
 }
 export async function applyStepConditions(context: BrowserContext, page: Page, step: number, c: Conditions,
   walk: { origins?: string[]; timers?: Set<ReturnType<typeof setTimeout>> } = {}): Promise<string[]> {
