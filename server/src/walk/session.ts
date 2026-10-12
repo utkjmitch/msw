@@ -70,6 +70,7 @@ export class WalkSession {
         versions: versions(this.browser), times: { started: new Date().toISOString(), ended: null }, outcome: null };
       writeManifest(join(this.dir, "manifest.json"), this.manifest);
       this.context = await this.browser.newContext(contextOptions(this.viewport, this.locale, this.cond, this.journey.storage_state));
+      this.context.once("close", () => this.clearTimers());
       await this.context.addInitScript(REAL_PERFORMANCE_INIT);
       await this.context.addInitScript(VITALS_INIT);
       await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], payments: this.journey.payment_origins, onBlocked: b => this.onBlocked(b) });
@@ -152,7 +153,7 @@ export class WalkSession {
 
   async quit(reason: "done" | "run-away" | "stuck", detail?: string): Promise<QuitResult> {
     if (!this.browser) throw new Error("no walk in progress");
-    for (const t of this.timers) clearTimeout(t); this.timers.clear();
+    this.clearTimers();
     this.placeAll();
     if (reason === "run-away" || this.ended?.startsWith("run-away")) this.runAwayFloor(detail);
     try { this.log.append("quit", { reason, detail: this.m(detail) ?? null, ended: this.ended ?? null }); }
@@ -211,6 +212,8 @@ export class WalkSession {
     if (b.why === "would-submit") this.pending.push("Nothing seemed to happen. This walk is read-only, so the form was not sent; carry on as if it had failed.");
     else if (b.why === "left-site") this.pending.push("That leads off this site, which this walk does not visit.");
   }
+  /** The walk is over once its budget ends, its context closes or it quits; a late offline restore must not run after that. */
+  private clearTimers() { for (const t of this.timers) clearTimeout(t); this.timers.clear(); }
   /** Writes a record with the state of the page it came from, once the walk has looked at that page. */
   private place(page: string | undefined, write: (state?: string) => void) {
     if (page === undefined || page === this.last?.url) write(this.last?.state);
@@ -277,7 +280,7 @@ export class WalkSession {
     }
     this.seen.add(p.state); await this.inspect(p.state);
     const ex = this.budget.exhausted();
-    if (ex && !this.ended) { this.ended = ex === "steps" ? "out of steps" : "run-away: patience"; this.log.append("condition", { name: "ended", reason: this.ended }); }
+    if (ex && !this.ended) { this.clearTimers(); this.ended = ex === "steps" ? "out of steps" : "run-away: patience"; this.log.append("condition", { name: "ended", reason: this.ended }); }
     return this.result(p);
   }
   private result(p: Perception): LookResult {

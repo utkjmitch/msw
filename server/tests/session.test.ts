@@ -307,3 +307,18 @@ test("the offline-restore timer cannot fire after the walk ends", async () => {
     expect(calls).toEqual([]);
   } finally { await w.quit("done").catch(() => {}); }
 }, 120_000);
+test("an offline restore cannot run after the walk runs out of steps, before quit", async () => {
+  const f = setup(s.url, { moves: ["wait"], budget: 1, conditions: "{ network: { offline_at_step: 1, seconds: 5 } }" }); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const ctx = (w as unknown as { context: import("playwright").BrowserContext }).context;
+    const calls: boolean[] = []; const real = ctx.setOffline.bind(ctx);
+    ctx.setOffline = (v: boolean) => { calls.push(v); return real(v); };
+    const went = Date.now();
+    const r1 = await w.act({ option: n(r0, "wait"), text: "1", ratings: R(n(r0, "wait"), n(r0, "About us")), wharton: W });
+    expect("ended" in r1 && r1.ended).toBe("out of steps");
+    // Wait well past the 5-second restore, so a late timer callback would still be seen.
+    await new Promise(r => setTimeout(r, Math.max(0, 8_000 - (Date.now() - went))));
+    expect(calls).toEqual([true]);
+  } finally { await w.quit("done").catch(() => {}); }
+}, 120_000);
