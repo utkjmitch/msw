@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { maskText, maskDeep, isSecretField } from "../src/browser/mask.js";
+import { maskText, maskString, maskDeep, isSecretField } from "../src/browser/mask.js";
 import { readingOrder } from "../src/browser/order.js";
 test("masks emails, phones and addresses", () => {
   expect(maskText("Write ana.pérez@example.org or call +1 (215) 555-0134")).toBe("Write [masked] or call [masked]");
@@ -24,4 +24,10 @@ test("records are masked string by string, including encoded addresses, and numb
   const r = maskDeep({ url: "https://a.test/?from=pat%40example.org", detail: { text: "call 215 555 0134", lcp: 1234.5678901, ok: true } });
   expect(r).toEqual({ url: "https://a.test/?from=[masked]", detail: { text: "call [masked]", lcp: 1234.5678901, ok: true } });
   expect(maskDeep("https://a.test/ni%C3%B1os")).toBe("https://a.test/ni%C3%B1os");
+});
+
+test("URL masking preserves valid IP hosts and handles encoded data beside a percent sign", () => {
+  expect(maskString("http://192.168.10.2/path?email=person%40example.org")).toBe("http://192.168.10.2/path?email=[masked]");
+  expect(maskString("100% complete: person%40example.org")).toBe("100% complete: [masked]");
+  expect(maskString("https://synthetic-user:synthetic-secret@example.org/path")).not.toContain("synthetic-secret");
 });

@@ -2,13 +2,18 @@
 const EMAIL = /[\p{L}\p{N}._%+-]+@[\p{L}\p{N}.-]+\.[\p{L}]{2,}/gu;
 const PHONE = /\+?\d[\d\s().-]{5,}\d/g;
 const STREET = /\b\d{1,6}\s+(?:[\p{L}.'-]+\s+){1,4}(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Lane|Ln|Dr|Drive|Calle|Avenida)\b\.?/gu;
+const IPV4 = /^\d{1,3}(?:\.\d{1,3}){3}$/;
 export function maskText(s: string): string {
-  return s.replace(EMAIL, "[masked]").replace(STREET, "[masked]")
-    .replace(PHONE, m => (m.replace(/\D/g, "").length >= 7 ? "[masked]" : m));
+  // A user name and password in a URL are dropped; an IPv4 address is not a phone number.
+  return s.replace(/(https?:\/\/)[^/\s@]+@/gi, "$1[masked]@")
+    .replace(EMAIL, "[masked]").replace(STREET, "[masked]")
+    .replace(PHONE, m => (IPV4.test(m) && m.split(".").every(part => Number(part) <= 255) ? m
+      : m.replace(/\D/g, "").length >= 7 ? "[masked]" : m));
 }
 /** maskText for any text, including a URL-encoded address such as ?from=pat%40example.org. */
 export function maskString(s: string): string {
-  let d = s; try { d = decodeURIComponent(s); } catch { d = s; }
+  // Each run of escapes is decoded on its own, so a bare percent sign elsewhere cannot stop the decoding.
+  const d = s.replace(/(?:%[0-9a-f]{2})+/gi, encoded => { try { return decodeURIComponent(encoded); } catch { return encoded; } });
   const m = maskText(d); return m === d ? s : m;
 }
 /** Masks every string inside a record; numbers and other values are left alone. */

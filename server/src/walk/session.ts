@@ -120,7 +120,7 @@ export class WalkSession {
     if ((a.how === "double-tap" || a.how === "new-tab") && !this.moves.includes(a.how)) return this.refuse("that move is not part of this walk", a.option);
     const how = a.how ?? "tap";
     const stored = a.text === undefined ? undefined : isSecretField(opt) ? "[masked]" : this.run.mask_personal_data ? maskText(a.text) : a.text;
-    const ev = this.log.append("act", { option: a.option, label: optionLine(opt), how, text: stored, ratings: a.ratings, wharton }, last!.state);
+    const ev = this.log.append("act", { option: a.option, label: optionLine(opt), how, text: stored, ratings: this.m(a.ratings), wharton: this.m(wharton) }, last!.state);
     this.acts.push({ label: opt.name, key: opt.key, role: opt.role, how, text: a.text, event: ev.seq });
     this.steps += 1; this.budget.spendStep(); this.budget.charge("wharton-no", whartonNos(wharton));
     await this.perform(opt, a).catch(e => this.pending.push(`That did not work: ${String(e.message).split("\n")[0]}`));
@@ -295,7 +295,7 @@ export class WalkSession {
   }
   private result(p: Perception): LookResult {
     return { png: p.png, text: p.text, url: this.m(p.url), options: p.options.map(optionLine), stepsLeft: this.budget.stepsLeft,
-      patienceLeft: this.budget.patienceLeft, notes: this.pending.splice(0), ...(this.ended ? { ended: this.ended } : {}) };
+      patienceLeft: this.budget.patienceLeft, notes: this.m(this.pending.splice(0)), ...(this.ended ? { ended: this.ended } : {}) };
   }
   private async perform(opt: Option, a: ActArgs): Promise<void> {
     const page = this.page!; const dy = Math.round((page.viewportSize()?.height ?? 800) * 0.8);
