@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { maskText } from "../src/browser/mask.js";
+import { maskText, isSecretField } from "../src/browser/mask.js";
 import { readingOrder } from "../src/browser/order.js";
 test("masks emails, phones and addresses", () => {
   expect(maskText("Write ana.pérez@example.org or call +1 (215) 555-0134")).toBe("Write [masked] or call [masked]");
@@ -13,4 +13,10 @@ test("leaves accented and non-Latin text intact", () => {
 test("reading order: rows then left to right", () => {
   const b = [{ x: 300, y: 10, w: 50, h: 20 }, { x: 10, y: 14, w: 50, h: 20 }, { x: 10, y: 200, w: 50, h: 20 }];
   expect(readingOrder(b)).toEqual([1, 0, 2]);
+});
+test("payment and password fields are known by type, including sectioned autocomplete tokens", () => {
+  expect(isSecretField({ autocomplete: "cc-csc" })).toBe(true);
+  expect(isSecretField({ autocomplete: "section-gift billing cc-number" })).toBe(true);
+  expect(isSecretField({ inputType: "password" })).toBe(true);
+  expect(isSecretField({ inputType: "text", autocomplete: "name" })).toBe(false);
 });

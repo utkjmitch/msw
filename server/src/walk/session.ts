@@ -11,7 +11,7 @@ import { checkAct, whartonNos, type Rating, type Wharton } from "./rules.js";
 import { deadParrot } from "./parrot.js";
 import { installGuard, transactAllowed, type Blocked } from "../browser/guard.js";
 import { perceive, optionLine, type Perception, type Option } from "../browser/perceive.js";
-import { maskText } from "../browser/mask.js";
+import { maskText, isSecretField } from "../browser/mask.js";
 import { contextOptions, setupConditions, applyStepConditions } from "../browser/conditions.js";
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
 import { reproduce } from "./replay.js";
@@ -94,7 +94,7 @@ export class WalkSession {
     if (opt.inputType === "password") return this.refuse("Walkers never type passwords; this journey needs a saved login", a.option);
     if ((a.how === "double-tap" || a.how === "new-tab") && !this.moves.includes(a.how)) return this.refuse("that move is not part of this walk", a.option);
     const how = a.how ?? "tap";
-    const stored = a.text === undefined ? undefined : this.run.mask_personal_data ? maskText(a.text) : a.text;
+    const stored = a.text === undefined ? undefined : isSecretField(opt) ? "[masked]" : this.run.mask_personal_data ? maskText(a.text) : a.text;
     const ev = this.log.append("act", { option: a.option, label: optionLine(opt), how, text: stored, ratings: a.ratings, wharton }, last!.state);
     this.acts.push({ label: opt.name, role: opt.role, how, text: a.text, event: ev.seq });
     this.steps += 1; this.budget.spendStep(); this.budget.charge("wharton-no", whartonNos(wharton));

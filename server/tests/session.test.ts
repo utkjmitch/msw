@@ -149,3 +149,15 @@ test("a blocked background write is logged but the Walker is not told it left th
     expect(readEvents(q.dir).find(e => e.kind === "blocked")?.data.why).toBe("background-write");
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("values typed into payment fields are masked in events, even with personal-data masking off", async () => {
+  const f = setup(s.url + "pay.html"); f.run.mask_personal_data = false; const w = new WalkSession(f.run, true, false);
+  try {
+    let r = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    for (const [field, value] of [["Expiry", "12/34"], ["Security code", "123"], ["Card number", "4242424242424242"]]) {
+      r = await w.act({ option: n(r, field), text: value, ratings: R(n(r, field), n(r, "Pay")), wharton: W }) as LookResult;
+    }
+    const q = await w.quit("done");
+    const typed = readEvents(q.dir).filter(e => e.kind === "act").map(e => e.data.text);
+    expect(typed).toEqual(["[masked]", "[masked]", "[masked]"]);
+  } finally { await w.quit("done").catch(() => {}); }
+});
