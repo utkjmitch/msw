@@ -366,3 +366,19 @@ test("a run-away quit that cannot write still closes the browser and frees the s
     expect((await w.quit("done")).verified).toBe(true);
   } finally { await w.quit("done").catch(() => {}); }
 }, 120_000);
+test("payment fields known only by name or data-payment are masked when typed and when a submit is blocked", async () => {
+  const f = setup(s.url); f.run.mask_personal_data = false; const w = new WalkSession(f.run, true, false);
+  try {
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    await w["page"]!.setContent('<form method="post" action="/pay"><label>CVV<input name="cvv"></label><label>Long number<input name="cardNumber"></label>'
+      + '<label>Code<input data-payment></label><button type="submit">Pay</button></form>');
+    let r = await w.look();
+    for (const [field, value] of [["CVV", "815"], ["Long number", "4242424242424242"], ["Code", "917"]]) {
+      r = await w.act({ option: n(r, field), text: value, ratings: R(n(r, field), n(r, "Pay")), wharton: W }) as LookResult;
+    }
+    await w.act({ option: n(r, "Pay"), ratings: R(n(r, "Pay"), n(r, "CVV")), wharton: W });
+    const q = await w.quit("done"); const events = readEvents(q.dir);
+    expect(events.filter(e => e.kind === "act" && e.data.text !== undefined).map(e => e.data.text)).toEqual(["[masked]", "[masked]", "[masked]"]);
+    expect(events.find(e => e.kind === "blocked").data.fields.map((x: { value: string }) => x.value)).toEqual(["[masked]", "[masked]", "[masked]"]);
+  } finally { await w.quit("done").catch(() => {}); }
+}, 90_000);

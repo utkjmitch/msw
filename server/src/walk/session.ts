@@ -11,7 +11,7 @@ import { checkAct, whartonNos, type Rating, type Wharton } from "./rules.js";
 import { deadParrot } from "./parrot.js";
 import { installGuard, transactAllowed, adminAllowed, type Blocked } from "../browser/guard.js";
 import { perceive, optionLine, type Perception, type Option } from "../browser/perceive.js";
-import { maskText, maskDeep, isSecretField } from "../browser/mask.js";
+import { maskText, maskDeep, isSecretField, PAYMENT_SELECTOR } from "../browser/mask.js";
 import { contextOptions, setupConditions, applyStepConditions, emulateNetwork } from "../browser/conditions.js";
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
 import { reproduce } from "./replay.js";
@@ -321,7 +321,7 @@ export class WalkSession {
     const touch = VIEWPORTS[this.viewport].touch;
     const press = () => (touch ? h.tap({ timeout: 5_000 }) : h.click({ timeout: 5_000 }));
     // Touch taps do not wait for navigation. Register the wait before pressing.
-    const { target, fields } = await h.evaluate((el: Element) => {
+    const { target, fields } = await h.evaluate((el: Element, paymentSelector: string) => {
       const link = el.closest<HTMLAnchorElement>("a[href]");
       const control = el as HTMLButtonElement | HTMLInputElement;
       const form = ["BUTTON", "INPUT"].includes(el.tagName) && control.type === "submit"
@@ -330,15 +330,15 @@ export class WalkSession {
         const f = e as HTMLInputElement; const r = f.getBoundingClientRect();
         if (!("value" in f) || ["hidden", "submit", "button", "reset", "image"].includes(f.type) || !r.width || !r.height) return [];
         return [{ label: (f.labels?.[0]?.textContent || f.getAttribute("aria-label") || f.name || "").replace(/\s+/g, " ").trim(),
-          type: f.type, autocomplete: (f.getAttribute("autocomplete") ?? "").toLowerCase(),
+          type: f.type, autocomplete: (f.getAttribute("autocomplete") ?? "").toLowerCase(), payment: f.matches(paymentSelector),
           value: ["checkbox", "radio"].includes(f.type) ? String(f.checked) : f.value }];
       }) : null;
       if (!link && !form) return { target: null, fields };
       return { target: link?.target || control.getAttribute("formtarget") || form?.target || "_self", fields };
-    });
+    }, PAYMENT_SELECTOR);
     // Values are always masked here: payment and password fields by type, the rest for personal data.
     this.submitting = fields?.map(f => ({ label: maskText(f.label), type: f.type,
-      value: f.value && isSecretField({ inputType: f.type, autocomplete: f.autocomplete }) ? "[masked]" : maskText(f.value) }));
+      value: f.value && isSecretField({ inputType: f.type, autocomplete: f.autocomplete, payment: f.payment }) ? "[masked]" : maskText(f.value) }));
     const navigation = target === "_blank"
       ? page.waitForEvent("popup", { timeout: 5_000 }).then(async p => {
         await this.adopt(p); await p.waitForLoadState("domcontentloaded");

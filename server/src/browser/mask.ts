@@ -43,9 +43,11 @@ export async function maskPage(page: Page): Promise<() => Promise<void>> {
     finally { await changes.dispose(); }
   };
 }
-// Payment fields are known by type: an autocomplete token starting cc-, which may follow section or billing tokens.
+// Payment fields are known by type: an autocomplete token starting cc-, which may follow section or billing tokens,
+// a data-payment attribute, or a card, CVV or CVC field name.
+export const PAYMENT_SELECTOR = '[autocomplete*="cc-" i], [data-payment], input[name*="card" i], input[name="cvv" i], input[name="cvc" i]';
 export const maskLocators = (page: Page): Locator[] =>
-  [page.locator("input[type=password]"), page.locator('[autocomplete*="cc-"]')];
+  [page.locator("input[type=password]"), page.locator(PAYMENT_SELECTOR)];
 /** Password and payment fields. Values typed into them are always masked, whatever their shape. */
-export const isSecretField = (o: { inputType?: string; autocomplete?: string }): boolean =>
-  o.inputType === "password" || /(^|\s)cc-/.test(o.autocomplete ?? "");
+export const isSecretField = (o: { inputType?: string; autocomplete?: string; payment?: boolean }): boolean =>
+  o.inputType === "password" || o.payment === true || /(^|\s)cc-/.test(o.autocomplete ?? "");
