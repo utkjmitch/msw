@@ -1,6 +1,7 @@
 import { test, expect, beforeAll, afterAll, afterEach } from "vitest";
 import { rmSync, existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { createHash } from "node:crypto";
 import { WalkSession, type LookResult } from "../src/walk/session.js";
 import { serve } from "./helpers/serve.js";
 import { walkFiles, R, W, n } from "./helpers/walkfiles.js";
@@ -195,5 +196,26 @@ test("personal data is masked in addresses, instrument text and finding text", a
       expect(text).not.toMatch(/pat(@|%40)example\.org/);
     }
     expect(readFileSync(join(q.dir, "instrument.jsonl"), "utf8")).toContain("[masked]");
+  } finally { await w.quit("done").catch(() => {}); }
+});
+test("each walk writes a manifest of its inputs, versions and times", async () => {
+  const f = setup(s.url); const w = new WalkSession(f.run, true, false);
+  try {
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const dir = w["dir"] as string;
+    const started = JSON.parse(readFileSync(join(dir, "manifest.json"), "utf8"));
+    const sha = (p: string) => createHash("sha256").update(readFileSync(p)).digest("hex");
+    expect(started).toMatchObject({
+      run: { id: "t", environment: { name: "fixture", kind: "test" }, mask_personal_data: true },
+      inputs: { walker: { path: f.walker, sha256: sha(f.walker) }, journey: { path: f.journey, sha256: sha(f.journey) }, viewport: "desktop", locale: "en-US" },
+      versions: { playwright: "1.63.0", node: process.version },
+      times: { ended: null },
+    });
+    expect(started.versions.chromium).toMatch(/^\d+\./); expect(started.versions.msw_server).toMatch(/^\d+\.\d+\.\d+/);
+    expect(Date.parse(started.times.started)).not.toBeNaN();
+    await w.quit("done");
+    const ended = JSON.parse(readFileSync(join(dir, "manifest.json"), "utf8"));
+    expect(Date.parse(ended.times.ended)).toBeGreaterThanOrEqual(Date.parse(ended.times.started));
+    expect(ended.outcome).toEqual({ reason: "done", ended: null });
   } finally { await w.quit("done").catch(() => {}); }
 });

@@ -129,7 +129,8 @@ One folder holds one walk. If the walk folder already holds an `events.jsonl`, `
 
 | File | What it holds |
 |---|---|
-| `events.jsonl` | The signed event log: `start`, `look`, `act`, `refused`, `note`, `quit`, `blocked`, `instrument`, `condition` |
+| `manifest.json` | The walk's inputs (the run file's settings, the Walker and journey paths with their SHA-256, viewport, locale), the versions it ran on (this server, Node, Playwright, Chromium, axe-core), its start and end times, and how it ended |
+| `events.jsonl` | The signed event log: `start`, `look`, `act`, `refused`, `note`, `quit`, `blocked`, `instrument`, `condition`. A blocked request's `why` is `would-submit`, `left-site` or `background-write` |
 | `screens/<event>.png` | One screenshot per look, named by its event number |
 | `instrument.jsonl` | Instrument records, each with its step and event number |
 | `findings.jsonl` | Findings. Walker findings are written the moment they are noted; the final file at `quit` adds instrument findings and reproduction results |
@@ -148,7 +149,7 @@ One folder holds one walk. If the walk folder already holds an `events.jsonl`, `
 | `steps_used` | Accepted acts |
 | `patience_charges` | Each patience charge, with its reason |
 
-Preserve the original inputs separately: this implementation does not yet write a run manifest.
+The manifest is per walk, in the walk folder. Spec 4.4 names a run-level `run.json`; one server process serves one walk, so the run-level file is left to the later reports work. The manifest holds hashes of the Walker and journey files, not copies: keep the files themselves with the run.
 
 Spec section 4.4 also names `run.json`, `walks/<walker>-<journey>.md`, `guide.md` and `report.html`. Plan A's session does not produce those files. The Walker's narration and the guide come from the skills. The report comes from `msw report`. Both are later plans.
 

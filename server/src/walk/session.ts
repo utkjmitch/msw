@@ -15,6 +15,7 @@ import { maskText, maskDeep, isSecretField } from "../browser/mask.js";
 import { contextOptions, setupConditions, applyStepConditions } from "../browser/conditions.js";
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
 import { reproduce } from "./replay.js";
+import { versions, fileInput, writeManifest, type Manifest } from "./manifest.js";
 
 export interface LookResult { png: Buffer; text: string; url: string; options: string[]; stepsLeft: number; patienceLeft: number; notes: string[]; ended?: string }
 export interface ActArgs { option: number; text?: string; how?: "tap" | "double-tap" | "new-tab"; ratings?: Rating[]; wharton?: Wharton }
@@ -30,7 +31,7 @@ export class WalkSession {
   private browser?: Browser; private context?: BrowserContext; private page?: Page; private pages: Page[] = [];
   private args!: StartArgs; private walker!: Walker; private journey!: Journey; private viewport!: ViewportName; private locale!: string;
   private cond: Conditions = {}; private moves: Move[] = [];
-  private log!: EventLog; private budget!: Budget; private dir!: string; private steps = 0;
+  private log!: EventLog; private budget!: Budget; private dir!: string; private steps = 0; private manifest?: Manifest;
   private last: (Perception & { seq: number }) | null = null;
   private seen = new Set<string>(); private inspected = new Set<string>(); private pending: string[] = [];
   private instrument: (InstrumentRecord & { step: number; event: number })[] = [];
@@ -59,6 +60,9 @@ export class WalkSession {
     this.budget = new Budget(this.journey.step_budget, this.walker.patience);
     this.browser = await chromium.launch({ headless: this.headless });
     try {
+      this.manifest = { run: this.run, inputs: { walker: fileInput(a.walker), journey: fileInput(a.journey), viewport: this.viewport, locale: this.locale },
+        versions: versions(this.browser), times: { started: new Date().toISOString(), ended: null }, outcome: null };
+      writeManifest(join(this.dir, "manifest.json"), this.manifest);
       this.context = await this.browser.newContext(contextOptions(this.viewport, this.locale, this.cond, this.journey.storage_state));
       await this.context.addInitScript(VITALS_INIT);
       await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], payments: this.journey.payment_origins, onBlocked: b => this.onBlocked(b) });
@@ -143,6 +147,8 @@ export class WalkSession {
     writeFileSync(join(this.dir, "findings.jsonl"), this.findings.map(f => JSON.stringify(f)).join("\n") + (this.findings.length ? "\n" : ""));
     writeFileSync(join(this.dir, "seal.json"), JSON.stringify({ events: this.log.all().length, head: this.log.all().at(-1)?.hmac, verified,
       alive: parrot.alive, failures: parrot.failures, steps_used: this.steps, patience_charges: this.budget.charges }, null, 2) + "\n");
+    if (this.manifest) writeManifest(join(this.dir, "manifest.json"), { ...this.manifest, times: { ...this.manifest.times, ended: new Date().toISOString() },
+      outcome: { reason, ended: this.ended ?? null } });
     return { dir: this.dir, alive: parrot.alive, failures: parrot.failures, findings: this.findings.length, verified };
   }
 
