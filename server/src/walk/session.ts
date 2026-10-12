@@ -224,7 +224,11 @@ export class WalkSession {
   private async inspect(state: string) {
     if (this.inspected.has(state)) return;
     this.inspected.add(state);
-    await inspectPage(this.page!, r => this.record(r, state)).catch(() => {});
+    // One retry. A failure is recorded, never swallowed.
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try { await inspectPage(this.page!, r => this.record(r, state)); return; }
+      catch (e) { this.record({ type: "inspect-error", url: this.page!.url(), detail: { error: String((e as Error).message).split("\n")[0], attempt } }, state); }
+    }
   }
   private async arrive(prevState?: string): Promise<LookResult> {
     await this.settle();
