@@ -97,12 +97,12 @@ A journey's `silly` block names a category and may add `conditions` and `moves`.
 
 | Condition | How it is applied |
 |---|---|
-| `network: slow-3g` | Chromium network emulation: 400 ms latency, 64 kB/s each way. It applies to every page in the walk, including new tabs and pop-ups. A pop-up opened by the site gets it once Playwright sees the pop-up, so its very first request may already be under way. |
+| `network: slow-3g` | Chromium network emulation: 400 ms latency, 64 kB/s each way. It applies to every page in the walk, including new tabs and pop-ups. A pop-up opened by the site gets it once Playwright sees the pop-up, so its very first request may already be under way. `probes/slow-network.ts` shows it: the first response of a script-opened pop-up arrives with no added latency. |
 | `network: { offline_at_step: N, seconds: S }` | The browser goes offline after act N and comes back after S seconds. If the walk ends first (its budget runs out, its browser context closes, or it quits), the restore is cancelled. |
 | `text_scale: P` | **Approximation.** The root font size is set to P%. This matches browser text zoom only for sites sized in `rem` or `em`. The start event records this note. |
 | `color_scheme: dark` | `prefers-color-scheme: dark`. |
 | `reduced_motion: true` | `prefers-reduced-motion: reduce`. |
-| `cookies: declined` | Scripts cannot read or set cookies, and all cookies are cleared after every act. Cookies a server sets last until the next act, so HTTP cookie blocking is incomplete. |
+| `cookies: declined` | Scripts cannot read or set cookies, and all cookies are cleared after every act. Cookies a server sets last until the next act, so HTTP cookie blocking is incomplete. Cookies saved in a storage state are not cleared at the start either. `probes/declined-cookies.ts` checks both and fails today. |
 | `rotate_at_step: N` | Width and height swap after act N. |
 | `expire_session_at_step: N` | After act N, cookies whose domains cover the journey hosts are cleared, on any path, including cookies shared from a parent domain. Cookies for other sites stay. |
 | `translate: true` | **Not emulated.** The condition is recorded in the start event and nothing else happens. |
@@ -168,3 +168,5 @@ Options are collected from visible DOM controls and accessible-name attributes, 
 The real-agent manual walk in Task 12 is reserved for the host and was not performed here. No manual agent quit text is claimed.
 
 Done when: `npm run typecheck` and `npm test` exit zero and the host records the manual walk. Both automated commands pass; the host manual walk remains pending. See the build report.
+
+The two scripts in `probes/` are known failing checks for the open gaps above. They are not part of `npm test`. Run them after `npm run build` with `npx tsx probes/<name>.ts`; each exits non-zero until its gap is closed.
