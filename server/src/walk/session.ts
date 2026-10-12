@@ -142,6 +142,8 @@ export class WalkSession {
   private adopt(p: Page) {
     if (this.pages.includes(p)) return;
     this.pages.push(p); this.page = p; attachInquisition(p, r => this.record(r));
+    // a page that closes itself is never the current tab
+    p.on("close", () => { this.pages = this.pages.filter(x => x !== p); if (this.page === p) this.page = this.pages.at(-1); });
   }
   private record(r: InstrumentRecord, state?: string) {
     if (!this.log) return;
@@ -166,7 +168,15 @@ export class WalkSession {
     return Date.now() - t0;
   }
   private async snap(): Promise<Perception & { seq: number }> {
-    const p = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length });
+    let p: Perception;
+    for (let tries = 1; ; tries++) {
+      try { p = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length }); break; }
+      catch (e) {
+        // a click can start a navigation after settle() returned; look again once the new page has loaded
+        if (tries >= 3 || !/Execution context was destroyed|navigation/i.test(String(e))) throw e;
+        await this.settle();
+      }
+    }
     const e = this.log.append("look", { url: p.url, options: p.options.map(optionLine) }, p.state);
     writeFileSync(join(this.dir, "screens", `${e.seq}.png`), p.png);
     this.last = { ...p, seq: e.seq }; return this.last;
