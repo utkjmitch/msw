@@ -69,7 +69,7 @@ test("a journey's payment origin takes writes in transact mode only", async () =
 });
 test("payment origins need payment_test_mode in the run file", () => {
   const j = { mode: "transact", origins: [], start_url: "https://dev.a.test/", payment_origins: ["https://pay.test/"] } as any;
-  const run = { environment: { kind: "test" }, allowed_for_transact: ["https://dev.a.test/"] };
+  const run = { environment: { kind: "test" }, allowed_for_transact: ["https://dev.a.test/", "https://pay.test/"] };
   expect(transactAllowed({ ...run, payment_test_mode: false } as any, j)).toEqual({ ok: false, reason: "payment origins need payment_test_mode: true in the run file" });
   expect(transactAllowed({ ...run, payment_test_mode: true } as any, j).ok).toBe(true);
 });
@@ -89,4 +89,10 @@ test("transact refuses redirects that preserve a write before the next origin re
     await page.evaluate(() => fetch("/redirect", { method: "POST", body: "synthetic", mode: "no-cors" }).catch(() => {}));
     expect(writes).toBe(0); expect(blocked.some(b => b.why === "background-write" && b.redirect_status === 307)).toBe(true);
   } finally { await context.close(); await new Promise<void>(resolve => server.close(() => resolve())); }
+});
+test("payment origins must also be approved in allowed_for_transact", () => {
+  const j = { mode: "transact", origins: [], start_url: "https://dev.a.test/", payment_origins: ["https://pay.test/"] } as any;
+  const run = { environment: { kind: "test" }, payment_test_mode: true } as any;
+  expect(transactAllowed({ ...run, allowed_for_transact: ["https://dev.a.test/"] }, j)).toEqual({ ok: false, reason: "origin https://pay.test is not in allowed_for_transact" });
+  expect(transactAllowed({ ...run, allowed_for_transact: ["https://dev.a.test/", "https://pay.test/"] }, j).ok).toBe(true);
 });

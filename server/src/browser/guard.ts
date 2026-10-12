@@ -45,7 +45,8 @@ export function transactAllowed(run: RunConfig, journey: Journey): { ok: true } 
   if (journey.mode !== "transact") return { ok: true };
   if (run.environment.kind !== "test") return { ok: false, reason: "transact walks need a test environment" };
   const listed = new Set(run.allowed_for_transact.map(originOf));
-  for (const o of [journey.start_url, ...journey.origins])
+  // A payment provider takes real writes, so the run file must approve it like any other origin.
+  for (const o of [journey.start_url, ...journey.origins, ...(journey.payment_origins ?? [])])
     if (!listed.has(originOf(o))) return { ok: false, reason: `origin ${originOf(o)} is not in allowed_for_transact` };
   // Spec 5.6: a payment provider is allowed only in test mode, and the run file states that.
   if ((journey.payment_origins ?? []).length && !run.payment_test_mode) return { ok: false, reason: "payment origins need payment_test_mode: true in the run file" };
