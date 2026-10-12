@@ -140,6 +140,18 @@ test("instrument and blocked records carry the state of the page they came from"
     expect(news.has(beacon.state)).toBe(true);
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("quitting before a new page look keeps its records without a state and fails health", async () => {
+  const f = setup(s.url); const w = new WalkSession(f.run, true, false);
+  try {
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    await (w as unknown as { page: import("playwright").Page }).page.goto(s.url + "about.html");
+    const q = await w.quit("done");
+    const errors = readEvents(q.dir).filter(e => e.kind === "instrument" && e.data.type === "console");
+    expect(errors.length).toBeGreaterThan(0); expect(errors.every(e => e.state === undefined)).toBe(true);
+    expect(q.alive).toBe(false);
+    expect(q.failures.some(x => x.includes("no observed page state"))).toBe(true);
+  } finally { await w.quit("done").catch(() => {}); }
+});
 test("a blocked background write is logged but the Walker is not told it left the site", async () => {
   const f = setup(s.url + "links.html"); const w = new WalkSession(f.run, true, false);
   try {

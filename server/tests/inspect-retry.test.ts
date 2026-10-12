@@ -27,7 +27,7 @@ const walk = async (failures: number) => {
   try {
     await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
     const q = await w.quit("done");
-    return readFileSync(join(q.dir, "events.jsonl"), "utf8").trim().split("\n").map(l => JSON.parse(l));
+    return Object.assign(readFileSync(join(q.dir, "events.jsonl"), "utf8").trim().split("\n").map(l => JSON.parse(l)), { alive: q.alive });
   } finally { await w.quit("done").catch(() => {}); }
 };
 
@@ -38,9 +38,12 @@ test("a failed axe run is recorded and retried once", async () => {
   expect(inst.filter(d => d.type === "inspect-error")).toEqual([expect.objectContaining({ detail: expect.objectContaining({ error: "axe broke" }) })]);
   expect(inst.some(d => d.type === "axe")).toBe(true);
   expect(control.calls).toBe(2);
+  expect(events.alive).toBe(true);
 });
 test("an axe run that fails twice is recorded twice and not tried again", async () => {
   const events = await walk(99);
   expect(events.filter(e => e.kind === "instrument" && e.data.type === "inspect-error")).toHaveLength(2);
   expect(control.calls).toBe(2);
+  // A page the instruments never checked cannot pass the run's health check.
+  expect(events.alive).toBe(false);
 });
