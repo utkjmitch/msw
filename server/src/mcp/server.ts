@@ -56,7 +56,8 @@ export function createServer(run: RunConfig, headless = true): McpServer {
     description: "End the walk: done, run-away (say which trigger) or stuck.",
     inputSchema: { reason: z.enum(["done", "run-away", "stuck"]), detail: z.string().optional() },
   }, async a => guard(async s => {
-    const q = await s.quit(a.reason, a.detail); session = null;
+    // A quit that throws has still closed the browser. Never leave the server locked.
+    const q = await s.quit(a.reason, a.detail).finally(() => { session = null; });
     return say(`Walk saved in ${q.dir}. Findings: ${q.findings}. verified: ${q.verified}. alive: ${q.alive}${q.failures.length ? ` (${q.failures.join("; ")})` : ""}.`);
   }));
   return server;
