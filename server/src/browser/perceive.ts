@@ -7,7 +7,7 @@ export type { Option };
 export interface Perception { png: Buffer; text: string; url: string; options: Option[]; state: string }
 export const optionLine = (o: Option) => (o.kind === "move" ? `${o.n}. ${o.name}` : `${o.n}. [${o.role}] ${o.name}`);
 export async function perceive(page: Page, o: { mask: boolean; moves: Move[]; tabCount: number }): Promise<Perception> {
-  if (o.mask) await maskPage(page);
+  // Names are read from the page as it is, so each control keeps its own identity. Masking is for display only.
   const options = await collectOptions(page, o.moves, o.tabCount);
   // Mask the full name before cutting it, so a cut never splits an address out of reach of the mask.
   if (o.mask) for (const option of options) if (option.kind === "element" && !option.unlabeled) option.name = maskText(option.key).slice(0, NAME_DISPLAY_MAX);
@@ -24,10 +24,14 @@ export async function perceive(page: Page, o: { mask: boolean; moves: Move[]; ta
     return out.join("\n");
   });
   if (o.mask) text = maskText(text);
-  const png = await page.screenshot({ mask: maskLocators(page) });
+  // The page is masked only for the screenshot, then put back, so the next look reads the same names.
+  const restore = o.mask ? await maskPage(page) : undefined;
+  let png: Buffer;
+  try { png = await page.screenshot({ mask: maskLocators(page) }); }
+  finally { await restore?.(); }
   const url = page.url();
-  // The state uses full names (masked when masking is on), so two long names that differ late are still two pages.
-  const full = (x: Option) => (x.kind === "element" && o.mask ? maskText(x.key) : x.key);
-  const state = createHash("sha256").update([url, text, options.map(x => `${x.role}:${full(x)}`).join("|")].join("\n")).digest("hex");
+  // The state hashes full, unmasked names, so two controls that differ only in masked text are still two pages.
+  // Only the hash is written out, never the names.
+  const state = createHash("sha256").update([url, text, options.map(x => `${x.role}:${x.key}`).join("|")].join("\n")).digest("hex");
   return { png, text, url, options, state };
 }

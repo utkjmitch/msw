@@ -19,17 +19,24 @@ export function maskDeep<T>(v: T): T {
   return v;
 }
 import type { Page, Locator } from "playwright";
-export async function maskPage(page: Page): Promise<void> {
-  await page.evaluate(([email, phone, street]) => {
+/** Masks personal data in the page's text for a screenshot. Call the returned function to put the text back. */
+export async function maskPage(page: Page): Promise<() => Promise<void>> {
+  const changes = await page.evaluateHandle(([email, phone, street]) => {
+    const changed: [Node, string, string][] = [];
     const res = [new RegExp(email, "gu"), new RegExp(street, "gu")]; const ph = new RegExp(phone, "g");
     const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n: Node | null;
     while ((n = w.nextNode())) {
       let t = n.textContent ?? ""; const before = t;
       for (const re of res) t = t.replace(re, "[masked]");
       t = t.replace(ph, m => (m.replace(/\D/g, "").length >= 7 ? "[masked]" : m));
-      if (t !== before) n.textContent = t;
+      if (t !== before) { changed.push([n, before, t]); n.textContent = t; }
     }
+    return changed;
   }, [EMAIL.source, PHONE.source, STREET.source]);
+  return async () => {
+    try { await changes.evaluate(items => { for (const [node, before, masked] of items) if (node.textContent === masked) node.textContent = before; }); }
+    finally { await changes.dispose(); }
+  };
 }
 // Payment fields are known by type: an autocomplete token starting cc-, which may follow section or billing tokens.
 export const maskLocators = (page: Page): Locator[] =>
