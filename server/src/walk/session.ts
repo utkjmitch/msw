@@ -22,6 +22,8 @@ export interface NoteArgs { kind: Finding["kind"]; severity: number; title: stri
 export interface QuitResult { dir: string; alive: boolean; failures: string[]; findings: number; verified: boolean }
 export interface ReplayStep { label: string; role: string; how: "tap" | "double-tap" | "new-tab"; text?: string; event: number }
 type StartArgs = { walker: string; journey: string; viewport: ViewportName; locale?: string };
+/** Spec 5.4: a page whose load event takes longer than this costs one patience. */
+const SLOW_PAGE_MS = 3_000;
 
 export class WalkSession {
   private browser?: Browser; private context?: BrowserContext; private page?: Page; private pages: Page[] = [];
@@ -165,11 +167,20 @@ export class WalkSession {
     this.log.append("refused", { reason, option }, this.last?.state);
     return { refused: reason };
   }
-  private async settle(): Promise<number> {
-    const t0 = Date.now();
+  private async settle(): Promise<void> {
     await this.page!.waitForLoadState("load", { timeout: 10_000 }).catch(() => {});
+    // Network idle steadies the screenshot. It never counts toward the slow-page charge.
     await this.page!.waitForLoadState("networkidle", { timeout: 3_000 }).catch(() => {});
-    return Date.now() - t0;
+  }
+  /** The current document's load time, counted once per document. 0 when already counted; Infinity if it never loaded. */
+  private async loadTime(): Promise<number> {
+    return this.page!.evaluate(() => {
+      const w = window as unknown as { __mswLoadCounted?: boolean };
+      if (w.__mswLoadCounted) return 0;
+      w.__mswLoadCounted = true;
+      const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+      return nav && nav.loadEventEnd > 0 ? nav.loadEventEnd - nav.startTime : Infinity;
+    }).catch(() => 0);
   }
   private async snap(): Promise<Perception & { seq: number }> {
     let p: Perception;
@@ -191,7 +202,8 @@ export class WalkSession {
     await inspectPage(this.page!, r => this.record(r, state)).catch(() => {});
   }
   private async arrive(prevState?: string): Promise<LookResult> {
-    if (await this.settle() > 3000) this.budget.charge("slow-page");
+    await this.settle();
+    if (await this.loadTime() > SLOW_PAGE_MS) this.budget.charge("slow-page");
     await this.snap(); await this.page!.waitForTimeout(1000); const p = await this.snap();
     if (prevState !== undefined) {
       if (p.state === prevState) this.budget.charge("no-change");

@@ -100,3 +100,21 @@ test("a second walk into a folder that already holds events is refused, and the 
     await expect(again.quit("done")).rejects.toThrow("no walk in progress");
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("a fast page that keeps polling costs no patience", async () => {
+  const f = setup(s.url + "poll.html"); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    expect(r0.patienceLeft).toBe(10);
+    const r1 = await w.act({ option: n(r0, "About us"), ratings: R(n(r0, "About us"), n(r0, "scroll down")), wharton: W }) as LookResult;
+    expect(r1).toMatchObject({ patienceLeft: 10 });
+    await w.quit("done");
+  } finally { await w.quit("done").catch(() => {}); }
+});
+test("a page whose load event takes over 3 seconds costs one patience", async () => {
+  const f = setup(s.url + "slow.html"); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    expect(r0.patienceLeft).toBe(9);
+    await w.quit("done");
+  } finally { await w.quit("done").catch(() => {}); }
+});

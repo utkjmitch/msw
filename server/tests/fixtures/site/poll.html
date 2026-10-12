@@ -1,0 +1,4 @@
+<!doctype html><html lang="en"><head><title>Live updates</title></head><body>
+<h1>Live updates</h1><p>This page asks the server for news every 200 ms.</p><a href="/about.html">About us</a>
+<script>setInterval(() => fetch("/blank.html").catch(() => {}), 200);</script>
+</body></html>

@@ -6,7 +6,10 @@ const ROOT = join(import.meta.dirname, "../fixtures/site");
 export async function serve() {
   const posts: string[] = [];
   const srv = createServer(async (req, res) => {
-    const path = (req.url ?? "/").split("?")[0];
+    let path = (req.url ?? "/").split("?")[0];
+    // /delay/<ms>/<file> serves <file> after <ms> milliseconds.
+    const delay = /^\/delay\/(\d+)(\/.*)$/.exec(path);
+    if (delay) { await new Promise(r => setTimeout(r, Number(delay[1]))); path = delay[2]; }
     if (req.method !== "GET" && req.method !== "HEAD") { posts.push(path); res.writeHead(303, { location: "/thanks.html" }).end(); return; }
     try {
       const body = await readFile(join(ROOT, path === "/" ? "index.html" : path));
