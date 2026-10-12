@@ -73,3 +73,20 @@ test("payment origins need payment_test_mode in the run file", () => {
   expect(transactAllowed({ ...run, payment_test_mode: false } as any, j)).toEqual({ ok: false, reason: "payment origins need payment_test_mode: true in the run file" });
   expect(transactAllowed({ ...run, payment_test_mode: true } as any, j).ok).toBe(true);
 });
+test("transact refuses redirects that preserve a write before the next origin receives it", async () => {
+  const { createServer } = await import("node:http");
+  let writes = 0;
+  const server = createServer((req, res) => {
+    if (req.url === "/redirect") { res.writeHead(307, { location: `http://localhost:${(server.address() as any).port}/target` }).end(); return; }
+    if (req.method === "POST") writes++;
+    res.end("Fixture");
+  });
+  await new Promise<void>(resolve => server.listen({ port: 0, host: "::", ipv6Only: false }, resolve));
+  const url = `http://127.0.0.1:${(server.address() as any).port}/`; const context = await browser.newContext(); const blocked: Blocked[] = [];
+  try {
+    await installGuard(context, { mode: "transact", origins: [url], onBlocked: b => blocked.push(b) });
+    const page = await context.newPage(); await page.goto(url);
+    await page.evaluate(() => fetch("/redirect", { method: "POST", body: "synthetic", mode: "no-cors" }).catch(() => {}));
+    expect(writes).toBe(0); expect(blocked.some(b => b.why === "background-write" && b.redirect_status === 307)).toBe(true);
+  } finally { await context.close(); await new Promise<void>(resolve => server.close(() => resolve())); }
+});
