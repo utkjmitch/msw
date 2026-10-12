@@ -125,7 +125,7 @@ Done when: the conditions test passes and the walk's condition records match the
 
 Each walk writes to `<out_dir>/walks/<walker>-<journey>-<viewport>-<locale>/`:
 
-One folder holds one walk. If the walk folder already holds an `events.jsonl`, `start_walk` refuses and names the folder. It never appends to or deletes old evidence. Use a fresh `out_dir` (or run file) to walk the same Walker, journey, viewport and locale again.
+One folder holds one walk. If the walk folder already holds an `events.jsonl`, `start_walk` refuses and names the folder. It never appends to or deletes old evidence. `start_walk` reserves the folder by creating `events.jsonl` exclusively before it launches the browser, so two starts at once cannot share a folder. If a start fails before it writes its first event, it removes the empty file it created, so the walk can be retried. Use a fresh `out_dir` (or run file) to walk the same Walker, journey, viewport and locale again.
 
 | File | What it holds |
 |---|---|

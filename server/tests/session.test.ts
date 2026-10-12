@@ -1,5 +1,5 @@
 import { test, expect, beforeAll, afterAll, afterEach } from "vitest";
-import { rmSync, existsSync, readFileSync } from "node:fs";
+import { rmSync, existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { WalkSession, type LookResult } from "../src/walk/session.js";
@@ -101,6 +101,26 @@ test("a second walk into a folder that already holds events is refused, and the 
     await expect(again.quit("done")).rejects.toThrow("no walk in progress");
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("two walks started at once into the same folder: one starts, the other is refused", async () => {
+  const f = setup(s.url); const w1 = new WalkSession(f.run, true, false); const w2 = new WalkSession(f.run, true, false);
+  try {
+    const both = await Promise.allSettled([w1, w2].map(w => w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" })));
+    expect(both.filter(r => r.status === "fulfilled")).toHaveLength(1);
+    expect(both.find(r => r.status === "rejected")).toMatchObject({ reason: expect.objectContaining({ message: expect.stringContaining("already holds a walk") }) });
+  } finally { await w1.quit("done").catch(() => {}); await w2.quit("done").catch(() => {}); }
+}, 120_000);
+test("a start that fails before its first event does not lock the walk folder", async () => {
+  const f = setup(s.url); const w = new WalkSession(f.run, true, false);
+  const journey = readFileSync(f.journey, "utf8");
+  try {
+    // A saved login that does not exist makes the browser context fail after the folder is reserved.
+    writeFileSync(f.journey, journey + `storage_state: ${join(f.dir, "missing.json")}\n`);
+    await expect(w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" })).rejects.toThrow();
+    writeFileSync(f.journey, journey);
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    expect((await w.quit("done")).verified).toBe(true);
+  } finally { await w.quit("done").catch(() => {}); }
+}, 120_000);
 test("a fast page that keeps polling costs no patience", async () => {
   const f = setup(s.url + "poll.html"); const w = new WalkSession(f.run, true, false);
   try {

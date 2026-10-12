@@ -1,5 +1,5 @@
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
-import { mkdirSync, writeFileSync, appendFileSync, existsSync } from "node:fs";
+import { mkdirSync, writeFileSync, appendFileSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { loadWalker, loadJourney } from "../formats/load.js";
@@ -60,12 +60,18 @@ export class WalkSession {
     this.moves = this.journey.silly?.moves ?? []; this.cond = this.journey.silly?.conditions ?? {};
     this.dir = join(this.run.out_dir, "walks", `${this.walker.id}-${this.journey.id}-${this.viewport}-${this.locale}`);
     // One folder holds one walk. Never append to, or delete, another walk's evidence.
-    if (existsSync(join(this.dir, "events.jsonl"))) throw new Error(`the walk folder ${this.dir} already holds a walk; use a fresh out_dir`);
+    // Creating events.jsonl exclusively reserves the folder, so two starts at once cannot both pass.
     mkdirSync(join(this.dir, "screens"), { recursive: true });
-    this.log = new EventLog(join(this.dir, "events.jsonl"));
+    const events = join(this.dir, "events.jsonl");
+    try { writeFileSync(events, "", { flag: "wx" }); }
+    catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "EEXIST") throw new Error(`the walk folder ${this.dir} already holds a walk; use a fresh out_dir`);
+      throw e;
+    }
+    this.log = new EventLog(events);
     this.budget = new Budget(this.journey.step_budget, this.walker.patience);
-    this.browser = await chromium.launch({ headless: this.headless });
     try {
+      this.browser = await chromium.launch({ headless: this.headless });
       this.manifest = { run: this.run, inputs: { walker: fileInput(a.walker), journey: fileInput(a.journey), viewport: this.viewport, locale: this.locale },
         versions: versions(this.browser), times: { started: new Date().toISOString(), ended: null }, outcome: null };
       writeManifest(join(this.dir, "manifest.json"), this.manifest);
@@ -84,7 +90,9 @@ export class WalkSession {
       await page.goto(this.journey.start_url).catch(e => this.pending.push(`The page did not load: ${String(e.message).split("\n")[0]}`));
       return await this.arrive();
     } catch (error) {
-      await this.browser.close(); this.browser = undefined;
+      await this.browser?.close(); this.browser = undefined;
+      // The empty file this start reserved is not evidence. Release it so the walk can be retried.
+      if (!this.log.all().length) rmSync(events, { force: true });
       throw error;
     }
   }
