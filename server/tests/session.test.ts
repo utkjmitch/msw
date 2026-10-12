@@ -139,3 +139,13 @@ test("instrument and blocked records carry the state of the page they came from"
     expect(news.has(beacon.state)).toBe(true);
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("a blocked background write is logged but the Walker is not told it left the site", async () => {
+  const f = setup(s.url + "links.html"); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const r1 = await w.act({ option: n(r0, "News"), ratings: R(n(r0, "News"), n(r0, "About us")), wharton: W }) as LookResult;
+    expect(r1.notes.join(" ")).not.toContain("leads off this site");
+    const q = await w.quit("done");
+    expect(readEvents(q.dir).find(e => e.kind === "blocked")?.data.why).toBe("background-write");
+  } finally { await w.quit("done").catch(() => {}); }
+});

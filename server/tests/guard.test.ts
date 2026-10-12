@@ -42,3 +42,15 @@ test("transactAllowed needs a test environment and listed origins", () => {
   expect(transactAllowed({ environment: { kind: "test" }, allowed_for_transact: [] } as any, j).ok).toBe(false);
   expect(transactAllowed({ environment: { kind: "test" }, allowed_for_transact: ["https://dev.a.test/"] } as any, j).ok).toBe(true);
 });
+test("a background write to another origin is blocked as its own kind, not as leaving the site", async () => {
+  for (const mode of ["read-only", "transact"] as const) {
+    const ctx = await browser.newContext(); const blocked: Blocked[] = [];
+    try {
+      await installGuard(ctx, { mode, origins: [s.url], onBlocked: b => blocked.push(b) });
+      const p = await ctx.newPage(); await p.goto(s.url);
+      await p.evaluate(url => fetch(url, { method: "POST", mode: "no-cors", body: "x" }).catch(() => {}), s.otherOrigin + "/beacon");
+      expect(s.posts).not.toContain("/beacon");
+      expect(blocked).toEqual([expect.objectContaining({ why: "background-write", method: "POST" })]);
+    } finally { await ctx.close(); }
+  }
+});

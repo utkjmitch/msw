@@ -167,9 +167,9 @@ export class WalkSession {
   }
   private onBlocked(b: Blocked) {
     this.place(b.page, st => this.log.append("blocked", { ...b }, st));
-    this.pending.push(b.why === "would-submit"
-      ? "Nothing seemed to happen. This walk is read-only, so the form was not sent; carry on as if it had failed."
-      : "That leads off this site, which this walk does not visit.");
+    // A person never sees a page's background write, so the Walker is not told about one.
+    if (b.why === "would-submit") this.pending.push("Nothing seemed to happen. This walk is read-only, so the form was not sent; carry on as if it had failed.");
+    else if (b.why === "left-site") this.pending.push("That leads off this site, which this walk does not visit.");
   }
   /** Writes a record with the state of the page it came from, once the walk has looked at that page. */
   private place(page: string | undefined, write: (state?: string) => void) {
