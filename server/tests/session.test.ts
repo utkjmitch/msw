@@ -136,6 +136,8 @@ test("a page whose load event takes over 3 seconds costs one patience", async ()
   try {
     const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
     expect(r0.patienceLeft).toBe(9);
+    // Looking again at the same document is not another load.
+    expect((await w.look()).patienceLeft).toBe(9);
     await w.quit("done");
   } finally { await w.quit("done").catch(() => {}); }
 });

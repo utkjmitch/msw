@@ -64,6 +64,7 @@ test("an act without ratings or Wharton answers is refused and the refusal is lo
   const events = readFileSync(join(dir, "events.jsonl"), "utf8").trim().split("\n").map(l => JSON.parse(l));
   expect(events.filter(e => e.kind === "refused").map(e => e.data.reason))
     .toEqual(["rate at least 2 options", "answer the four Wharton questions"]);
+  expect(events.filter(e => e.kind === "act")).toHaveLength(0);
   expect(events.some(e => e.kind === "act")).toBe(false);
   await client.close();
 });
