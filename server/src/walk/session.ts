@@ -12,7 +12,7 @@ import { deadParrot } from "./parrot.js";
 import { installGuard, transactAllowed, adminAllowed, type Blocked } from "../browser/guard.js";
 import { perceive, optionLine, type Perception, type Option } from "../browser/perceive.js";
 import { maskText, maskDeep, isSecretField } from "../browser/mask.js";
-import { contextOptions, setupConditions, applyStepConditions } from "../browser/conditions.js";
+import { contextOptions, setupConditions, applyStepConditions, emulateNetwork } from "../browser/conditions.js";
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
 import { reproduce } from "./replay.js";
 import { versions, fileInput, writeManifest, type Manifest } from "./manifest.js";
@@ -73,8 +73,8 @@ export class WalkSession {
       await this.context.addInitScript(VITALS_INIT);
       await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], payments: this.journey.payment_origins, onBlocked: b => this.onBlocked(b) });
       // axe opens a temporary page without an opener during analysis.
-      this.context.on("page", async p => { if (await p.opener()) this.adopt(p); });
-      const page = await this.context.newPage(); this.adopt(page);
+      this.context.on("page", async p => { if (await p.opener()) await this.adopt(p); });
+      const page = await this.context.newPage(); await this.adopt(page);
       if (this.moves.includes("wait")) await page.clock.install();
       const notes = await setupConditions(this.context, page, this.cond);
       this.log.append("start", { walker: this.walker.id, journey: this.journey.id, viewport: this.viewport, locale: this.locale,
@@ -184,11 +184,12 @@ export class WalkSession {
     return !("refused" in r);
   }
 
-  private adopt(p: Page) {
+  private async adopt(p: Page): Promise<void> {
     if (this.pages.includes(p)) return;
     this.pages.push(p); this.page = p; attachInquisition(p, r => this.record(r));
     // a page that closes itself is never the current tab
     p.on("close", () => { this.pages = this.pages.filter(x => x !== p); if (this.page === p) this.page = this.pages.at(-1); });
+    await emulateNetwork(this.context!, p, this.cond).catch(() => {});
   }
   private record(r: InstrumentRecord, state?: string) {
     if (!this.log) return;
@@ -299,7 +300,7 @@ export class WalkSession {
     }
     if (a.how === "new-tab") {
       const href = await h.getAttribute("href"); if (!href) throw new Error("that cannot open in a new tab");
-      const tab = await this.context!.newPage(); this.adopt(tab);
+      const tab = await this.context!.newPage(); await this.adopt(tab);
       await tab.goto(new URL(href, page.url()).href); return;
     }
     const touch = VIEWPORTS[this.viewport].touch;
@@ -325,7 +326,7 @@ export class WalkSession {
       value: f.value && isSecretField({ inputType: f.type, autocomplete: f.autocomplete }) ? "[masked]" : maskText(f.value) }));
     const navigation = target === "_blank"
       ? page.waitForEvent("popup", { timeout: 5_000 }).then(async p => {
-        this.adopt(p); await p.waitForLoadState("domcontentloaded");
+        await this.adopt(p); await p.waitForLoadState("domcontentloaded");
       })
       : target ? page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 5_000 }) : null;
     // An aborted navigation is expected when the guard blocks a request.

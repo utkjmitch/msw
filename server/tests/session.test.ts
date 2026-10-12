@@ -279,3 +279,16 @@ test("wait never costs no-change patience", async () => {
     await w.quit("done");
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("slow-3g applies to a page opened in a new tab, not only the first page", async () => {
+  const f = setup(s.url, { moves: ["switch-tab"], conditions: "{ network: slow-3g }" }); const w = new WalkSession(f.run, true, false);
+  const fetchMs = () => (w as unknown as { page: import("playwright").Page }).page.evaluate(async () => {
+    const t = performance.now(); await fetch(`/guide.html?${Math.random()}`, { cache: "no-store" }); return performance.now() - t; });
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    expect(await fetchMs()).toBeGreaterThanOrEqual(350);
+    const r1 = await w.act({ option: n(r0, "Open the guide"), ratings: R(n(r0, "Open the guide"), 1), wharton: W }) as LookResult;
+    expect(r1.url).toContain("guide.html");
+    expect(await fetchMs()).toBeGreaterThanOrEqual(350);
+    await w.quit("done");
+  } finally { await w.quit("done").catch(() => {}); }
+}, 120_000);

@@ -7,12 +7,14 @@ export function contextOptions(vp: ViewportName, locale: string, c: Conditions, 
     extraHTTPHeaders: { "Accept-Language": locale }, colorScheme: c.color_scheme ?? "light",
     reducedMotion: c.reduced_motion ? "reduce" : "no-preference", ...(storageState ? { storageState } : {}) };
 }
+/** Spec 6.2: slow-3g is set per page, so every page the walk adopts must get it, including new tabs and pop-ups. */
+export async function emulateNetwork(context: BrowserContext, page: Page, c: Conditions): Promise<void> {
+  if (c.network !== "slow-3g") return;
+  const cdp = await context.newCDPSession(page); await cdp.send("Network.enable");
+  await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 400, downloadThroughput: 64_000, uploadThroughput: 64_000 });
+}
 export async function setupConditions(context: BrowserContext, page: Page, c: Conditions): Promise<string[]> {
   const notes: string[] = [];
-  if (c.network === "slow-3g") {
-    const cdp = await context.newCDPSession(page); await cdp.send("Network.enable");
-    await cdp.send("Network.emulateNetworkConditions", { offline: false, latency: 400, downloadThroughput: 64_000, uploadThroughput: 64_000 });
-  }
   if (c.text_scale) {
     await context.addInitScript(`document.addEventListener("DOMContentLoaded",()=>{document.documentElement.style.fontSize="${c.text_scale}%"})`);
     notes.push(`text scale ${c.text_scale}% is applied as a root font-size change; it matches browser text zoom only for sites sized in rem or em`);
