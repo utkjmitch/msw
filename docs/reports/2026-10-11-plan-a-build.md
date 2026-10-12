@@ -21,6 +21,20 @@ Compilation also passes: `npm run build` exits 0. The suite passed three runs in
 
 Done when: `cd server && npm run typecheck && npm test` exits zero and DONE.json validates. These checks pass. `bar: gap` records the unresolved review findings below.
 
+Done when: both required gates exit zero. Met. Compilation also passes.
+
+## How each lane started
+
+Both lanes read the goal and the plan, and the spec sections it names. Lane b also read design section 7. Neither lane read the other's clone, branch, transcript, or output. Neither pushed, opened a PR, or ran a browser download. Playwright and playwright-core stayed pinned to 1.63.0, with the preinstalled Chromium.
+
+Lane a built all twelve tasks in one run on Node 20.20.2.
+
+Lane b's first run stopped at Task 9 with failing session tests. A second session resumed the clean lane b branch at `9a767cc`. All twelve original task commits stayed intact. The earlier report and test logs supplied the prior failure evidence. The resume reused a local Node 22.23.3 runtime. Lane b's report says that session used generation 1. Its DONE.json records generation 2.
+
+The named superpowers skills and the complete REVIEW-LENSES catalog were not available to either lane. The original task steps were followed directly. Each lane reviewed the source with its supplied lens names and did not claim the missing lens definitions were checked.
+
+Done when: the starting revision, branch, generation, prior results, and scope are recorded. Met.
+
 ## What was not done
 
 - **Task 12 step 3, the manual walk with a real agent.** The goal reserves it for the host. Lane a ran a scripted stand-in instead. It used no model, so it is not a substitute (see Task 12). No agent quit text was fabricated.
@@ -228,6 +242,8 @@ recommendation: a. The green suite covers the planned cases and five added check
 decision: When should the host do the manual walk (Task 12 step 3)?
 recommendation: After the safety repairs. Record the actual final quit text. The automated MCP test is not that manual walk.
 ```
+
+Done when: the merge has this committed report and a valid DONE.json, and the host has the rebuttal snapshot and both evaluator reviews. Met.
 
 ## What came from where
 
