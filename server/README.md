@@ -44,7 +44,7 @@ Done when: `npm run build` succeeds and the MCP client lists exactly the five to
 | `start_walk` | `walker` (path to a dossier), `journey` (path to a journey), `viewport` (`phone-small`, `phone`, `tablet`, `desktop`), optional `locale` | The first look. Opens an isolated browser context. Refuses a second active walk. |
 | `look` | nothing | A look at the current screen |
 | `act` | `option` (a number from the last look), optional `text` (for text fields, or minutes for `wait`), optional `how` (`tap`, `double-tap`, `new-tab`), `ratings`, `wharton` | The next look, or `Refused: <reason>` |
-| `note` | `kind`, `severity` (0–4), `title`, `what_happened`, `expected`, optional `blocks_step` (true if this stops the Walker finishing a step the goal needs) | `Noted as <finding id>.` The finding is saved against the last look. |
+| `note` | `kind`, `severity` (0–4), `title`, `what_happened`, `expected`, optional `blocks_step` (true if this stops the Walker finishing a step the goal needs) | `Noted as <finding id>.` The finding is saved against the last look. The signed `note` record keeps `blocks_step: true`, so a raised severity can be traced to it. |
 | `quit` | `reason` (`done`, `run-away`, `stuck`), optional `detail` | Closes the browser and attempts replay. Returns where the walk was saved, the number of findings, `verified` and `alive` |
 
 A look is two parts:

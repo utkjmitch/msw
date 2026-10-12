@@ -145,7 +145,7 @@ export class WalkSession {
       repro: this.acts.map(a => ({ step: `${a.how} "${a.label}"${a.text !== undefined ? " and type" : ""}`, event: a.event })),
       reproduced: false, fingerprint: createHash("sha1").update(`${this.journey.id}|${nf.kind}|${lastAct}`).digest("hex").slice(0, 12),
       ...(this.journey.silly ? { silly: this.journey.silly.category } : {}) };
-    this.findings.push(f); this.log.append("note", { id, title: nf.title, severity: nf.severity, ...(by === "server" ? { by } : {}) }, last.state);
+    this.findings.push(f); this.log.append("note", { id, title: nf.title, severity: nf.severity, ...(nf.blocks_step ? { blocks_step: true } : {}), ...(by === "server" ? { by } : {}) }, last.state);
     appendFileSync(join(this.dir, "findings.jsonl"), JSON.stringify(f) + "\n");
     return { id };
   }

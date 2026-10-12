@@ -402,3 +402,13 @@ test("a blocked submit sent by a script says its fields were not captured", asyn
     expect(blocked.data.fields_error).toContain("not captured");
   } finally { await w.quit("done").catch(() => {}); }
 }, 90_000);
+test("the signed note record says when a note blocks a step", async () => {
+  const f = setup(s.url); const w = new WalkSession(f.run, true, false);
+  try {
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "phone" });
+    w.note({ kind: "usability", severity: 1, title: "Donate is under the menu", what_happened: "Cannot reach it", expected: "A visible button", blocks_step: true });
+    w.note({ kind: "usability", severity: 1, title: "Small text", what_happened: "Hard to read", expected: "Bigger text" });
+    const q = await w.quit("done");
+    expect(readEvents(q.dir).filter(e => e.kind === "note").map(e => e.data.blocks_step)).toEqual([true, undefined]);
+  } finally { await w.quit("done").catch(() => {}); }
+});
