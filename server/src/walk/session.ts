@@ -217,7 +217,9 @@ export class WalkSession {
   }
   private onBlocked(b: Blocked) {
     const fields = b.why === "would-submit" ? this.submitting : undefined;
-    this.place(b.page, st => this.log.append("blocked", { ...this.m(b), ...(fields ? { fields } : {}) }, st));
+    // A form sent by a script, not by its own submit control, has no captured fields; the record says so.
+    const missing = b.why === "would-submit" && !fields ? { fields_error: "the form was not sent by its own submit control, so its fields were not captured" } : {};
+    this.place(b.page, st => this.log.append("blocked", { ...this.m(b), ...(fields ? { fields } : {}), ...missing }, st));
     // A person never sees a page's background write, so the Walker is not told about one.
     if (b.why === "would-submit") this.pending.push("Nothing seemed to happen. This walk is read-only, so the form was not sent; carry on as if it had failed.");
     else if (b.why === "left-site") this.pending.push("That leads off this site, which this walk does not visit.");

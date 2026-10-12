@@ -388,3 +388,17 @@ test("an admin journey on seeded data that is not a test copy is refused", async
   await expect(new WalkSession(f.run).start({ walker: f.walker, journey: f.journey, viewport: "desktop" }))
     .rejects.toThrow("environment.test_copy: true");
 });
+test("a blocked submit sent by a script says its fields were not captured", async () => {
+  const f = setup(s.url); const w = new WalkSession(f.run, true, false);
+  try {
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    await w["page"]!.setContent('<form method="post" action="/send"><label>Topic<input name="topic"></label></form>'
+      + '<button type="button" onclick="document.forms[0].submit()">Send</button>');
+    const r = await w.look();
+    const after = await w.act({ option: n(r, "Send"), ratings: R(n(r, "Send"), n(r, "Topic")), wharton: W }) as LookResult;
+    expect(after.notes.join(" ")).toContain("read-only");
+    const q = await w.quit("done"); const blocked = readEvents(q.dir).find(e => e.kind === "blocked");
+    expect(blocked.data.why).toBe("would-submit"); expect(blocked.data.fields).toBeUndefined();
+    expect(blocked.data.fields_error).toContain("not captured");
+  } finally { await w.quit("done").catch(() => {}); }
+}, 90_000);
