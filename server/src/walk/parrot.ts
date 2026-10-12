@@ -10,6 +10,7 @@ export function deadParrot(events: MswEvent[], findings: { evidence: number[] }[
     if (e.kind === "instrument" && e.state) inst.add(e.state);
     // A record from a page the walk never looked at is kept, but it cannot be tied to a page.
     if ((e.kind === "instrument" || e.kind === "blocked") && !e.state) failures.push(`event ${e.seq} has no observed page state`);
+    if (e.kind === "condition" && e.data.name === "network-not-emulated") failures.push(`slow-3g was not applied to a page at event ${e.seq}`);
     if (e.kind === "instrument" && e.data.type === "inspect-error" && (e.data.detail as { attempt?: number } | undefined)?.attempt === 2)
       failures.push(`the axe pass failed twice at event ${e.seq}`);
     if (e.kind === "act") {

@@ -324,6 +324,17 @@ test("slow-3g applies to a page opened in a new tab, not only the first page", a
     await w.quit("done");
   } finally { await w.quit("done").catch(() => {}); }
 }, 120_000);
+test("a page that slow-3g could not be applied to is recorded and fails run health", async () => {
+  const f = setup(s.url, { moves: ["switch-tab"], conditions: "{ network: slow-3g }" }); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    (w as unknown as { context: import("playwright").BrowserContext }).context.newCDPSession = async () => { throw new Error("no CDP session for this page"); };
+    await w.act({ option: n(r0, "Open the guide"), ratings: R(n(r0, "Open the guide"), 1), wharton: W });
+    const q = await w.quit("done");
+    expect(readEvents(q.dir).filter(e => e.kind === "condition" && e.data.name === "network-not-emulated")).toHaveLength(1);
+    expect(q.alive).toBe(false);
+  } finally { await w.quit("done").catch(() => {}); }
+}, 120_000);
 test("the offline-restore timer cannot fire after the walk ends", async () => {
   const f = setup(s.url, { moves: ["wait"], conditions: "{ network: { offline_at_step: 1, seconds: 15 } }" }); const w = new WalkSession(f.run, true, false);
   try {

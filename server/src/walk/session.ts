@@ -202,7 +202,12 @@ export class WalkSession {
     this.pages.push(p); this.page = p; attachInquisition(p, r => this.record(r));
     // a page that closes itself is never the current tab
     p.on("close", () => { this.pages = this.pages.filter(x => x !== p); if (this.page === p) this.page = this.pages.at(-1); });
-    await emulateNetwork(this.context!, p, this.cond).catch(() => {});
+    // A page the walk cannot throttle is not walked under the run's conditions. The first page fails the start;
+    // a later one is recorded, and run health fails on that record.
+    await emulateNetwork(this.context!, p, this.cond).catch(e => {
+      if (!this.log?.all().length) throw e;
+      this.log.append("condition", { name: "network-not-emulated", url: this.m(p.url()), error: String((e as Error).message).split("\n")[0] });
+    });
   }
   private record(r: InstrumentRecord, state?: string) {
     if (!this.log) return;
