@@ -13,12 +13,12 @@ Ruling 2 adds a gate: `start_walk` refuses if `events.jsonl` exists. But `start`
 - Lane b reserves the file before it launches the browser:
   - `refs/lanes/b:server/src/walk/session.ts:56` `try { writeFileSync(join(this.dir, "events.jsonl"), "", { flag: "wx" }); }`
   - `refs/lanes/b:server/src/walk/session.ts:63` `this.browser = await chromium.launch({ headless: this.headless });`
-  
+
   Line 63 is outside the `try`/`catch` that starts at line 64. If Chromium fails to launch, for example under the box load both lanes saw, the folder keeps an empty `events.jsonl` and no manifest. Every retry then fails with "walk folder already holds events.jsonl". The empty file is not evidence of a walk, but it still closes the gate. Any later failure in lines 64 to 98 does the same, though line 97 at least writes a `start-failed` manifest.
 - Lane a creates the file only on the first `append`, which comes after launch, context, guard and conditions:
   - `refs/lanes/a:server/src/walk/session.ts:63` `if (existsSync(join(this.dir, "events.jsonl"))) throw new Error(\`the walk folder ${this.dir} already holds a walk; use a fresh out_dir\`);`
   - `refs/lanes/a:server/src/walk/session.ts:81` `this.log.append("start", { walker: this.walker.id, ...`
-  
+
   So a launch or setup failure leaves no `events.jsonl`, and the retry works. The strand remains only if `arrive()` throws after line 81, for example if `perceive` fails three times in `snap`. Lane a's error message also names the way out ("use a fresh out_dir").
 - Fix for the merge: when a start fails before its first real event, remove the empty file that the same call created. That is not deleting evidence. Or write a `start-failed` event and say in the refusal that the folder holds a failed start. Either way, add a test: inject a launch failure, then retry the start.
 

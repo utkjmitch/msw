@@ -21,7 +21,7 @@ Why lane a is the spine: it meets more of the rulings. It applies two of the F18
 
 ## Orientation and resume
 
-The merge started at `a2ad9cf6c0aa8e0fb5bbcc19b64e1267fb739852`, the expected `dev` base. Generation was 0. There was no earlier merge work to resume. The untracked `.mfx/` directory holds host metadata only. The brief has no separately labeled STEP 0; this check stands in for its orient and resume step.
+The merge started at `a2ad9cf6c0aa8e0fb5bbcc19b64e1267fb739852`, the expected `dev` base. Generation was 0 at the start; the host raised it to 1 during the merge, and the recorded gates and DONE.json use 1. There was no earlier merge work to resume. The untracked `.mfx/` directory holds host metadata only. The brief has no separately labeled STEP 0; this check stands in for its orient and resume step.
 
 The lane heads were fetched as `refs/lanes/a` (`7be0ce3`) and `refs/lanes/b` (`4b9d316`). I read both lane reports, both DONE.json files, the rebuttal snapshot, the brief and the DONE contract in full.
 
@@ -187,7 +187,7 @@ What each fix does:
   - the Walker's ratings and Wharton note, and the notes returned with each look. Lane a wrote ratings and the Wharton note to the event log unmasked (lane b's rebuttal, lens 6);
   - the quit detail;
   - option names, for display.
-  
+
   A user name and password in a URL are always dropped. An IPv4 address is no longer read as a phone number, so a masked URL still names its host. Both are lane b's (`6e92d6a`).
 - **F16 and F24, identity.** Each option has two names:
   - a full, unmasked `key` used for the state hash and for replay;
@@ -369,7 +369,7 @@ Done when (lane b): every unresolved finding above has its own tested repair or 
 
 - I read the goal, both lane reports and DONE.json files, the rebuttal snapshot, and the DONE contract.
 - Both lanes worked without seeing each other's branch. Lane a made a temporary worktree of `a2ad9cf` outside the repo to compare timings, and removed it afterward.
-- I ran the two evaluators on the frozen lane heads and committed their reviews unchanged.
+- I ran the two evaluators on the frozen lane heads and committed their reviews unchanged, except that trailing spaces on two blank lines of evaluator-a's review were removed so `git diff --check` passes.
 - I did not run `npx playwright install`. Playwright stayed at 1.63.0 with the preinstalled Chromium.
 - I did not push or open a PR. The host lands the branch.
 - Nothing in this report or the code names a private client, a person's data, a host path outside the repo, or a secret.
