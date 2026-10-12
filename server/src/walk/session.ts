@@ -101,7 +101,8 @@ export class WalkSession {
     this.acts.push({ label: opt.name, role: opt.role, how, text: a.text, event: ev.seq });
     this.steps += 1; this.budget.spendStep(); this.budget.charge("wharton-no", whartonNos(wharton));
     await this.perform(opt, a).catch(e => this.pending.push(`That did not work: ${String(e.message).split("\n")[0]}`));
-    for (const c of await applyStepConditions(this.context!, this.page!, this.steps, this.cond)) this.log.append("condition", { name: c, step: this.steps });
+    const walk = { origins: [this.journey.start_url, ...this.journey.origins] };
+    for (const c of await applyStepConditions(this.context!, this.page!, this.steps, this.cond, walk)) this.log.append("condition", { name: c, step: this.steps });
     return this.arrive(last!.state);
   }
 

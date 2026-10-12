@@ -21,7 +21,13 @@ export async function setupConditions(context: BrowserContext, page: Page, c: Co
   if (c.translate) notes.push("browser translation is not emulated; the condition was recorded but not applied");
   return notes;
 }
-export async function applyStepConditions(context: BrowserContext, page: Page, step: number, c: Conditions): Promise<string[]> {
+/** Spec 6.2: an expired session drops the cookies the journey's origins would receive, and no others. */
+async function expireSession(context: BrowserContext, origins: string[]): Promise<void> {
+  if (!origins.length) return;
+  for (const k of await context.cookies(origins)) await context.clearCookies({ name: k.name, domain: k.domain, path: k.path });
+}
+export async function applyStepConditions(context: BrowserContext, page: Page, step: number, c: Conditions,
+  walk: { origins?: string[] } = {}): Promise<string[]> {
   const applied: string[] = [];
   if (typeof c.network === "object" && c.network.offline_at_step === step) {
     await context.setOffline(true);
@@ -31,7 +37,7 @@ export async function applyStepConditions(context: BrowserContext, page: Page, s
   if (c.rotate_at_step === step) {
     const v = page.viewportSize(); if (v) await page.setViewportSize({ width: v.height, height: v.width }); applied.push("rotate");
   }
-  if (c.expire_session_at_step === step) { await context.clearCookies(); applied.push("expire-session"); }
+  if (c.expire_session_at_step === step) { await expireSession(context, walk.origins ?? []); applied.push("expire-session"); }
   if (c.cookies === "declined") await context.clearCookies();
   return applied;
 }

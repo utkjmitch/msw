@@ -104,7 +104,7 @@ A journey's `silly` block names a category and may add `conditions` and `moves`.
 | `reduced_motion: true` | `prefers-reduced-motion: reduce`. |
 | `cookies: declined` | Scripts cannot read or set cookies, and all cookies are cleared after every act. Cookies a server sets last until the next act, so HTTP cookie blocking is incomplete. |
 | `rotate_at_step: N` | Width and height swap after act N. |
-| `expire_session_at_step: N` | All cookies in the browser are cleared after act N. |
+| `expire_session_at_step: N` | After act N, the cookies the journey's origins would receive are cleared. Cookies for other sites stay. |
 | `translate: true` | **Not emulated.** The condition is recorded in the start event and nothing else happens. |
 
 ### Moves

@@ -35,3 +35,11 @@ test("the inquisition records console errors, 404s, axe violations and vitals", 
   expect(f.find(x => x.kind === "content")?.severity).toBe(2);
   await ctx.close();
 });
+test("session expiry drops only the journey origins' cookies", async () => {
+  const ctx = await browser.newContext(); const p = await ctx.newPage();
+  try {
+    await ctx.addCookies([{ name: "sid", value: "1", url: s.url }, { name: "elsewhere", value: "2", url: s.otherOrigin }]);
+    expect(await applyStepConditions(ctx, p, 2, { expire_session_at_step: 2 }, { origins: [s.url] })).toEqual(["expire-session"]);
+    expect((await ctx.cookies()).map(c => c.name)).toEqual(["elsewhere"]);
+  } finally { await ctx.close(); }
+});
