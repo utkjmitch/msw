@@ -9,7 +9,7 @@ import { EventLog } from "../events/log.js";
 import { Budget } from "./budget.js";
 import { checkAct, whartonNos, type Rating, type Wharton } from "./rules.js";
 import { deadParrot } from "./parrot.js";
-import { installGuard, transactAllowed, type Blocked } from "../browser/guard.js";
+import { installGuard, transactAllowed, adminAllowed, type Blocked } from "../browser/guard.js";
 import { perceive, optionLine, type Perception, type Option } from "../browser/perceive.js";
 import { maskText, isSecretField } from "../browser/mask.js";
 import { contextOptions, setupConditions, applyStepConditions } from "../browser/conditions.js";
@@ -45,7 +45,7 @@ export class WalkSession {
     this.args = a; this.walker = await loadWalker(a.walker); this.journey = await loadJourney(a.journey);
     if (this.journey.walker !== this.walker.id) throw new Error(`journey ${this.journey.id} is for walker ${this.journey.walker}`);
     if (!audienceAllowed(this.walker.role, this.journey.audience)) throw new Error(`a ${this.walker.role} cannot walk a ${this.journey.audience} journey`);
-    const t = transactAllowed(this.run, this.journey); if (!t.ok) throw new Error(t.reason);
+    for (const t of [adminAllowed(this.run, this.journey), transactAllowed(this.run, this.journey)]) if (!t.ok) throw new Error(t.reason);
     this.viewport = a.viewport; this.locale = a.locale ?? this.walker.locale;
     this.moves = this.journey.silly?.moves ?? []; this.cond = this.journey.silly?.conditions ?? {};
     this.dir = join(this.run.out_dir, "walks", `${this.walker.id}-${this.journey.id}-${this.viewport}-${this.locale}`);
@@ -92,6 +92,8 @@ export class WalkSession {
     const opt = last!.options[a.option - 1];
     if (opt.kind === "element" && !(await opt.handle!.evaluate(e => e.isConnected).catch(() => false))) return this.refuse("the page changed; look again", a.option);
     if (opt.inputType === "password") return this.refuse("Walkers never type passwords; this journey needs a saved login", a.option);
+    if (a.text !== undefined && isSecretField(opt) && this.journey.mode === "transact" && !this.run.payment_test_mode)
+      return this.refuse("this run is not in payment test mode, so Walkers do not type card details", a.option);
     if ((a.how === "double-tap" || a.how === "new-tab") && !this.moves.includes(a.how)) return this.refuse("that move is not part of this walk", a.option);
     const how = a.how ?? "tap";
     const stored = a.text === undefined ? undefined : isSecretField(opt) ? "[masked]" : this.run.mask_personal_data ? maskText(a.text) : a.text;

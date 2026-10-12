@@ -35,3 +35,11 @@ export function transactAllowed(run: RunConfig, journey: Journey): { ok: true } 
   if ((journey.payment_origins ?? []).length && !run.payment_test_mode) return { ok: false, reason: "payment origins need payment_test_mode: true in the run file" };
   return { ok: true };
 }
+/** Spec 12: admin journeys run only on test copies with seeded data, and their mode is transact. */
+export function adminAllowed(run: RunConfig, journey: Journey): { ok: true } | { ok: false; reason: string } {
+  if (journey.audience !== "admin") return { ok: true };
+  if (journey.mode !== "transact") return { ok: false, reason: "admin journeys run only in transact mode" };
+  if (run.environment.kind !== "test" || !run.environment.seeded_data)
+    return { ok: false, reason: "admin journeys need a test environment with seeded data (environment.seeded_data: true)" };
+  return { ok: true };
+}

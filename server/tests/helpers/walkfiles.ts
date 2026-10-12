@@ -1,7 +1,7 @@
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os"; import { join } from "node:path";
 import type { RunConfig } from "../../src/formats/schemas.js";
-export function walkFiles(startUrl: string, opts: { role?: string; audience?: string; moves?: string[]; budget?: number; patience?: number } = {}) {
+export function walkFiles(startUrl: string, opts: { role?: string; audience?: string; moves?: string[]; budget?: number; patience?: number; mode?: string } = {}) {
   const dir = mkdtempSync(join(tmpdir(), "msw-walk-"));
   writeFileSync(join(dir, "w.yaml"), `id: tester
 name: Pat
@@ -28,7 +28,7 @@ start_url: ${startUrl}
 arrival: shared-link
 success: [can say what they do]
 step_budget: ${opts.budget ?? 10}
-${opts.moves ? `silly:\n  category: impatient-fingers\n  moves: [${opts.moves.join(", ")}]\n` : ""}`);
+${opts.mode ? `mode: ${opts.mode}\n` : ""}${opts.moves ? `silly:\n  category: impatient-fingers\n  moves: [${opts.moves.join(", ")}]\n` : ""}`);
   const run: RunConfig = { id: "t", out_dir: join(dir, "run"), environment: { name: "fixture", kind: "test" },
     allowed_for_transact: [], payment_test_mode: false, mask_personal_data: true };
   return { dir, walker: join(dir, "w.yaml"), journey: join(dir, "j.yaml"), run };

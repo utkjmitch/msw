@@ -161,3 +161,25 @@ test("values typed into payment fields are masked in events, even with personal-
     expect(typed).toEqual(["[masked]", "[masked]", "[masked]"]);
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("admin journeys run only in transact mode on a seeded test copy", async () => {
+  const readOnly = setup(s.url, { role: "admin", audience: "admin" });
+  await expect(new WalkSession(readOnly.run).start({ walker: readOnly.walker, journey: readOnly.journey, viewport: "desktop" }))
+    .rejects.toThrow("admin journeys run only in transact mode");
+  const unseeded = setup(s.url, { role: "admin", audience: "admin", mode: "transact" });
+  unseeded.run.allowed_for_transact = [s.url];
+  await expect(new WalkSession(unseeded.run).start({ walker: unseeded.walker, journey: unseeded.journey, viewport: "desktop" }))
+    .rejects.toThrow("admin journeys need a test environment with seeded data");
+});
+test("a transact walk types card details only in payment test mode", async () => {
+  for (const testMode of [false, true]) {
+    const f = setup(s.url + "pay.html", { mode: "transact" }); f.run.allowed_for_transact = [s.url]; f.run.payment_test_mode = testMode;
+    const w = new WalkSession(f.run, true, false);
+    try {
+      const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+      const r = await w.act({ option: n(r0, "Card number"), text: "4242424242424242", ratings: R(n(r0, "Card number"), n(r0, "Pay")), wharton: W });
+      if (testMode) expect(r).not.toHaveProperty("refused");
+      else expect(r).toEqual({ refused: "this run is not in payment test mode, so Walkers do not type card details" });
+      await w.quit("done");
+    } finally { await w.quit("done").catch(() => {}); }
+  }
+});
