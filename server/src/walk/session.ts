@@ -27,6 +27,8 @@ export interface ReplayStep { label: string; key: string; role: string; how: "ta
 type StartArgs = { walker: string; journey: string; viewport: ViewportName; locale?: string };
 /** Spec 5.4: a page whose load event takes longer than this costs one patience. */
 const SLOW_PAGE_MS = 3_000;
+// The wait move's fake clock replaces window.performance, so keep the real one for load timing.
+const REAL_PERFORMANCE_INIT = `Object.defineProperty(window, "__mswPerformance", { value: performance });`;
 
 export class WalkSession {
   private browser?: Browser; private context?: BrowserContext; private page?: Page; private pages: Page[] = [];
@@ -67,6 +69,7 @@ export class WalkSession {
         versions: versions(this.browser), times: { started: new Date().toISOString(), ended: null }, outcome: null };
       writeManifest(join(this.dir, "manifest.json"), this.manifest);
       this.context = await this.browser.newContext(contextOptions(this.viewport, this.locale, this.cond, this.journey.storage_state));
+      await this.context.addInitScript(REAL_PERFORMANCE_INIT);
       await this.context.addInitScript(VITALS_INIT);
       await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], payments: this.journey.payment_origins, onBlocked: b => this.onBlocked(b) });
       // axe opens a temporary page without an opener during analysis.
@@ -113,7 +116,8 @@ export class WalkSession {
     await this.perform(opt, a).catch(e => this.pending.push(`That did not work: ${String(e.message).split("\n")[0]}`));
     const walk = { origins: [this.journey.start_url, ...this.journey.origins] };
     for (const c of await applyStepConditions(this.context!, this.page!, this.steps, this.cond, walk)) this.log.append("condition", { name: c, step: this.steps });
-    return this.arrive(last!.state);
+    // Spec 5.4: waiting is the Walker's own choice, so an unchanged page after a wait costs no patience.
+    return this.arrive(opt.move === "wait" ? undefined : last!.state);
   }
 
   note(raw: NoteArgs): { id: string } {
@@ -230,10 +234,10 @@ export class WalkSession {
   /** The current document's load time, counted once per document. 0 when already counted; Infinity if it never loaded. */
   private async loadTime(): Promise<number> {
     return this.page!.evaluate(() => {
-      const w = window as unknown as { __mswLoadCounted?: boolean };
+      const w = window as unknown as { __mswLoadCounted?: boolean; __mswPerformance?: Performance };
       if (w.__mswLoadCounted) return 0;
       w.__mswLoadCounted = true;
-      const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+      const nav = (w.__mswPerformance ?? performance).getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
       return nav && nav.loadEventEnd > 0 ? nav.loadEventEnd - nav.startTime : Infinity;
     }).catch(() => 0);
   }

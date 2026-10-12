@@ -269,3 +269,13 @@ test("on a phone, a note that blocks a step is at least severity 3", async () =>
     expect(found.map(x => x.severity)).toEqual([3, 1]);
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("wait never costs no-change patience", async () => {
+  const f = setup(s.url, { moves: ["wait"] }); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    expect(r0.patienceLeft).toBe(10);
+    const r1 = await w.act({ option: n(r0, "wait"), text: "5", ratings: R(n(r0, "wait"), n(r0, "About us")), wharton: W }) as LookResult;
+    expect(r1).toMatchObject({ patienceLeft: 10, stepsLeft: 9 });
+    await w.quit("done");
+  } finally { await w.quit("done").catch(() => {}); }
+});
