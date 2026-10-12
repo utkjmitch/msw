@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "visitor",
+        "member",
+        "admin"
+      ]
+    },
+    "story": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hopes": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "fears": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "background": {
+      "type": "string"
+    },
+    "motivation": {
+      "type": "string"
+    },
+    "frustrations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tech_literacy": {
+      "type": "object",
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "level",
+        "note"
+      ],
+      "additionalProperties": false
+    },
+    "prior_knowledge": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "devices": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "phone-small",
+          "phone",
+          "tablet",
+          "desktop"
+        ]
+      }
+    },
+    "locale": {
+      "type": "string"
+    },
+    "patience": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50
+    },
+    "leave_triggers": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "accessibility": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "summary",
+    "role",
+    "story",
+    "hopes",
+    "fears",
+    "background",
+    "motivation",
+    "frustrations",
+    "tech_literacy",
+    "prior_knowledge",
+    "devices",
+    "locale",
+    "patience",
+    "leave_triggers"
+  ],
+  "additionalProperties": false
+}

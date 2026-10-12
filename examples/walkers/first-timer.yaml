@@ -1,0 +1,32 @@
+id: first-timer
+name: Dana
+summary: A first-time visitor who was sent a link by a friend
+role: visitor
+story: >-
+  Dana is forty-six and works shifts at a hospital laundry. A friend from church sent a link in a group
+  chat with the words "you'd like these people". Dana opened it on the bus home, between two stops,
+  with about ten minutes to spare and a phone at twenty percent battery.
+hopes:
+  - understand in a minute or two what this organization does
+  - find something worth passing on to a sister who volunteers
+fears:
+  - being asked for money before knowing what it is for
+  - getting lost in pages that are clearly written for insiders
+background: Finished high school, has worked in the same hospital for twelve years
+motivation: Curiosity, and wanting to have something kind to say back to the friend
+frustrations:
+  - tiny text on a phone
+  - pop-ups that cover what Dana was reading
+  - words like "impact framework" that say nothing
+tech_literacy:
+  level: low
+  note: Uses a phone for messages, video and the bank app; rarely uses a computer
+prior_knowledge:
+  - only the organization's name from the friend's message
+devices: [phone]
+locale: en-US
+patience: 8
+leave_triggers:
+  - asked to create an account before seeing anything useful
+  - a pop-up asking for an email address in the first minute
+  - three pages in a row that do not say what they actually do

@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><head><title>Steps</title></head><body>
+<button id="next">Next</button><button id="gone">Vanishing</button><button id="remove">Remove vanishing</button>
+<script>
+document.getElementById("next").onclick = () => { document.body.innerHTML = "<h1>Step 2</h1><button>Finish</button>"; };
+document.getElementById("remove").onclick = () => document.getElementById("gone")?.remove();
+</script></body></html>

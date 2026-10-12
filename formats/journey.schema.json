@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "walker": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "audience": {
+      "type": "string",
+      "enum": [
+        "public",
+        "member",
+        "admin"
+      ]
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "start_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "arrival": {
+      "type": "string",
+      "enum": [
+        "search",
+        "shared-link",
+        "email",
+        "direct"
+      ]
+    },
+    "success": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "step_budget": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 200
+    },
+    "mode": {
+      "default": "read-only",
+      "type": "string",
+      "enum": [
+        "read-only",
+        "transact"
+      ]
+    },
+    "origins": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      }
+    },
+    "storage_state": {
+      "type": "string"
+    },
+    "viewports": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "phone-small",
+          "phone",
+          "tablet",
+          "desktop"
+        ]
+      }
+    },
+    "locales": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "planned": {
+      "default": false,
+      "type": "boolean"
+    },
+    "silly": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": [
+            "impatient-fingers",
+            "wandering-attention",
+            "unusual-arrivals",
+            "language-and-text",
+            "body-and-device",
+            "privacy-minded",
+            "unusual-intent",
+            "admin-mishaps"
+          ]
+        },
+        "conditions": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "network": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "slow-3g"
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "offline_at_step": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 9007199254740991
+                    },
+                    "seconds": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 120
+                    }
+                  },
+                  "required": [
+                    "offline_at_step",
+                    "seconds"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "text_scale": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 400
+            },
+            "color_scheme": {
+              "type": "string",
+              "enum": [
+                "light",
+                "dark"
+              ]
+            },
+            "reduced_motion": {
+              "type": "boolean"
+            },
+            "cookies": {
+              "type": "string",
+              "const": "declined"
+            },
+            "rotate_at_step": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "expire_session_at_step": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "translate": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        },
+        "moves": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "reload",
+              "double-tap",
+              "new-tab",
+              "switch-tab",
+              "wait"
+            ]
+          }
+        }
+      },
+      "required": [
+        "category",
+        "conditions",
+        "moves"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "id",
+    "walker",
+    "audience",
+    "goal",
+    "start_url",
+    "arrival",
+    "success",
+    "step_budget",
+    "mode",
+    "origins",
+    "planned"
+  ],
+  "additionalProperties": false
+}
