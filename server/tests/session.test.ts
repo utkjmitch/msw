@@ -322,3 +322,15 @@ test("an offline restore cannot run after the walk runs out of steps, before qui
     expect(calls).toEqual([true]);
   } finally { await w.quit("done").catch(() => {}); }
 }, 120_000);
+test("a run-away quit that cannot write still closes the browser and frees the session", async () => {
+  const f = setup(s.url); const w = new WalkSession(f.run, true, false);
+  try {
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    // Losing the walk folder makes every write in quit fail, including the run-away floor's finding.
+    rmSync(join(f.run.out_dir, "walks"), { recursive: true, force: true });
+    await expect(w.quit("run-away", "too slow")).rejects.toThrow();
+    expect((w as unknown as { browser?: unknown }).browser).toBeUndefined();
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    expect((await w.quit("done")).verified).toBe(true);
+  } finally { await w.quit("done").catch(() => {}); }
+}, 120_000);

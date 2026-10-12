@@ -154,10 +154,12 @@ export class WalkSession {
   async quit(reason: "done" | "run-away" | "stuck", detail?: string): Promise<QuitResult> {
     if (!this.browser) throw new Error("no walk in progress");
     this.clearTimers();
-    this.placeAll();
-    if (reason === "run-away" || this.ended?.startsWith("run-away")) this.runAwayFloor(detail);
-    try { this.log.append("quit", { reason, detail: this.m(detail) ?? null, ended: this.ended ?? null }); }
-    finally { await this.browser.close(); this.browser = undefined; }
+    // Everything that writes runs inside the try, so a failed write still closes the browser.
+    try {
+      this.placeAll();
+      if (reason === "run-away" || this.ended?.startsWith("run-away")) this.runAwayFloor(detail);
+      this.log.append("quit", { reason, detail: this.m(detail) ?? null, ended: this.ended ?? null });
+    } finally { try { await this.browser.close(); } finally { this.browser = undefined; } }
     const ctx = { run: this.run.id, walker: this.walker.id, journey: this.journey.id, viewport: this.viewport, locale: this.locale };
     this.findings.push(...instrumentFindings(this.instrument, ctx));
     if (this.reproduceFindings) {
