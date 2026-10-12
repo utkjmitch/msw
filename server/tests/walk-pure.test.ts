@@ -33,3 +33,14 @@ test("dead parrot", () => {
   const noLook = [ev(1, "start", 0), ev(2, "act", 1000, "z")];
   expect(deadParrot(noLook, []).failures).toContain("action at event 2 had no look of the same page");
 });
+test("severity floors from the walk: phone-blocking and an impossible journey", async () => {
+  const { noteFloor, journeyFloor } = await import("../src/walk/floors.js");
+  expect(noteFloor(1, "phone", true)).toBe(3); expect(noteFloor(1, "phone-small", true)).toBe(3);
+  expect(noteFloor(4, "phone", true)).toBe(4); expect(noteFloor(1, "phone", false)).toBe(1);
+  expect(noteFloor(1, "desktop", true)).toBe(1);
+  const walk = (viewport: string, outcome: string) => ({ viewport, outcome }) as any;
+  expect(journeyFloor([walk("phone", "stuck"), walk("desktop", "run-away")])).toBe(4);
+  expect(journeyFloor([walk("phone", "stuck"), walk("desktop", "done")])).toBeNull();
+  // One viewport is not "any viewport": phone and desktop must both have been walked.
+  expect(journeyFloor([walk("phone", "stuck")])).toBeNull();
+});

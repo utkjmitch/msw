@@ -235,3 +235,37 @@ test("a blocked submit records the form's visible fields with masked values", as
     ] });
   } finally { await w.quit("done").catch(() => {}); }
 }, 90_000);
+test("running away sets severity 3 at the final step, and the seal records the outcome", async () => {
+  const f = setup(s.url, { patience: 2 }); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const no = { will_try: false, notices: false, associates: true, sees_progress: true };
+    await w.act({ option: n(r0, "About us"), ratings: R(n(r0, "About us"), 2), wharton: no });
+    w.note({ kind: "content", severity: 1, title: "Nothing about the work", what_happened: "Only a heading", expected: "What they do" });
+    const q = await w.quit("run-away", "patience");
+    const found = readFileSync(join(q.dir, "findings.jsonl"), "utf8").trim().split("\n").map(l => JSON.parse(l)).filter(x => x.source === "walker");
+    expect(found.map(x => x.severity)).toEqual([3]);
+    expect(JSON.parse(readFileSync(join(q.dir, "seal.json"), "utf8"))).toMatchObject({ outcome: "run-away", ended: "run-away: patience" });
+  } finally { await w.quit("done").catch(() => {}); }
+}, 90_000);
+test("running away with no note adds a severity 3 finding", async () => {
+  const f = setup(s.url); const w = new WalkSession(f.run, true, false);
+  try {
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const q = await w.quit("run-away", "asked to make an account");
+    const found = readFileSync(join(q.dir, "findings.jsonl"), "utf8").trim().split("\n").map(l => JSON.parse(l)).filter(x => x.source === "walker");
+    expect(found).toEqual([expect.objectContaining({ severity: 3, kind: "usability", title: "Ran away before finishing: asked to make an account" })]);
+    expect(q.alive).toBe(true);
+  } finally { await w.quit("done").catch(() => {}); }
+});
+test("on a phone, a note that blocks a step is at least severity 3", async () => {
+  const f = setup(s.url); const w = new WalkSession(f.run, true, false);
+  try {
+    await w.start({ walker: f.walker, journey: f.journey, viewport: "phone" });
+    w.note({ kind: "usability", severity: 1, title: "Donate is under the menu", what_happened: "Cannot reach it", expected: "A visible button", blocks_step: true });
+    w.note({ kind: "usability", severity: 1, title: "Small text", what_happened: "Hard to read", expected: "Bigger text" });
+    const q = await w.quit("done");
+    const found = readFileSync(join(q.dir, "findings.jsonl"), "utf8").trim().split("\n").map(l => JSON.parse(l)).filter(x => x.source === "walker");
+    expect(found.map(x => x.severity)).toEqual([3, 1]);
+  } finally { await w.quit("done").catch(() => {}); }
+});

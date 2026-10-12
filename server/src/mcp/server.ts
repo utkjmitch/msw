@@ -51,7 +51,8 @@ export function createServer(run: RunConfig, headless = true): McpServer {
   server.registerTool("note", {
     description: "Record a finding the moment you notice it.",
     inputSchema: { kind: z.enum(["usability", "function", "content", "accessibility", "performance", "vision-gap"]),
-      severity: z.number().int().min(0).max(4), title: z.string().min(1), what_happened: z.string().min(1), expected: z.string().min(1) },
+      severity: z.number().int().min(0).max(4), title: z.string().min(1), what_happened: z.string().min(1), expected: z.string().min(1),
+      blocks_step: z.boolean().optional().describe("true if this stops you finishing a step your goal needs") },
   }, async a => guard(async s => say(`Noted as ${s.note(a).id}.`)));
   server.registerTool("quit", {
     description: "End the walk: done, run-away (say which trigger) or stuck.",

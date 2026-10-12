@@ -44,7 +44,7 @@ Done when: `npm run build` succeeds and the MCP client lists exactly the five to
 | `start_walk` | `walker` (path to a dossier), `journey` (path to a journey), `viewport` (`phone-small`, `phone`, `tablet`, `desktop`), optional `locale` | The first look. Opens an isolated browser context. Refuses a second active walk. |
 | `look` | nothing | A look at the current screen |
 | `act` | `option` (a number from the last look), optional `text` (for text fields, or minutes for `wait`), optional `how` (`tap`, `double-tap`, `new-tab`), `ratings`, `wharton` | The next look, or `Refused: <reason>` |
-| `note` | `kind`, `severity` (0–4), `title`, `what_happened`, `expected` | `Noted as <finding id>.` The finding is saved against the last look. |
+| `note` | `kind`, `severity` (0–4), `title`, `what_happened`, `expected`, optional `blocks_step` (true if this stops the Walker finishing a step the goal needs) | `Noted as <finding id>.` The finding is saved against the last look. |
 | `quit` | `reason` (`done`, `run-away`, `stuck`), optional `detail` | Closes the browser and attempts replay. Returns where the walk was saved, the number of findings, `verified` and `alive` |
 
 A look is two parts:
@@ -77,7 +77,7 @@ There is no tool for page source, the DOM, scripts, typing an address, cookies o
 | Admin journeys | A journey with `audience: admin` must be `transact`, and `run.json` must name a `test` environment with `seeded_data: true`. Otherwise `start_walk` fails. |
 | Signed events | Every event goes to `events.jsonl` with a time, a page-state hash, the previous event's HMAC and its own HMAC. The key is random per walk and lives only in memory. `quit` re-reads the file and checks every link, the event count and the final signature, so a missing tail is caught. Independent verification after the process exits is not implemented. |
 | Instrument pass | On every page and after every act, the server records console errors, page errors, HTTP responses of 400 or more, failed requests, serious and critical axe-core violations, and LCP, CLS and INP. Axe runs once per distinct page state. If the axe and vitals pass fails, the failure is recorded as an `inspect-error` record and the pass is tried once more; a second failure is recorded too, and that state is not tried again. These go to `instrument.jsonl` only and are never shown to the Walker. |
-| Severity floors | At `quit`, instrument records become findings: console or page errors and 5xx responses at 3, serious or critical axe violations at 3, missing files (404) at 2, LCP over 4 s or CLS over 0.25 at 2. |
+| Severity floors | At `quit`, instrument records become findings: console or page errors and 5xx responses at 3, serious or critical axe violations at 3, missing files (404) at 2, LCP over 4 s or CLS over 0.25 at 2. On `phone` and `phone-small`, a note with `blocks_step` is at least 3. When the walk ends in a run-away, the Walker's findings at the final step are raised to at least 3; if there are none, the server adds one at 3 (`Ran away before finishing: <trigger>`). A journey that cannot be completed on any viewport is at least 4: one walk cannot know that, so `journeyFloor` in `src/walk/floors.ts` takes every walk of a journey (it needs `phone` and `desktop`) for the reports to apply. Nothing calls it yet. |
 | Dead Parrot check | At `quit`: every act had an earlier look of the same page; every page has at least two screenshots; every page has an instrument record; every finding cites events from this walk; no two acts are less than 0.5 seconds apart. Failures are listed in the seal. |
 | Reproduction | At `quit`, each Walker finding is replayed on a fresh browser with no model. Replay finds each control by its role and its full, unmasked name, which stays in memory and is never written out. If two controls on the page share that identity, the replay fails rather than guess. If the final page state matches, the finding gets `reproduced: true`. |
 
@@ -141,6 +141,8 @@ One folder holds one walk. If the walk folder already holds an `events.jsonl`, `
 
 | Field | Meaning |
 |---|---|
+| `outcome` | The quit reason: `done`, `run-away` or `stuck` |
+| `ended` | Why the server ended the walk (`out of steps`, `run-away: patience`), or null |
 | `events` | Number of events |
 | `head` | The last event's HMAC |
 | `verified` | Whether every event's HMAC and link checked out |

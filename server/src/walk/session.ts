@@ -16,10 +16,11 @@ import { contextOptions, setupConditions, applyStepConditions } from "../browser
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
 import { reproduce } from "./replay.js";
 import { versions, fileInput, writeManifest, type Manifest } from "./manifest.js";
+import { FLOOR, noteFloor } from "./floors.js";
 
 export interface LookResult { png: Buffer; text: string; url: string; options: string[]; stepsLeft: number; patienceLeft: number; notes: string[]; ended?: string }
 export interface ActArgs { option: number; text?: string; how?: "tap" | "double-tap" | "new-tab"; ratings?: Rating[]; wharton?: Wharton }
-export interface NoteArgs { kind: Finding["kind"]; severity: number; title: string; what_happened: string; expected: string }
+export interface NoteArgs { kind: Finding["kind"]; severity: number; title: string; what_happened: string; expected: string; blocks_step?: boolean }
 export interface QuitResult { dir: string; alive: boolean; failures: string[]; findings: number; verified: boolean }
 /** label: the display name, for finding text. key: the full unmasked name that identifies the control on replay. */
 export interface ReplayStep { label: string; key: string; role: string; how: "tap" | "double-tap" | "new-tab"; text?: string; event: number }
@@ -118,22 +119,36 @@ export class WalkSession {
   note(raw: NoteArgs): { id: string } {
     if (!this.last) throw new Error("look first");
     const nf = this.m(raw);
+    return this.addFinding({ ...nf, severity: noteFloor(nf.severity, this.viewport, !!nf.blocks_step) });
+  }
+  private addFinding(nf: NoteArgs, by: "walker" | "server" = "walker"): { id: string } {
+    const last = this.last!;
     const id = `${this.walker.id}-${this.journey.id}-w${this.findings.filter(f => f.source === "walker").length + 1}`;
     const lastAct = this.acts.at(-1)?.label ?? "arrival";
     const f: Finding = { id, run: this.run.id, walker: this.walker.id, journey: this.journey.id, step: this.steps,
       viewport: this.viewport, locale: this.locale, kind: nf.kind, source: "walker", severity: nf.severity, title: nf.title,
-      what_happened: nf.what_happened, expected: nf.expected, evidence: [this.last.seq],
+      what_happened: nf.what_happened, expected: nf.expected, evidence: [last.seq],
       repro: this.acts.map(a => ({ step: `${a.how} "${a.label}"${a.text !== undefined ? " and type" : ""}`, event: a.event })),
       reproduced: false, fingerprint: createHash("sha1").update(`${this.journey.id}|${nf.kind}|${lastAct}`).digest("hex").slice(0, 12),
       ...(this.journey.silly ? { silly: this.journey.silly.category } : {}) };
-    this.findings.push(f); this.log.append("note", { id, title: nf.title, severity: nf.severity }, this.last.state);
+    this.findings.push(f); this.log.append("note", { id, title: nf.title, severity: nf.severity, ...(by === "server" ? { by } : {}) }, last.state);
     appendFileSync(join(this.dir, "findings.jsonl"), JSON.stringify(f) + "\n");
     return { id };
+  }
+  /** Spec 7: a Walker who runs away leaves at a step the goal requires, so findings at that step are at least 3. */
+  private runAwayFloor(detail?: string) {
+    const atEnd = this.findings.filter(f => f.source === "walker" && f.step === this.steps);
+    for (const f of atEnd) f.severity = Math.max(f.severity, FLOOR.runAwayAtRequiredStep);
+    if (atEnd.length || !this.last) return;
+    const why = this.m(detail ?? this.ended ?? "no reason given");
+    this.addFinding({ kind: "usability", severity: FLOOR.runAwayAtRequiredStep, title: `Ran away before finishing: ${why}`,
+      what_happened: `The Walker left at step ${this.steps} without reaching the goal: ${why}`, expected: "The Walker can finish the journey's goal" }, "server");
   }
 
   async quit(reason: "done" | "run-away" | "stuck", detail?: string): Promise<QuitResult> {
     if (!this.browser) throw new Error("no walk in progress");
     this.placeAll();
+    if (reason === "run-away" || this.ended?.startsWith("run-away")) this.runAwayFloor(detail);
     try { this.log.append("quit", { reason, detail: this.m(detail) ?? null, ended: this.ended ?? null }); }
     finally { await this.browser.close(); this.browser = undefined; }
     const ctx = { run: this.run.id, walker: this.walker.id, journey: this.journey.id, viewport: this.viewport, locale: this.locale };
@@ -147,7 +162,7 @@ export class WalkSession {
     }
     const verified = this.log.verify().ok; const parrot = deadParrot(this.log.all(), this.findings);
     writeFileSync(join(this.dir, "findings.jsonl"), this.findings.map(f => JSON.stringify(f)).join("\n") + (this.findings.length ? "\n" : ""));
-    writeFileSync(join(this.dir, "seal.json"), JSON.stringify({ events: this.log.all().length, head: this.log.all().at(-1)?.hmac, verified,
+    writeFileSync(join(this.dir, "seal.json"), JSON.stringify({ outcome: reason, ended: this.ended ?? null, events: this.log.all().length, head: this.log.all().at(-1)?.hmac, verified,
       alive: parrot.alive, failures: parrot.failures, steps_used: this.steps, patience_charges: this.budget.charges }, null, 2) + "\n");
     if (this.manifest) writeManifest(join(this.dir, "manifest.json"), { ...this.manifest, times: { ...this.manifest.times, ended: new Date().toISOString() },
       outcome: { reason, ended: this.ended ?? null } });
