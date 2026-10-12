@@ -6,6 +6,18 @@ export function maskText(s: string): string {
   return s.replace(EMAIL, "[masked]").replace(STREET, "[masked]")
     .replace(PHONE, m => (m.replace(/\D/g, "").length >= 7 ? "[masked]" : m));
 }
+/** maskText for any text, including a URL-encoded address such as ?from=pat%40example.org. */
+export function maskString(s: string): string {
+  let d = s; try { d = decodeURIComponent(s); } catch { d = s; }
+  const m = maskText(d); return m === d ? s : m;
+}
+/** Masks every string inside a record; numbers and other values are left alone. */
+export function maskDeep<T>(v: T): T {
+  if (typeof v === "string") return maskString(v) as T;
+  if (Array.isArray(v)) return v.map(maskDeep) as T;
+  if (v && typeof v === "object") return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, maskDeep(x)])) as T;
+  return v;
+}
 import type { Page, Locator } from "playwright";
 export async function maskPage(page: Page): Promise<void> {
   await page.evaluate(([email, phone, street]) => {

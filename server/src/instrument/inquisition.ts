@@ -39,7 +39,8 @@ export function instrumentFindings(records: (InstrumentRecord & { step: number; 
       fingerprint: createHash("sha1").update(`${ctx.journey}|${kind}|${key}`).digest("hex").slice(0, 12) });
   };
   for (const r of records) {
-    const d = r.detail as Record<string, any>; const path = new URL(r.url).pathname;
+    const d = r.detail as Record<string, any>; let path = r.url;
+    try { path = new URL(r.url).pathname; } catch { /* a masked address may no longer parse */ }
     if (r.type === "console" || r.type === "pageerror") add(r, String(d.text), "function", 3, `Console error on ${path}`);
     else if (r.type === "http" && d.status >= 500) add(r, String(d.status), "function", 3, `Server error ${d.status} for ${path}`);
     else if (r.type === "http" && d.status === 404) add(r, "404", "content", 2, `Missing file ${path}`);

@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { maskText, isSecretField } from "../src/browser/mask.js";
+import { maskText, maskDeep, isSecretField } from "../src/browser/mask.js";
 import { readingOrder } from "../src/browser/order.js";
 test("masks emails, phones and addresses", () => {
   expect(maskText("Write ana.pérez@example.org or call +1 (215) 555-0134")).toBe("Write [masked] or call [masked]");
@@ -19,4 +19,9 @@ test("payment and password fields are known by type, including sectioned autocom
   expect(isSecretField({ autocomplete: "section-gift billing cc-number" })).toBe(true);
   expect(isSecretField({ inputType: "password" })).toBe(true);
   expect(isSecretField({ inputType: "text", autocomplete: "name" })).toBe(false);
+});
+test("records are masked string by string, including encoded addresses, and numbers are left alone", () => {
+  const r = maskDeep({ url: "https://a.test/?from=pat%40example.org", detail: { text: "call 215 555 0134", lcp: 1234.5678901, ok: true } });
+  expect(r).toEqual({ url: "https://a.test/?from=[masked]", detail: { text: "call [masked]", lcp: 1234.5678901, ok: true } });
+  expect(maskDeep("https://a.test/ni%C3%B1os")).toBe("https://a.test/ni%C3%B1os");
 });

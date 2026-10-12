@@ -11,7 +11,7 @@ import { checkAct, whartonNos, type Rating, type Wharton } from "./rules.js";
 import { deadParrot } from "./parrot.js";
 import { installGuard, transactAllowed, adminAllowed, type Blocked } from "../browser/guard.js";
 import { perceive, optionLine, type Perception, type Option } from "../browser/perceive.js";
-import { maskText, isSecretField } from "../browser/mask.js";
+import { maskText, maskDeep, isSecretField } from "../browser/mask.js";
 import { contextOptions, setupConditions, applyStepConditions } from "../browser/conditions.js";
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
 import { reproduce } from "./replay.js";
@@ -39,6 +39,8 @@ export class WalkSession {
 
   constructor(private run: RunConfig, private headless = true, private reproduceFindings = true) {}
   get lastState(): string | undefined { return this.last?.state; }
+  /** Every text record goes through this before it is written or returned (spec 12). */
+  private m<T>(v: T): T { return this.run.mask_personal_data ? maskDeep(v) : v; }
 
   async start(a: StartArgs): Promise<LookResult> {
     if (this.browser) throw new Error("a walk is already in progress; quit it first");
@@ -106,8 +108,9 @@ export class WalkSession {
     return this.arrive(last!.state);
   }
 
-  note(nf: NoteArgs): { id: string } {
+  note(raw: NoteArgs): { id: string } {
     if (!this.last) throw new Error("look first");
+    const nf = this.m(raw);
     const id = `${this.walker.id}-${this.journey.id}-w${this.findings.filter(f => f.source === "walker").length + 1}`;
     const lastAct = this.acts.at(-1)?.label ?? "arrival";
     const f: Finding = { id, run: this.run.id, walker: this.walker.id, journey: this.journey.id, step: this.steps,
@@ -124,7 +127,7 @@ export class WalkSession {
   async quit(reason: "done" | "run-away" | "stuck", detail?: string): Promise<QuitResult> {
     if (!this.browser) throw new Error("no walk in progress");
     this.placeAll();
-    try { this.log.append("quit", { reason, detail: detail ?? null, ended: this.ended ?? null }); }
+    try { this.log.append("quit", { reason, detail: this.m(detail) ?? null, ended: this.ended ?? null }); }
     finally { await this.browser.close(); this.browser = undefined; }
     const ctx = { run: this.run.id, walker: this.walker.id, journey: this.journey.id, viewport: this.viewport, locale: this.locale };
     this.findings.push(...instrumentFindings(this.instrument, ctx));
@@ -159,17 +162,17 @@ export class WalkSession {
   }
   private record(r: InstrumentRecord, state?: string) {
     if (!this.log) return;
-    const step = this.steps;
+    const step = this.steps; const rec = this.m(r);
     const write = (st?: string) => {
-      const e = this.log.append("instrument", { ...r }, st);
-      this.instrument.push({ ...r, step, event: e.seq });
-      appendFileSync(join(this.dir, "instrument.jsonl"), JSON.stringify({ ...r, step, event: e.seq }) + "\n");
+      const e = this.log.append("instrument", { ...rec }, st);
+      this.instrument.push({ ...rec, step, event: e.seq });
+      appendFileSync(join(this.dir, "instrument.jsonl"), JSON.stringify({ ...rec, step, event: e.seq }) + "\n");
     };
     if (state !== undefined) write(state);
     else this.place(typeof r.detail.page === "string" ? r.detail.page : r.url, write);
   }
   private onBlocked(b: Blocked) {
-    this.place(b.page, st => this.log.append("blocked", { ...b }, st));
+    this.place(b.page, st => this.log.append("blocked", { ...this.m(b) }, st));
     // A person never sees a page's background write, so the Walker is not told about one.
     if (b.why === "would-submit") this.pending.push("Nothing seemed to happen. This walk is read-only, so the form was not sent; carry on as if it had failed.");
     else if (b.why === "left-site") this.pending.push("That leads off this site, which this walk does not visit.");
@@ -217,7 +220,7 @@ export class WalkSession {
         await this.settle();
       }
     }
-    const e = this.log.append("look", { url: p.url, options: p.options.map(optionLine) }, p.state);
+    const e = this.log.append("look", { url: this.m(p.url), options: p.options.map(optionLine) }, p.state);
     writeFileSync(join(this.dir, "screens", `${e.seq}.png`), p.png);
     this.last = { ...p, seq: e.seq }; this.stateAt.set(p.url, p.state); this.placeSeen(); return this.last;
   }
@@ -244,7 +247,7 @@ export class WalkSession {
     return this.result(p);
   }
   private result(p: Perception): LookResult {
-    return { png: p.png, text: p.text, url: p.url, options: p.options.map(optionLine), stepsLeft: this.budget.stepsLeft,
+    return { png: p.png, text: p.text, url: this.m(p.url), options: p.options.map(optionLine), stepsLeft: this.budget.stepsLeft,
       patienceLeft: this.budget.patienceLeft, notes: this.pending.splice(0), ...(this.ended ? { ended: this.ended } : {}) };
   }
   private async perform(opt: Option, a: ActArgs): Promise<void> {

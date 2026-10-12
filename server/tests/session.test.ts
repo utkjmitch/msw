@@ -183,3 +183,17 @@ test("a transact walk types card details only in payment test mode", async () =>
     } finally { await w.quit("done").catch(() => {}); }
   }
 });
+test("personal data is masked in addresses, instrument text and finding text", async () => {
+  const f = setup(s.url + "contact.html?from=pat%40example.org"); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    expect(r0.url).not.toContain("example.org");
+    w.note({ kind: "content", severity: 1, title: "Shows pat@example.org", what_happened: "Saw pat@example.org on the page", expected: "No address for pat@example.org" });
+    const q = await w.quit("run-away", "it showed pat@example.org");
+    for (const file of ["events.jsonl", "instrument.jsonl", "findings.jsonl"]) {
+      const text = readFileSync(join(q.dir, file), "utf8");
+      expect(text).not.toMatch(/pat(@|%40)example\.org/);
+    }
+    expect(readFileSync(join(q.dir, "instrument.jsonl"), "utf8")).toContain("[masked]");
+  } finally { await w.quit("done").catch(() => {}); }
+});
