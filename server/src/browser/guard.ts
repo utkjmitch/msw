@@ -56,7 +56,7 @@ export function transactAllowed(run: RunConfig, journey: Journey): { ok: true } 
 export function adminAllowed(run: RunConfig, journey: Journey): { ok: true } | { ok: false; reason: string } {
   if (journey.audience !== "admin") return { ok: true };
   if (journey.mode !== "transact") return { ok: false, reason: "admin journeys run only in transact mode" };
-  if (run.environment.kind !== "test" || !run.environment.seeded_data)
-    return { ok: false, reason: "admin journeys need a test environment with seeded data (environment.seeded_data: true)" };
+  if (run.environment.kind !== "test" || !run.environment.test_copy || !run.environment.seeded_data)
+    return { ok: false, reason: "admin journeys need a test environment with seeded data on a test copy (environment.test_copy: true and environment.seeded_data: true)" };
   return { ok: true };
 }

@@ -382,3 +382,9 @@ test("payment fields known only by name or data-payment are masked when typed an
     expect(events.find(e => e.kind === "blocked").data.fields.map((x: { value: string }) => x.value)).toEqual(["[masked]", "[masked]", "[masked]"]);
   } finally { await w.quit("done").catch(() => {}); }
 }, 90_000);
+test("an admin journey on seeded data that is not a test copy is refused", async () => {
+  const f = setup(s.url, { role: "admin", audience: "admin", mode: "transact" });
+  f.run.allowed_for_transact = [s.url]; f.run.environment.seeded_data = true;
+  await expect(new WalkSession(f.run).start({ walker: f.walker, journey: f.journey, viewport: "desktop" }))
+    .rejects.toThrow("environment.test_copy: true");
+});

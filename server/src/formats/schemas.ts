@@ -49,8 +49,10 @@ export type Journey = z.infer<typeof Journey>;
 
 export const RunConfig = z.object({
   id: Id, out_dir: z.string().min(1),
-  // seeded_data: the test copy holds only made-up records. Admin journeys need it (spec 12).
-  environment: z.object({ name: z.string(), kind: z.enum(["live", "test"]), seeded_data: z.boolean().default(false) }),
+  // test_copy: this is a copy of the site, not the live one. seeded_data: the copy holds only made-up records.
+  // Admin journeys need both (spec 12). The name may not be blank, so the record says which copy was walked.
+  environment: z.object({ name: z.string().trim().min(1), kind: z.enum(["live", "test"]),
+    test_copy: z.boolean().default(false), seeded_data: z.boolean().default(false) }),
   allowed_for_transact: z.array(z.url()).default([]),
   payment_test_mode: z.boolean().default(false),
   mask_personal_data: z.boolean().default(true),
