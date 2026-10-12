@@ -38,6 +38,8 @@ export class WalkSession {
   private findings: Finding[] = []; private acts: ReplayStep[] = []; private ended?: string;
   // Records from a page the walk has not looked at yet wait here for that page's state.
   private unplaced: { page: string; write: (state?: string) => void }[] = []; private stateAt = new Map<string, string>();
+  // The visible fields of a form being submitted, masked, for a blocked submit's record (spec 5.6).
+  private submitting?: { label: string; type: string; value: string }[];
 
   constructor(private run: RunConfig, private headless = true, private reproduceFindings = true) {}
   get lastState(): string | undefined { return this.last?.state; }
@@ -181,7 +183,8 @@ export class WalkSession {
     else this.place(typeof r.detail.page === "string" ? r.detail.page : r.url, write);
   }
   private onBlocked(b: Blocked) {
-    this.place(b.page, st => this.log.append("blocked", { ...this.m(b) }, st));
+    const fields = b.why === "would-submit" ? this.submitting : undefined;
+    this.place(b.page, st => this.log.append("blocked", { ...this.m(b), ...(fields ? { fields } : {}) }, st));
     // A person never sees a page's background write, so the Walker is not told about one.
     if (b.why === "would-submit") this.pending.push("Nothing seemed to happen. This walk is read-only, so the form was not sent; carry on as if it had failed.");
     else if (b.why === "left-site") this.pending.push("That leads off this site, which this walk does not visit.");
@@ -283,14 +286,24 @@ export class WalkSession {
     const touch = VIEWPORTS[this.viewport].touch;
     const press = () => (touch ? h.tap({ timeout: 5_000 }) : h.click({ timeout: 5_000 }));
     // Touch taps do not wait for navigation. Register the wait before pressing.
-    const target = await h.evaluate((el: Element) => {
+    const { target, fields } = await h.evaluate((el: Element) => {
       const link = el.closest<HTMLAnchorElement>("a[href]");
       const control = el as HTMLButtonElement | HTMLInputElement;
       const form = ["BUTTON", "INPUT"].includes(el.tagName) && control.type === "submit"
         && control.form?.checkValidity() ? control.form : null;
-      if (!link && !form) return null;
-      return link?.target || control.getAttribute("formtarget") || form?.target || "_self";
+      const fields = form ? [...form.elements].flatMap(e => {
+        const f = e as HTMLInputElement; const r = f.getBoundingClientRect();
+        if (!("value" in f) || ["hidden", "submit", "button", "reset", "image"].includes(f.type) || !r.width || !r.height) return [];
+        return [{ label: (f.labels?.[0]?.textContent || f.getAttribute("aria-label") || f.name || "").replace(/\s+/g, " ").trim(),
+          type: f.type, autocomplete: (f.getAttribute("autocomplete") ?? "").toLowerCase(),
+          value: ["checkbox", "radio"].includes(f.type) ? String(f.checked) : f.value }];
+      }) : null;
+      if (!link && !form) return { target: null, fields };
+      return { target: link?.target || control.getAttribute("formtarget") || form?.target || "_self", fields };
     });
+    // Values are always masked here: payment and password fields by type, the rest for personal data.
+    this.submitting = fields?.map(f => ({ label: maskText(f.label), type: f.type,
+      value: f.value && isSecretField({ inputType: f.type, autocomplete: f.autocomplete }) ? "[masked]" : maskText(f.value) }));
     const navigation = target === "_blank"
       ? page.waitForEvent("popup", { timeout: 5_000 }).then(async p => {
         this.adopt(p); await p.waitForLoadState("domcontentloaded");
@@ -299,6 +312,6 @@ export class WalkSession {
     // An aborted navigation is expected when the guard blocks a request.
     const settled = navigation?.catch(() => {});
     try { await press(); if (a.how === "double-tap") await press().catch(() => {}); }
-    finally { await settled; }
+    finally { await settled; this.submitting = undefined; }
   }
 }

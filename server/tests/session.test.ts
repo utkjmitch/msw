@@ -219,3 +219,19 @@ test("each walk writes a manifest of its inputs, versions and times", async () =
     expect(ended.outcome).toEqual({ reason: "done", ended: null });
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("a blocked submit records the form's visible fields with masked values", async () => {
+  const f = setup(s.url + "pay.html"); const w = new WalkSession(f.run, true, false);
+  try {
+    let r = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    r = await w.act({ option: n(r, "Card number"), text: "4242424242424242", ratings: R(n(r, "Card number"), n(r, "Pay")), wharton: W }) as LookResult;
+    r = await w.act({ option: n(r, "Pay"), ratings: R(n(r, "Pay"), n(r, "Expiry")), wharton: W }) as LookResult;
+    expect(r.notes.join(" ")).toContain("read-only");
+    const q = await w.quit("done");
+    const blocked = readEvents(q.dir).find(e => e.kind === "blocked");
+    expect(blocked.data).toMatchObject({ why: "would-submit", fields: [
+      { label: "Card number", type: "text", value: "[masked]" },
+      { label: "Expiry", type: "text", value: "" },
+      { label: "Security code", type: "text", value: "" },
+    ] });
+  } finally { await w.quit("done").catch(() => {}); }
+}, 90_000);
