@@ -20,7 +20,8 @@ export interface LookResult { png: Buffer; text: string; url: string; options: s
 export interface ActArgs { option: number; text?: string; how?: "tap" | "double-tap" | "new-tab"; ratings?: Rating[]; wharton?: Wharton }
 export interface NoteArgs { kind: Finding["kind"]; severity: number; title: string; what_happened: string; expected: string }
 export interface QuitResult { dir: string; alive: boolean; failures: string[]; findings: number; verified: boolean }
-export interface ReplayStep { label: string; role: string; how: "tap" | "double-tap" | "new-tab"; text?: string; event: number }
+/** label: the display name, for finding text. key: the full unmasked name that identifies the control on replay. */
+export interface ReplayStep { label: string; key: string; role: string; how: "tap" | "double-tap" | "new-tab"; text?: string; event: number }
 type StartArgs = { walker: string; journey: string; viewport: ViewportName; locale?: string };
 /** Spec 5.4: a page whose load event takes longer than this costs one patience. */
 const SLOW_PAGE_MS = 3_000;
@@ -100,7 +101,7 @@ export class WalkSession {
     const how = a.how ?? "tap";
     const stored = a.text === undefined ? undefined : isSecretField(opt) ? "[masked]" : this.run.mask_personal_data ? maskText(a.text) : a.text;
     const ev = this.log.append("act", { option: a.option, label: optionLine(opt), how, text: stored, ratings: a.ratings, wharton }, last!.state);
-    this.acts.push({ label: opt.name, role: opt.role, how, text: a.text, event: ev.seq });
+    this.acts.push({ label: opt.name, key: opt.key, role: opt.role, how, text: a.text, event: ev.seq });
     this.steps += 1; this.budget.spendStep(); this.budget.charge("wharton-no", whartonNos(wharton));
     await this.perform(opt, a).catch(e => this.pending.push(`That did not work: ${String(e.message).split("\n")[0]}`));
     const walk = { origins: [this.journey.start_url, ...this.journey.origins] };
@@ -146,8 +147,10 @@ export class WalkSession {
   }
 
   async replayAct(step: ReplayStep): Promise<boolean> {
-    const opt = this.last?.options.find(o => o.name === step.label && o.role === step.role);
-    if (!opt) return false;
+    const matches = this.last?.options.filter(o => o.key === step.key && o.role === step.role) ?? [];
+    // Two controls with the same identity could replay the wrong one. That replay fails instead.
+    if (matches.length !== 1) return false;
+    const opt = matches[0];
     const other = this.last!.options.find(o => o.n !== opt.n);
     const ratings: Rating[] = [{ option: opt.n, score: 3, why: "replay" }, ...(other ? [{ option: other.n, score: 1 as const, why: "replay" }] : [])];
     const r = await this.act({ option: opt.n, text: step.text, how: step.how, ratings, wharton: { will_try: true, notices: true, associates: true, sees_progress: true } });
