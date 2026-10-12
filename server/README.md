@@ -98,7 +98,7 @@ A journey's `silly` block names a category and may add `conditions` and `moves`.
 | Condition | How it is applied |
 |---|---|
 | `network: slow-3g` | Chromium network emulation: 400 ms latency, 64 kB/s each way. It applies to every page in the walk, including new tabs and pop-ups. A pop-up opened by the site gets it once Playwright sees the pop-up, so its very first request may already be under way. |
-| `network: { offline_at_step: N, seconds: S }` | The browser goes offline after act N and comes back after S seconds. |
+| `network: { offline_at_step: N, seconds: S }` | The browser goes offline after act N and comes back after S seconds. If the walk ends first, the restore is cancelled. |
 | `text_scale: P` | **Approximation.** The root font size is set to P%. This matches browser text zoom only for sites sized in `rem` or `em`. The start event records this note. |
 | `color_scheme: dark` | `prefers-color-scheme: dark`. |
 | `reduced_motion: true` | `prefers-reduced-motion: reduce`. |

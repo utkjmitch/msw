@@ -40,6 +40,7 @@ export class WalkSession {
   private instrument: (InstrumentRecord & { step: number; event: number })[] = [];
   private findings: Finding[] = []; private acts: ReplayStep[] = []; private ended?: string;
   // Records from a page the walk has not looked at yet wait here for that page's state.
+  private timers = new Set<ReturnType<typeof setTimeout>>();
   private unplaced: { page: string; write: (state?: string) => void }[] = []; private stateAt = new Map<string, string>();
   // The visible fields of a form being submitted, masked, for a blocked submit's record (spec 5.6).
   private submitting?: { label: string; type: string; value: string }[];
@@ -114,7 +115,7 @@ export class WalkSession {
     this.acts.push({ label: opt.name, key: opt.key, role: opt.role, how, text: a.text, event: ev.seq });
     this.steps += 1; this.budget.spendStep(); this.budget.charge("wharton-no", whartonNos(wharton));
     await this.perform(opt, a).catch(e => this.pending.push(`That did not work: ${String(e.message).split("\n")[0]}`));
-    const walk = { origins: [this.journey.start_url, ...this.journey.origins] };
+    const walk = { origins: [this.journey.start_url, ...this.journey.origins], timers: this.timers };
     for (const c of await applyStepConditions(this.context!, this.page!, this.steps, this.cond, walk)) this.log.append("condition", { name: c, step: this.steps });
     // Spec 5.4: waiting is the Walker's own choice, so an unchanged page after a wait costs no patience.
     return this.arrive(opt.move === "wait" ? undefined : last!.state);
@@ -151,6 +152,7 @@ export class WalkSession {
 
   async quit(reason: "done" | "run-away" | "stuck", detail?: string): Promise<QuitResult> {
     if (!this.browser) throw new Error("no walk in progress");
+    for (const t of this.timers) clearTimeout(t); this.timers.clear();
     this.placeAll();
     if (reason === "run-away" || this.ended?.startsWith("run-away")) this.runAwayFloor(detail);
     try { this.log.append("quit", { reason, detail: this.m(detail) ?? null, ended: this.ended ?? null }); }

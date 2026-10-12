@@ -292,3 +292,18 @@ test("slow-3g applies to a page opened in a new tab, not only the first page", a
     await w.quit("done");
   } finally { await w.quit("done").catch(() => {}); }
 }, 120_000);
+test("the offline-restore timer cannot fire after the walk ends", async () => {
+  const f = setup(s.url, { moves: ["wait"], conditions: "{ network: { offline_at_step: 1, seconds: 15 } }" }); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const went = Date.now();
+    await w.act({ option: n(r0, "wait"), text: "1", ratings: R(n(r0, "wait"), n(r0, "About us")), wharton: W });
+    const ctx = (w as unknown as { context: import("playwright").BrowserContext }).context;
+    const calls: boolean[] = []; const real = ctx.setOffline.bind(ctx);
+    ctx.setOffline = (v: boolean) => { calls.push(v); return real(v); };
+    await w.quit("done");
+    expect(Date.now() - went).toBeLessThan(15_000);
+    await new Promise(r => setTimeout(r, Math.max(0, 16_000 - (Date.now() - went))));
+    expect(calls).toEqual([]);
+  } finally { await w.quit("done").catch(() => {}); }
+}, 120_000);

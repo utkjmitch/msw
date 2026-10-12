@@ -29,11 +29,13 @@ async function expireSession(context: BrowserContext, origins: string[]): Promis
   for (const k of await context.cookies(origins)) await context.clearCookies({ name: k.name, domain: k.domain, path: k.path });
 }
 export async function applyStepConditions(context: BrowserContext, page: Page, step: number, c: Conditions,
-  walk: { origins?: string[] } = {}): Promise<string[]> {
+  walk: { origins?: string[]; timers?: Set<ReturnType<typeof setTimeout>> } = {}): Promise<string[]> {
   const applied: string[] = [];
   if (typeof c.network === "object" && c.network.offline_at_step === step) {
     await context.setOffline(true);
-    setTimeout(() => { context.setOffline(false).catch(() => {}); }, c.network.seconds * 1000);
+    // The walk clears its timers when it ends, so a late restore never touches a closed walk.
+    const t = setTimeout(() => { walk.timers?.delete(t); context.setOffline(false).catch(() => {}); }, c.network.seconds * 1000);
+    walk.timers?.add(t);
     applied.push("offline");
   }
   if (c.rotate_at_step === step) {
