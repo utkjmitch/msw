@@ -12,7 +12,7 @@ Jimmy ruled on the six decisions in `docs/reports/2026-10-11-plan-a-build.md` on
 
 - Declined cookies do not yet block `Set-Cookie` storage (F15, second half).
 - The impossible-journey floor exists as a rule but nothing applies it yet (F18).
-- Long walk tests are close to their 30-second limit when the box is heavily loaded. The suite passed, but two of three runs had load timeouts. Base `a2ad9cf` has the same timeout.
+- Long walk tests are close to their 30-second limit when the box is heavily loaded. The suite passed, but four of six full runs had load timeouts. Base `a2ad9cf` has the same timeout.
 
 Each gap has a section below. The suite grew from 35 tests to 65. No existing assertion or severity floor was weakened. No existing test timeout was raised.
 
@@ -23,9 +23,13 @@ All gates were run from `server/` at the final code commit, except `git diff --c
 - `npm run typecheck`: exit 0.
 - `npm run build`: exit 0.
 - `git diff --check a2ad9cf HEAD`: no output, exit 0.
-- `npm test`: exit 0, `Tests  65 passed (65)` in 238 s, at load about 46. This was the third full run on the final code.
-  - The first run, at load 50 to 57, had three timeouts at 30 s. They were in the existing tests "a short walk", "a walker finding is reproduced by replay" and the new "a quit that fails still frees the server". All three passed when rerun alone, in 15, 26 and 17 s.
-  - The second run, at load 64 to 69, had one timeout: the existing replay test.
+- `npm test`: exit 0, `Tests  65 passed (65)`. Six full runs were made on the final code. Two passed and four had timeouts:
+  - Run 1, at load 50 to 57: three timeouts at 30 s. They were in the existing tests "a short walk" and "a walker finding is reproduced by replay", and in the new "a quit that fails still frees the server". All three passed when rerun alone, in 15, 26 and 17 s.
+  - Run 2, at load 64 to 69: one timeout, the existing replay test.
+  - Run 3, at load about 46: passed, 65 of 65, in 238 s.
+  - Runs 4 and 5, recorded as gate evidence, at load 41 to 55: one timeout each, the existing replay test.
+  - Run 6, recorded as gate evidence, at load about 19 to 24: passed, 65 of 65, in 190 s.
+  - At load 20, the replay test alone took 11.4 s on this branch and 12.3 s on base. My changes do not make it slower.
 
 The box's load average was 50 to 70 on 12 cores during these runs. Other processes on the box caused that load. Under it, `tests/replay.test.ts > a walker finding is reproduced by replay` runs two full walks and takes 22 to 30 seconds alone, against a 30-second limit.
 
@@ -33,7 +37,7 @@ The box's load average was 50 to 70 on 12 cores during these runs. Other process
 - Run alone, the same test passes on both commits: 22.5 s on base and 26.3 s on this branch.
 - Run alone, every test this branch adds passes. The new tests that run long walks have their own 90 or 120 second limits.
 
-Done when: all four gates exit zero. Met on the third test run. The recorded gate evidence for DONE.json is in `.mfx/evidence/`, which is not committed.
+Done when: all four gates exit zero. Met, but not on every run. The recorded gate evidence for DONE.json is in `.mfx/evidence/`, which is not committed.
 
 ## Ruling by ruling
 
@@ -197,7 +201,7 @@ Done when: the host has run the manual walk on the merged branch. Not done here,
 
 ```yaml
 decision: How should the suite handle a heavily loaded box?
-context: The existing replay test runs two walks in 30 seconds. On this box, at load 50 to 70, it timed out in the full suite on base and in two of three runs on this branch. I did not raise its limit, because the brief says never to weaken an existing test.
+context: The existing replay test runs two walks in 30 seconds. On this box, at load 50 to 70, it timed out in the full suite on base, and in four of six runs on this branch. I did not raise its limit, because the brief says never to weaken an existing test.
 options:
   a: Give that one test an explicit 120-second limit, as the new long tests have.
   b: Limit vitest to fewer parallel files on shared boxes.
