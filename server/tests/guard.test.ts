@@ -54,3 +54,22 @@ test("a background write to another origin is blocked as its own kind, not as le
     } finally { await ctx.close(); }
   }
 });
+test("a journey's payment origin takes writes in transact mode only", async () => {
+  for (const mode of ["transact", "read-only"] as const) {
+    const ctx = await browser.newContext(); const blocked: Blocked[] = [];
+    try {
+      await installGuard(ctx, { mode, origins: [s.url], payments: [s.otherOrigin], onBlocked: b => blocked.push(b) });
+      const p = await ctx.newPage(); await p.goto(s.url);
+      const path = `/pay-${mode}`;
+      await p.evaluate(url => fetch(url, { method: "POST", mode: "no-cors", body: "x" }).catch(() => {}), s.otherOrigin + path);
+      if (mode === "transact") { expect(s.posts).toContain(path); expect(blocked).toEqual([]); }
+      else { expect(s.posts).not.toContain(path); expect(blocked[0]).toMatchObject({ why: "background-write" }); }
+    } finally { await ctx.close(); }
+  }
+});
+test("payment origins need payment_test_mode in the run file", () => {
+  const j = { mode: "transact", origins: [], start_url: "https://dev.a.test/", payment_origins: ["https://pay.test/"] } as any;
+  const run = { environment: { kind: "test" }, allowed_for_transact: ["https://dev.a.test/"] };
+  expect(transactAllowed({ ...run, payment_test_mode: false } as any, j)).toEqual({ ok: false, reason: "payment origins need payment_test_mode: true in the run file" });
+  expect(transactAllowed({ ...run, payment_test_mode: true } as any, j).ok).toBe(true);
+});

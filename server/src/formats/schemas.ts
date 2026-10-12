@@ -39,6 +39,8 @@ export const Journey = z.object({
   success: z.array(z.string()).min(1), step_budget: z.number().int().min(1).max(200),
   mode: z.enum(["read-only", "transact"]).default("read-only"),
   origins: z.array(z.url()).default([]), storage_state: z.string().optional(),
+  // Payment providers a transact walk may write to (spec 5.6). Never used in read-only.
+  payment_origins: z.array(z.url()).default([]),
   viewports: z.array(ViewportNameZ).optional(), locales: z.array(z.string()).optional(),
   planned: z.boolean().default(false),
   silly: z.object({ category: SillyCategory, conditions: Conditions.default({}), moves: z.array(Move).default([]) }).optional(),

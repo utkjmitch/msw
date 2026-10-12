@@ -58,7 +58,7 @@ export class WalkSession {
     try {
       this.context = await this.browser.newContext(contextOptions(this.viewport, this.locale, this.cond, this.journey.storage_state));
       await this.context.addInitScript(VITALS_INIT);
-      await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], onBlocked: b => this.onBlocked(b) });
+      await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], payments: this.journey.payment_origins, onBlocked: b => this.onBlocked(b) });
       // axe opens a temporary page without an opener during analysis.
       this.context.on("page", async p => { if (await p.opener()) this.adopt(p); });
       const page = await this.context.newPage(); this.adopt(page);
