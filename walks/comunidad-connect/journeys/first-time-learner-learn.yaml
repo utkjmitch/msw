@@ -1,0 +1,19 @@
+id: first-time-learner-learn
+walker: first-time-learner
+audience: public
+goal: Work out who these people are, where they work and who they help, and one thing I could do besides give money
+start_url: https://www.comunidadconnect.org/
+arrival: search
+success:
+  - can say in one sentence what the organization does and where
+  - names one way to take part that is not a donation (volunteer, travel, share, attend)
+  - did not have to give an email or make an account to learn this
+step_budget: 15
+mode: read-only
+origins:
+  - https://www.comunidadconnect.org/
+  - https://comunidadconnect.org/
+payment_origins: []
+viewports: [phone]
+locales: [en-US, es-419]
+planned: false

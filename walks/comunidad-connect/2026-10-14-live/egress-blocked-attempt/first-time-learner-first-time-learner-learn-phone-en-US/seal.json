@@ -1,0 +1,13 @@
+{
+  "outcome": "stuck",
+  "ended": null,
+  "events": 8,
+  "head": "ce24606d55dbb8a508ef8a16465d6debc7d7d979553fb68413e41bb9342031a4",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "event 7 has no observed page state"
+  ],
+  "steps_used": 0,
+  "patience_charges": []
+}

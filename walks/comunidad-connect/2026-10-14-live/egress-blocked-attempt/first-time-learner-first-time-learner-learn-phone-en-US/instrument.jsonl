@@ -1,0 +1,4 @@
+{"type":"axe","url":"chrome-error://chromewebdata/","detail":{"id":"document-title","impact":"serious","help":"Documents must have <title> element to aid in navigation","nodes":1},"step":0,"event":4}
+{"type":"axe","url":"chrome-error://chromewebdata/","detail":{"id":"html-has-lang","impact":"serious","help":"<html> element must have a lang attribute","nodes":1},"step":0,"event":5}
+{"type":"vitals","url":"chrome-error://chromewebdata/","detail":{"lcp":null,"cls":0,"inp":null},"step":0,"event":6}
+{"type":"requestfailed","url":"https://www.comunidadconnect.org/","detail":{"error":"net::ERR_TUNNEL_CONNECTION_FAILED","page":"about:blank"},"step":0,"event":7}

@@ -1,0 +1,36 @@
+id: existing-donor
+name: Teresa
+summary: A monthly donor who wants to change her gift and catch up on news
+role: member
+story: >-
+  Teresa is fifty-five, a nurse manager, and has given twenty-five dollars a month for two years since she
+  traveled with the organization. Her daughter starts college next month and Teresa wants to lower the gift
+  for a while, not stop it. She also wants to see what has happened lately: news from the communities she
+  met, and stories from the people she worked beside. She is on her phone on the couch after a twelve-hour
+  shift. Today she is not signed in and does not remember how she set up the gift.
+hopes:
+  - find out how to change her monthly amount, ideally without phoning anyone
+  - read recent news and a story or two from the places she visited
+fears:
+  - accidentally cancelling the gift altogether
+  - being asked for a password she never set
+  - news that is a year old
+background: Bachelor's in nursing, twenty-five years in hospitals, traveled once with the organization
+motivation: Loyalty to people she met, and a budget that has to change for a while
+frustrations:
+  - being told to contact the office when a self-service link should exist
+  - log-in screens with no hint of which email she used
+  - news pages with no dates
+tech_literacy:
+  level: medium
+  note: Manages her own bills and streaming accounts online, mostly on her phone
+prior_knowledge:
+  - the organization's name and the community she visited
+  - she gives monthly by card, set up once on their website two years ago
+devices: [phone]
+locale: en-US
+patience: 7
+leave_triggers:
+  - no way to change a gift except by cancelling it
+  - the newest news item is more than six months old
+  - asked for a password she does not have, with no way to recover it

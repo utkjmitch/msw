@@ -1,0 +1,36 @@
+id: partner-seeker
+name: Ana
+summary: Owner of a small ecotourism and language-immersion outfit looking for a local partner
+role: visitor
+story: >-
+  Ana is thirty-eight and runs a five-person company that brings small groups of adults on ecotourism and
+  Spanish-immersion trips. Her clients keep asking for something that gives back: a day of service, a visit to
+  a school, a meal with a family. A guide she works with mentioned this organization. Ana is at her office
+  computer on a Tuesday morning. She wants to know if they take partners, what a partnership looks like, and
+  whom to write to, before she spends time on a call.
+hopes:
+  - learn whether the organization works with outside tour operators or groups
+  - see where they work and what a visiting group would actually do
+  - find a named person or a partnership inquiry route
+fears:
+  - partnership terms hidden behind a sales call
+  - a site that is only about donating
+  - finding out late that they only work with churches or schools
+background: Tourism degree, ten years as a guide, five years running her own company
+motivation: Her clients want service and connection, and a reliable local partner would set her trips apart
+frustrations:
+  - generic contact forms that disappear into nothing
+  - no addresses, regions or names on a site about places
+  - stock photos instead of real ones
+tech_literacy:
+  level: high
+  note: Runs her own booking site and social accounts; reads a site's structure quickly
+prior_knowledge:
+  - the organization's name, from a guide she works with
+  - that it does community work in Latin America
+devices: [desktop]
+locale: en-US
+patience: 6
+leave_triggers:
+  - no sign the organization works with partners or groups after four pages
+  - the only way to make contact is to donate or sign up for a newsletter
