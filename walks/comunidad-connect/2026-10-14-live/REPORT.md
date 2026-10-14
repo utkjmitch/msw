@@ -28,7 +28,7 @@
 
 ## 2. What unblocks the walk
 
-The host widens the box's egress allowlist. Then the walk runs as written:
+The host widens the box's egress allowlist (decision D-1 in `DECISIONS.md`). Then the walk runs as written:
 
 1. Add `(^|\.)comunidadconnect\.org$` to the `mac` profile's `DEV_TARGETS`, then `docker restart mf-proxy-mac` (see `macfactorybox/docs/OPERATIONS.md`, "Egress"). Also allow any host the site loads its scripts, fonts and images from. The walk itself is pinned to the site's origins, but missing assets would distort the instrument pass. `mfbox proxy-logs` lists what is refused.
 2. Check from the box: `curl -sS -o /dev/null -w '%{http_code}\n' https://www.comunidadconnect.org/` prints `200`.
