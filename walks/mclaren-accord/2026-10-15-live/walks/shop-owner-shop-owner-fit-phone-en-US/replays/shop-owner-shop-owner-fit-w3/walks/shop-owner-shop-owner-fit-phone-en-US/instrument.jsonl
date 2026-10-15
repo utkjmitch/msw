@@ -1,0 +1,8 @@
+{"type":"requestfailed","url":"https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?VER=8&database=projects%2Fmclarenaccordwebsite%2Fdatabases%2F(default)&RID=73698&CVER=22&X-HTTP-Session-Id=gsessionid&zx=s51jaepr2lrr&t=1","detail":{"error":"net::ERR_ABORTED","page":"https://mclarenaccord.com/"},"step":0,"event":4}
+{"type":"console","url":"https://mclarenaccord.com/","detail":{"text":"[[masked]T15:04:34.774Z]  @firebase/firestore: Firestore (12.17.0): Could not reach Cloud Firestore backend. Connection failed 1 times. Most recent error: FirebaseError: [code=unavailable]: The operation could not be completed\nThis typically indicates that your device does not have a healthy Internet connection at the moment. The client will operate in offline mode until it is able to successfully connect to the backend."},"step":0,"event":5}
+{"type":"requestfailed","url":"https://www.google.com/images/cleardot.gif?zx=y1f7wqjoewv1","detail":{"error":"net::ERR_TUNNEL_CONNECTION_FAILED","page":"https://mclarenaccord.com/"},"step":0,"event":6}
+{"type":"console","url":"https://mclarenaccord.com/","detail":{"text":"Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"},"step":0,"event":7}
+{"type":"vitals","url":"https://mclarenaccord.com/","detail":{"lcp":2836,"cls":0,"inp":1040},"step":0,"event":9}
+{"type":"vitals","url":"https://mclarenaccord.com/","detail":{"lcp":2836,"cls":0,"inp":1040},"step":1,"event":13}
+{"type":"vitals","url":"https://mclarenaccord.com/","detail":{"lcp":2836,"cls":0,"inp":1040},"step":2,"event":17}
+{"type":"vitals","url":"https://mclarenaccord.com/","detail":{"lcp":2836,"cls":0,"inp":1040},"step":3,"event":21}

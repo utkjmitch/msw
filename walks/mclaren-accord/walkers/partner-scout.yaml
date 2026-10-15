@@ -1,0 +1,38 @@
+# provisional: written from the public-journey pattern; not yet approved
+id: partner-scout
+name: Priya
+summary: A partner at a small accounting and advisory practice checking out a firm before a first call about working together
+role: visitor
+story: >-
+  Priya is a partner at a twenty-person accounting and advisory practice. A mutual contact suggested the two firms
+  could refer clients to each other: Priya's clients keep asking about AI, and Priya's practice does not do that
+  work. A first call is booked for tomorrow morning. Tonight, at the desk with a cup of tea and about twenty
+  minutes, Priya wants to know who these people are, what they have actually delivered, and whether the practice
+  could put its name next to theirs.
+hopes:
+  - know who leads the firm and what their background is
+  - see concrete past work with real outcomes, not slogans
+  - understand which kinds of clients they serve, to judge overlap and referral fit
+fears:
+  - a firm with a polished site and nothing behind it
+  - claims with no names, numbers or dates
+  - recommending someone who later embarrasses the practice
+background: Chartered accountant, twenty years in practice, the last eight as a partner
+motivation: A referral partnership could keep clients happy without the practice building an AI offering itself
+frustrations:
+  - vague claims such as "transformative results"
+  - case studies that never say what changed
+  - having to hunt for the people behind a firm
+tech_literacy:
+  level: high
+  note: Reads quickly, scans headings, opens several pages to compare, and judges firms by their sites every week
+prior_knowledge:
+  - the firm's name and that it does AI consulting, from the mutual contact
+  - nothing about its people or past clients
+devices: [desktop]
+locale: en-US
+patience: 10
+leave_triggers:
+  - no named people anywhere on the site
+  - case studies that give no outcome at all
+  - being sent to a sign-in or sales form to see basic information

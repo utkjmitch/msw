@@ -1,0 +1,20 @@
+{"type":"requestfailed","url":"https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?VER=8&database=projects%2Fmclarenaccordwebsite%2Fdatabases%2F(default)&RID=16732&CVER=22&X-HTTP-Session-Id=gsessionid&zx=gaeur0h4e2jb&t=1","detail":{"error":"net::ERR_ABORTED","page":"https://mclarenaccord.com/"},"step":0,"event":4}
+{"type":"console","url":"https://mclarenaccord.com/","detail":{"text":"[[masked]T15:11:14.806Z]  @firebase/firestore: Firestore (12.17.0): Could not reach Cloud Firestore backend. Connection failed 1 times. Most recent error: FirebaseError: [code=unavailable]: The operation could not be completed\nThis typically indicates that your device does not have a healthy Internet connection at the moment. The client will operate in offline mode until it is able to successfully connect to the backend."},"step":0,"event":5}
+{"type":"requestfailed","url":"https://www.google.com/images/cleardot.gif?zx=bepr5rhk0aez","detail":{"error":"net::ERR_TUNNEL_CONNECTION_FAILED","page":"https://mclarenaccord.com/"},"step":0,"event":6}
+{"type":"console","url":"https://mclarenaccord.com/","detail":{"text":"Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"},"step":0,"event":7}
+{"type":"vitals","url":"https://mclarenaccord.com/","detail":{"lcp":5452,"cls":0,"inp":392},"step":0,"event":9}
+{"type":"axe","url":"https://mclarenaccord.com/about","detail":{"id":"color-contrast","impact":"serious","help":"Elements must meet minimum color contrast ratio thresholds","nodes":2},"step":1,"event":14}
+{"type":"vitals","url":"https://mclarenaccord.com/about","detail":{"lcp":5452,"cls":0,"inp":400},"step":1,"event":15}
+{"type":"axe","url":"https://mclarenaccord.com/about","detail":{"id":"color-contrast","impact":"serious","help":"Elements must meet minimum color contrast ratio thresholds","nodes":2},"step":2,"event":19}
+{"type":"vitals","url":"https://mclarenaccord.com/about","detail":{"lcp":5452,"cls":0,"inp":400},"step":2,"event":20}
+{"type":"axe","url":"https://mclarenaccord.com/about","detail":{"id":"color-contrast","impact":"serious","help":"Elements must meet minimum color contrast ratio thresholds","nodes":2},"step":3,"event":25}
+{"type":"vitals","url":"https://mclarenaccord.com/about","detail":{"lcp":5452,"cls":0,"inp":792},"step":3,"event":26}
+{"type":"axe","url":"https://mclarenaccord.com/about","detail":{"id":"color-contrast","impact":"serious","help":"Elements must meet minimum color contrast ratio thresholds","nodes":2},"step":4,"event":30}
+{"type":"vitals","url":"https://mclarenaccord.com/about","detail":{"lcp":5452,"cls":0,"inp":792},"step":4,"event":31}
+{"type":"vitals","url":"https://mclarenaccord.com/capabilities","detail":{"lcp":5452,"cls":0,"inp":792},"step":5,"event":36}
+{"type":"vitals","url":"https://mclarenaccord.com/capabilities","detail":{"lcp":5452,"cls":0,"inp":792},"step":6,"event":40}
+{"type":"vitals","url":"https://mclarenaccord.com/capabilities","detail":{"lcp":5452,"cls":0,"inp":792},"step":7,"event":44}
+{"type":"requestfailed","url":"https://firestore.googleapis.com/google.firestore.v1.Firestore/Listen/channel?VER=8&database=projects%2Fmclarenaccordwebsite%2Fdatabases%2F(default)&RID=81878&CVER=22&X-HTTP-Session-Id=gsessionid&zx=pfuotvbg0ff4&t=1","detail":{"error":"net::ERR_ABORTED","page":"https://mclarenaccord.com/resources"},"step":8,"event":48}
+{"type":"requestfailed","url":"https://www.google.com/images/cleardot.gif?zx=e9p2w4bqxc0w","detail":{"error":"net::ERR_TUNNEL_CONNECTION_FAILED","page":"https://mclarenaccord.com/resources"},"step":8,"event":49}
+{"type":"console","url":"https://mclarenaccord.com/resources","detail":{"text":"Failed to load resource: net::ERR_TUNNEL_CONNECTION_FAILED"},"step":8,"event":50}
+{"type":"vitals","url":"https://mclarenaccord.com/resources","detail":{"lcp":5452,"cls":0.050555555555555555,"inp":792},"step":8,"event":52}

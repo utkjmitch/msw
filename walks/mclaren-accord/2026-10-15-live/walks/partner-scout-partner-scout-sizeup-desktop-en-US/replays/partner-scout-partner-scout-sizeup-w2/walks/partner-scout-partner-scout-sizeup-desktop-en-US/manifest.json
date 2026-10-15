@@ -1,0 +1,42 @@
+{
+  "run": {
+    "id": "mclaren-accord-2026-10-15-live",
+    "out_dir": "walks/mclaren-accord/2026-10-15-live/walks/partner-scout-partner-scout-sizeup-desktop-en-US/replays/partner-scout-partner-scout-sizeup-w2",
+    "environment": {
+      "name": "mclarenaccord.com live, logged out",
+      "kind": "live",
+      "test_copy": false,
+      "seeded_data": false
+    },
+    "allowed_for_transact": [],
+    "payment_test_mode": false,
+    "mask_personal_data": true
+  },
+  "inputs": {
+    "walker": {
+      "path": "walks/mclaren-accord/walkers/partner-scout.yaml",
+      "sha256": "fddfe34a3274b52a90520b23a6bf7038a6ddb12b25a27c70410f00c893c21fb5"
+    },
+    "journey": {
+      "path": "walks/mclaren-accord/journeys/partner-scout-sizeup.yaml",
+      "sha256": "b500c7c2ec42bcc9a92487ec086272761ece5b38b6827f9d615bd10b4741a538"
+    },
+    "viewport": "desktop",
+    "locale": "en-US"
+  },
+  "versions": {
+    "msw_server": "0.0.1",
+    "node": "v20.20.2",
+    "playwright": "1.63.0",
+    "chromium": "153.0.8010.12",
+    "axe_core": "4.13.0"
+  },
+  "times": {
+    "started": "2026-10-15T15:09:43.369Z",
+    "ended": "2026-10-15T15:11:36.366Z"
+  },
+  "outcome": {
+    "reason": "done",
+    "ended": null
+  }
+}

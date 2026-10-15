@@ -1,0 +1,11 @@
+{
+  "outcome": "stuck",
+  "ended": null,
+  "events": 24,
+  "head": "e287cfa1614f555dd8dcf20cfc36e1c463976327647bc82c7c04b9ec2b528645",
+  "verified": true,
+  "alive": true,
+  "failures": [],
+  "steps_used": 3,
+  "patience_charges": []
+}

@@ -1,0 +1,14 @@
+id: inspect-guide-2
+walker: inspector
+audience: public
+goal: Follow the guide I was given, step by step, exactly as written
+start_url: https://mclarenaccord.com/
+arrival: direct
+success:
+  - every step of the guide matched what was on the screen
+step_budget: 15
+mode: read-only
+origins: [https://mclarenaccord.com]
+payment_origins: []
+planned: false
+viewports: [desktop]

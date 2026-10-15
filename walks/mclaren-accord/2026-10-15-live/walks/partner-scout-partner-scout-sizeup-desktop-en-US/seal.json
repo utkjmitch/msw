@@ -1,0 +1,32 @@
+{
+  "outcome": "run-away",
+  "ended": null,
+  "events": 71,
+  "head": "de1d9fab18704d3a3951e61bc8f13c7376e3b159a3735c5b3ae02a6f46e47913",
+  "verified": true,
+  "alive": true,
+  "failures": [],
+  "steps_used": 12,
+  "patience_charges": [
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "repeat-state",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    }
+  ]
+}

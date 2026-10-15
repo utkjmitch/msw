@@ -1,0 +1,16 @@
+{
+  "outcome": "run-away",
+  "ended": null,
+  "events": 26,
+  "head": "6a25978e6e7234af01b963c59ffe2afb09c6d6b6036b6a00d239f8aca0f27e87",
+  "verified": true,
+  "alive": true,
+  "failures": [],
+  "steps_used": 3,
+  "patience_charges": [
+    {
+      "reason": "slow-page",
+      "n": 1
+    }
+  ]
+}

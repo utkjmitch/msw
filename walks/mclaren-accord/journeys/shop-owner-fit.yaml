@@ -1,0 +1,16 @@
+id: shop-owner-fit
+walker: shop-owner
+audience: public
+goal: Find out what this firm does, whether it would take on a business my size, and how I would start a conversation with them
+start_url: https://mclarenaccord.com/
+arrival: search
+success:
+  - can say in one sentence what the firm does
+  - has seen a sign that the firm works with small businesses or nonprofits, or has seen that it does not
+  - knows how to start a first conversation and what happens after, without sending anything
+step_budget: 15
+mode: read-only
+origins: [https://mclarenaccord.com]
+payment_origins: []
+planned: false
+viewports: [phone]

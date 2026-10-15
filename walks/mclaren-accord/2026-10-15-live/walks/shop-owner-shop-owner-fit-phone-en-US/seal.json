@@ -1,0 +1,11 @@
+{
+  "outcome": "run-away",
+  "ended": null,
+  "events": 25,
+  "head": "86db7d74324716b752f2d11ad9c36cf90dfffd9deae5849f279d1ae420c1bd8c",
+  "verified": true,
+  "alive": true,
+  "failures": [],
+  "steps_used": 3,
+  "patience_charges": []
+}

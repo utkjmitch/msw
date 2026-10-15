@@ -1,0 +1,14 @@
+{
+  "outcome": "done",
+  "ended": null,
+  "events": 20,
+  "head": "45a69bf8f169f30093f1b7c985d1ccb4d717f585acddc6e9e22106f4c062798b",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page 8a3b97aa has 1 screenshot",
+    "page 5241cc2f has 1 screenshot"
+  ],
+  "steps_used": 2,
+  "patience_charges": []
+}

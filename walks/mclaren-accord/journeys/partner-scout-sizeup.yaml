@@ -1,0 +1,16 @@
+id: partner-scout-sizeup
+walker: partner-scout
+audience: public
+goal: Before tomorrow's first call, find out who runs this firm, what they have actually delivered, and whether our clients would be a good fit for them
+start_url: https://mclarenaccord.com/
+arrival: search
+success:
+  - can name who leads the firm and one thing about their background
+  - has read at least one piece of past work that says what changed for the client
+  - can say which kinds of clients the firm serves
+step_budget: 18
+mode: read-only
+origins: [https://mclarenaccord.com]
+payment_origins: []
+planned: false
+viewports: [desktop]

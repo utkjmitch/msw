@@ -1,0 +1,11 @@
+{
+  "outcome": "done",
+  "ended": null,
+  "events": 22,
+  "head": "911744ef1f973616cf7d96cee5fb371da0f85debcefe47d33675009716a956e4",
+  "verified": true,
+  "alive": true,
+  "failures": [],
+  "steps_used": 2,
+  "patience_charges": []
+}

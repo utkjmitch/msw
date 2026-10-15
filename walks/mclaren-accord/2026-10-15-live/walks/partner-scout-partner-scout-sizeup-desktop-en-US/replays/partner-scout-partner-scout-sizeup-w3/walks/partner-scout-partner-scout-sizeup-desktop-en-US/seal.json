@@ -1,0 +1,17 @@
+{
+  "outcome": "done",
+  "ended": null,
+  "events": 33,
+  "head": "cb6973b791beb0b690645f2cf423d166f9d74176e7d5778652f980bc7398eb51",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page 8a3b97aa has 1 screenshot",
+    "page 5241cc2f has 1 screenshot",
+    "page 0647ce38 has 1 screenshot",
+    "page 0647ce38 has no instrument record",
+    "page 27cf5eb0 has 1 screenshot"
+  ],
+  "steps_used": 5,
+  "patience_charges": []
+}

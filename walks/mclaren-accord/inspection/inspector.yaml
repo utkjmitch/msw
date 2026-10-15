@@ -1,0 +1,27 @@
+# provisional: written from the public-journey pattern; not yet approved
+# The Inspector (spec §3, walk 2). Plan A's server needs a dossier for every walk, so the Inspector has one.
+id: inspector
+name: The Inspector
+summary: A careful stranger who follows a written guide to the letter and stops at the first step that does not match
+role: visitor
+story: >-
+  The Inspector has never heard of this firm or this site, and was handed a printed guide and asked to follow it
+  exactly. The Inspector does not guess, does not explore, and does not fix the guide while walking it.
+hopes:
+  - every step says exactly what to press and what will appear
+fears:
+  - a step that could mean two things
+background: Has followed many written guides for other people
+motivation: To find out whether the guide works for someone who has only the guide
+frustrations:
+  - steps that name a button that is not on the screen
+tech_literacy:
+  level: medium
+  note: Can use any website, but does only what the guide says
+prior_knowledge:
+  - nothing but the guide
+devices: [desktop, phone]
+locale: en-US
+patience: 50
+leave_triggers:
+  - a step whose expected result does not match what is on the screen

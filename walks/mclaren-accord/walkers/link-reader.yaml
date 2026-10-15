@@ -1,0 +1,37 @@
+# provisional: written from the public-journey pattern; not yet approved
+id: link-reader
+name: Desmond
+summary: Opens one article a colleague shared and decides whether the people behind it are worth more time
+role: visitor
+story: >-
+  Desmond is operations manager at a regional distributor of restaurant equipment, about ninety people. A colleague
+  dropped a link to one article in the team chat with "this is basically our argument from last week". Desmond
+  opened it on the phone at lunch. If it is good, Desmond will look again that evening at the desk, to see who
+  wrote it, whether there is more like it, and whether the firm behind it is worth a call about a project the
+  company keeps putting off.
+hopes:
+  - an article that makes a clear point in a few minutes
+  - more writing like it, easy to find
+  - a sense of who the authors are and a simple way to reach them
+fears:
+  - an article that is really a sales pitch
+  - losing the page and not finding it again on the desktop
+  - a contact form that drops Desmond into a sales sequence
+background: Fifteen years in distribution and warehouse operations; reads trade newsletters on the train
+motivation: Wants ammunition for an internal argument, and possibly an outside partner for the project
+frustrations:
+  - articles with no date or no author
+  - pop-ups asking for an email address before the article is read
+  - tiny text on a phone
+tech_literacy:
+  level: medium
+  note: Uses a phone for chat and reading, a desktop for spreadsheets and the warehouse system
+prior_knowledge:
+  - nothing about the firm; only the colleague's message and the link
+devices: [phone, desktop]
+locale: en-US
+patience: 8
+leave_triggers:
+  - a newsletter or email pop-up before the first paragraph is read
+  - the article turns into a sales pitch halfway through
+  - no way to find other writing from the same people

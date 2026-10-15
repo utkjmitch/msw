@@ -1,0 +1,22 @@
+# Silly walk (body-and-device): Marisol searches from the truck in a client's car park, where the phone has one bar.
+# Reason from the dossier: "searched for it on the phone in the truck, parked outside a client's office".
+id: shop-owner-one-bar
+walker: shop-owner
+audience: public
+goal: Find out what this firm does and how I would start a conversation with them, before my walkthrough starts
+start_url: https://mclarenaccord.com/
+arrival: search
+success:
+  - can say in one sentence what the firm does
+  - knows how to start a first conversation, without sending anything
+step_budget: 12
+mode: read-only
+origins: [https://mclarenaccord.com]
+payment_origins: []
+planned: false
+viewports: [phone]
+silly:
+  category: body-and-device
+  conditions:
+    network: slow-3g
+  moves: [reload]

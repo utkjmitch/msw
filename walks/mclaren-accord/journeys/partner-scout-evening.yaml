@@ -1,0 +1,24 @@
+# Silly walk (body-and-device): Priya does this homework in the evening, at the desk with tea,
+# with the computer set to dark mode and reduced motion, as it is every night after nine.
+# Reason from the dossier: "Tonight, at the desk with a cup of tea and about twenty minutes".
+id: partner-scout-evening
+walker: partner-scout
+audience: public
+goal: Tonight, find out who runs this firm and which kinds of clients they serve, before tomorrow's first call
+start_url: https://mclarenaccord.com/
+arrival: search
+success:
+  - can name who leads the firm and one thing about their background
+  - can say which kinds of clients the firm serves
+step_budget: 12
+mode: read-only
+origins: [https://mclarenaccord.com]
+payment_origins: []
+planned: false
+viewports: [desktop]
+silly:
+  category: body-and-device
+  conditions:
+    color_scheme: dark
+    reduced_motion: true
+  moves: []

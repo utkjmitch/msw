@@ -1,0 +1,16 @@
+id: link-reader-article
+walker: link-reader
+audience: public
+goal: Read the piece my colleague sent, then decide whether these people are worth reading more of or worth a call
+start_url: https://mclarenaccord.com/resources/measure-twice-cut-once
+arrival: shared-link
+success:
+  - can say the article's main point in one sentence
+  - has found other writing from the same firm, or knows there is none
+  - knows who the firm is and how to reach them, without sending anything
+step_budget: 15
+mode: read-only
+origins: [https://mclarenaccord.com]
+payment_origins: []
+planned: false
+viewports: [phone, desktop]

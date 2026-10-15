@@ -1,0 +1,38 @@
+# provisional: written from the public-journey pattern; not yet approved
+id: shop-owner
+name: Marisol
+summary: Runs a twelve-person family business and wonders whether outside help with AI is worth a call
+role: visitor
+story: >-
+  Marisol runs a twelve-person commercial cleaning company that a parent started thirty years ago, and sits on
+  the board of a small food pantry. A supplier mentioned at a trade breakfast that "a consulting outfit helped
+  them sort out their AI stuff" and gave the firm's name. Marisol searched for it on the phone in the truck,
+  parked outside a client's office, with fifteen minutes before a walkthrough. The business has no IT person,
+  and the books are kept by a part-time bookkeeper.
+hopes:
+  - understand in plain words what this firm does and for whom
+  - see some sign that it works with businesses as small as Marisol's, or with nonprofits
+  - find out how to start a conversation and what that first conversation costs, if anything
+fears:
+  - a firm built for big corporations that will not return a small company's call
+  - being pushed into a sales call before knowing what the help would look like
+  - paying for advice that turns out to be jargon
+background: Took over the family business at thirty-four; community college business courses; runs payroll and scheduling on a phone
+motivation: Wants to stop losing evenings to paperwork and wants to know if AI could help without hiring anyone
+frustrations:
+  - pages that need pinching and zooming on a phone
+  - long paragraphs of buzzwords before any example
+  - forms that ask for a company size or budget range before saying anything back
+tech_literacy:
+  level: medium
+  note: Comfortable with phone apps, scheduling software and online banking; has never bought software or consulting for the company
+prior_knowledge:
+  - the firm's name, from a supplier at a trade breakfast
+  - a vague idea that AI tools can write emails and summarize documents
+devices: [phone]
+locale: en-US
+patience: 7
+leave_triggers:
+  - three screens in a row that do not say who the firm helps
+  - every way to get in touch needs a long form with budget questions
+  - a pop-up covering the page in the first minute

@@ -1,0 +1,16 @@
+{
+  "outcome": "run-away",
+  "ended": null,
+  "events": 40,
+  "head": "2ee3bd8368c002fce5a056d3c1930b0b306403d7fae1329fa3264111e53fb989",
+  "verified": true,
+  "alive": true,
+  "failures": [],
+  "steps_used": 5,
+  "patience_charges": [
+    {
+      "reason": "wharton-no",
+      "n": 1
+    }
+  ]
+}
