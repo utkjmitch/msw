@@ -114,3 +114,37 @@ The eight headless sessions (six walks and two Inspections) used about 1.17 M to
 - `narration/`: each Walker's first-person account.
 - `walk-brief.md`, `run-walk.sh`: how each Walker was run.
 - `../inspection/`: the Inspector's dossier, brief, guides, journeys and results.
+
+## Decisions for Jimmy
+
+```yaml decision
+id: D-1
+question: Should the three provisional McLaren Accord Walkers become the site's approved public Walkers?
+options:
+  - approve as written — the next walk can be published once the Minister's Walk happens
+  - approve with edits — sharpen Marisol's "three screens" leave trigger to pages, then rerun
+  - replace them — write new Walkers from the run notes the spec names
+recommended: approve with edits
+rationale: [Likely] The three cover distinct needs and took different paths, but Marisol's trigger fired on three scrolls of one page, which ended both walks at step 3.
+evidence:
+  - walks/mclaren-accord/walkers/shop-owner.yaml
+  - walks/mclaren-accord/2026-10-15-live/narration/shop-owner-shop-owner-fit-phone.md
+disposition: none
+private: false
+```
+
+```yaml decision
+id: D-2
+question: How should a read-only walk treat a site's data reads that use POST, such as Firestore's Listen channel?
+options:
+  - per-journey read allowlist — name exact read endpoints such as the Firestore Listen URL; everything else stays blocked
+  - keep blocking all outside POSTs — safest, but Firestore, GraphQL and search sites render empty and those walks are void
+  - allow outside POSTs in read-only mode — simplest, but a script could send data the walk promised not to send
+recommended: per-journey read allowlist
+rationale: [Likely] The current rule voided two of three Walkers' main journeys here; an exact allowlist keeps the read-only promise while letting the page load.
+evidence:
+  - walks/mclaren-accord/2026-10-15-live/REPORT.md (Read this before the findings)
+  - server/README.md (Stay on the site rule)
+disposition: none
+private: false
+```
