@@ -1,0 +1,33 @@
+{
+  "outcome": "run-away",
+  "ended": null,
+  "events": 185,
+  "head": "8d437910e1b9829d82c4f7f67a478dcc00ba2bf4799c0e6d63d352fffffa8b24",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page c9ba7d25 has 1 screenshot",
+    "page 9194f94e has 1 screenshot",
+    "page 9194f94e has no instrument record",
+    "page 45316734 has 1 screenshot"
+  ],
+  "steps_used": 10,
+  "patience_charges": [
+    {
+      "reason": "slow-page",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    }
+  ]
+}

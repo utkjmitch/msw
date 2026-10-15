@@ -1,0 +1,33 @@
+{
+  "outcome": "done",
+  "ended": null,
+  "events": 147,
+  "head": "b3088968cd9983a1b50c291d04cd620e2e324263a3e9b15c4d4eb724f1be2157",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page 70ef3f40 has 1 screenshot",
+    "page 56326017 has 1 screenshot",
+    "page f8844f4f has 1 screenshot",
+    "page 37d30f86 has 1 screenshot",
+    "page a30ab530 has 1 screenshot",
+    "page f80a484c has 1 screenshot",
+    "page 9d331adf has 1 screenshot",
+    "page 9d331adf has no instrument record"
+  ],
+  "steps_used": 4,
+  "patience_charges": [
+    {
+      "reason": "slow-page",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 2
+    },
+    {
+      "reason": "no-change",
+      "n": 1
+    }
+  ]
+}

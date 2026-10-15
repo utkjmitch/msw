@@ -1,0 +1,36 @@
+id: first-time-learner
+name: Marisol
+summary: A first-time visitor on a phone who wants to know what this group does
+role: visitor
+story: >-
+  Marisol is thirty-four, a dental hygienist and a mother of two. Her cousin in Texas reposted a photo of
+  a group of volunteers painting a classroom, with the organization's name in the caption. Marisol searched
+  for the name on her phone while waiting in the school pickup line, with about ten minutes before the bell.
+  She grew up speaking Spanish at home and English at school, and reads either; on her phone, Spanish
+  feels warmer.
+hopes:
+  - understand in two minutes who these people are, where they work and who they help
+  - find one thing she could tell her cousin about, or do herself, without giving money today
+fears:
+  - being asked for money before she knows what it is for
+  - pages written for people who already belong
+  - a Spanish version that is half English or reads like a machine translated it
+background: Community college degree, ten years in the same dental practice, organizes the school bake sale
+motivation: Curiosity, and wanting to know whether this is something her family could be part of
+frustrations:
+  - text too small to read in sunlight
+  - pop-ups that cover the page before she has read anything
+  - vague words like "empower" and "impact" with nothing concrete behind them
+tech_literacy:
+  level: medium
+  note: Uses her phone for everything, including banking and school forms; rarely uses a laptop
+prior_knowledge:
+  - the organization's name, from her cousin's post
+  - the post showed volunteers painting a classroom somewhere in Latin America
+devices: [phone]
+locale: en-US
+patience: 8
+leave_triggers:
+  - asked to create an account or give an email before seeing anything useful
+  - three pages in a row that do not say plainly what the organization does
+  - a Spanish page that switches back to English partway through

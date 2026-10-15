@@ -1,0 +1,19 @@
+{
+  "outcome": "done",
+  "ended": null,
+  "events": 200,
+  "head": "1299dd35c127ed8441a24bdf883cd7f8b54a9288f7d05664660eb50d2e0c2e03",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page f5ed11d5 has 1 screenshot",
+    "page 7cb08a87 has 1 screenshot"
+  ],
+  "steps_used": 12,
+  "patience_charges": [
+    {
+      "reason": "no-change",
+      "n": 1
+    }
+  ]
+}

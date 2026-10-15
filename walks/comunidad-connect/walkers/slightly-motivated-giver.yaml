@@ -1,0 +1,39 @@
+id: slightly-motivated-giver
+name: Ruth
+summary: A retired schoolteacher who heard about the group at church and might give a modest gift
+role: visitor
+story: >-
+  Ruth is seventy-one and taught fourth grade for thirty-two years. Last Sunday a member of her church spoke
+  for five minutes about a trip she took with this organization, and a card went around with the name on it.
+  Ruth kept the card. Tonight, at the desk in her den, she typed the name into her computer. She is inclined
+  to send something, perhaps fifty dollars, but she wants to know it will go to people and not to overhead,
+  and she does not want to join anything.
+hopes:
+  - see who the money helps, in plain words and real pictures
+  - give a modest one-time gift without fuss
+  - a receipt she can show her tax preparer
+fears:
+  - being made to create an account or a password just to give
+  - being signed up for monthly giving without noticing
+  - her card details going somewhere she does not recognize
+background: Retired elementary teacher, widowed, active in a Methodist church, gives to three charities a year
+motivation: The talk at church moved her, and she likes to put money where she can see the people
+frustrations:
+  - small grey text
+  - forms that clear themselves when she makes one mistake
+  - buttons that do not look like buttons
+tech_literacy:
+  level: low
+  note: Uses email, reads the news online and has bought things on two or three websites; types slowly
+prior_knowledge:
+  - the organization's name from the card passed around at church
+  - a fellow church member traveled with them and talked about a school and families
+devices: [desktop]
+locale: en-US
+patience: 7
+accessibility:
+  - prefers larger text; reads with reading glasses
+leave_triggers:
+  - asked to create an account or a password before she can give
+  - cannot find out what her gift pays for before being asked for card details
+  - the amount or frequency changes without her choosing it

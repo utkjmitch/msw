@@ -1,0 +1,6 @@
+# Raw evidence too large for the repository (see REPORT.md, "Evidence kept out of git"):
+# full-size screenshots, replay walks and the Walker sessions' stream logs stay in the working tree.
+# The screenshots the report cites are added with git add -f.
+screens/
+replays/
+harness-logs/

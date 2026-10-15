@@ -64,7 +64,7 @@ There is no tool for page source, the DOM, scripts, typing an address, cookies o
 |---|---|
 | Rate before acting | `act` needs ratings for at least two different options (or the only one, if there is one), including the chosen option. Otherwise it is refused. |
 | Answer the four questions | `act` needs all four Wharton answers. A call with no `ratings` or no `wharton` reaches the session, which refuses it and logs a `refused` event. A call whose `ratings` or `wharton` has the wrong shape is still rejected by the tool's input schema and is not logged. |
-| Act on what you saw | `act` must follow a look of the same page state. If the page changed, or the chosen element is gone, the answer is "the page changed; look again". |
+| Act on what you saw | `act` must follow a look of the same page state. If the page changed, or the chosen element is gone, the answer is "the page changed; look again". One exception, for content that moves by itself (a carousel): if the address is the same and the chosen control is still there with the same kind, role and full name, and as many same-named twins as before, the server takes a look itself, logs it, and acts on that control. The act records `drift_from`, the state the Walker saw. |
 | No passwords | An `act` on a password field is refused. Logged-in journeys use a saved login (`storage_state`) prepared by a person. |
 | Moves must be allowed | `double-tap` and `new-tab` are refused unless the journey's silly walk lists them. |
 | Refusals are free | Every refusal the session sees is logged as a `refused` event and costs no step and no patience. |
@@ -160,6 +160,8 @@ Done when: a completed walk leaves its events, screenshots, instruments, finding
 ## One deliberate difference from the spec
 
 Spec 5.3 rule 2 says the server hashes the screenshot and the option list. This server hashes the address, the visible text and the option list instead. Screenshot bytes change with every animation frame and carousel slide. With them in the hash, every look would be a new page state and every act would be refused as stale.
+
+Visible text still changes with a carousel, so on such pages the drift rule in "Act on what you saw" applies. Spec 5.3 says nothing about it; the first Comunidad Connect walk needed it (`walks/comunidad-connect/2026-10-14-live/REPORT.md`, "What got in the way", item 1).
 
 Options are collected from visible DOM controls and accessible-name attributes, as written in plan A, rather than an accessibility snapshot.
 

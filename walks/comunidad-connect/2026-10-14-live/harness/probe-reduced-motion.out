@@ -1,0 +1,11 @@
+no-preference 4 [
+  undefined,
+  'New\nWelcome to Our Redesigned Website!',
+  'Bulletin\nWelcome to Our Redesigned Website!',
+  'Bulletin\nJuly 2026 Bulletin'
+]
+reduce 3 [
+  undefined,
+  'New\nWelcome to Our Redesigned Website!',
+  'Bulletin\nJuly 2026 Bulletin'
+]

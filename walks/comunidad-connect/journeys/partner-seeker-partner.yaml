@@ -1,0 +1,18 @@
+id: partner-seeker-partner
+walker: partner-seeker
+audience: public
+goal: Find out whether they work with small tour operators like mine, what a visiting group would do, and whom to write to
+start_url: https://www.comunidadconnect.org/
+arrival: search
+success:
+  - learns whether the organization takes outside partners or groups
+  - learns where it works and what a visiting group does there
+  - finds a contact route for a partnership inquiry, without submitting it
+step_budget: 18
+mode: read-only
+origins:
+  - https://www.comunidadconnect.org/
+  - https://comunidadconnect.org/
+payment_origins: []
+viewports: [desktop]
+planned: false
