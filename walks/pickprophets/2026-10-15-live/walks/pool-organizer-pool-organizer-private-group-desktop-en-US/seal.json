@@ -1,0 +1,19 @@
+{
+  "outcome": "run-away",
+  "ended": null,
+  "events": 89,
+  "head": "020ba19628c26abe29be4c4df16510be2e803fcd3d3c8338c90c5169b32e3f05",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page ed2467d4 has 1 screenshot",
+    "page 66d1be80 has 1 screenshot"
+  ],
+  "steps_used": 6,
+  "patience_charges": [
+    {
+      "reason": "no-change",
+      "n": 1
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PickProphets: live walk report, 2026-10-15</title>
+<style>
+:root{--bg:#fbfbfd;--fg:#1b1d23;--muted:#5b6070;--card:#fff;--line:#e3e5ec;--s3:#b42318;--s2:#b54708;--s1:#475467;--ok:#067647;--part:#b54708;--no:#b42318}
+@media (prefers-color-scheme:dark){:root{--bg:#121318;--fg:#e8e9ee;--muted:#a3a8b8;--card:#1c1e25;--line:#2e313b;--s3:#f97066;--s2:#fdb022;--s1:#98a2b3;--ok:#47cd89;--part:#fdb022;--no:#f97066}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;line-height:1.25;margin:.5rem 0 1rem}
+h2{font-size:1.2rem;margin:2rem 0 .75rem;border-bottom:1px solid var(--line);padding-bottom:.3rem}
+p,li{max-width:70ch}
+.muted{color:var(--muted);font-size:.9rem}
+.goals{display:grid;gap:8px}
+.goal{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.goal b{display:block}
+.tag{display:inline-block;font-weight:700;font-size:.8rem;padding:1px 8px;border-radius:99px;border:1px solid currentColor;margin-right:6px}
+.yes{color:var(--ok)}.partly{color:var(--part)}.no{color:var(--no)}
+.f{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin:12px 0}
+.f h3{margin:0 0 6px;font-size:1.02rem;line-height:1.35}
+.sev{font-weight:800;font-size:.8rem;padding:2px 8px;border-radius:6px;color:#fff;margin-right:6px;white-space:nowrap}
+.sev3{background:var(--s3)}.sev2{background:var(--s2)}.sev1{background:var(--s1)}
+dl{margin:6px 0;display:grid;grid-template-columns:max-content 1fr;gap:2px 10px}
+dt{color:var(--muted);font-size:.85rem}dd{margin:0}
+img{max-width:100%;height:auto;border:1px solid var(--line);border-radius:6px;display:block;margin-top:8px}
+.shots{display:flex;flex-wrap:wrap;gap:8px}.shots figure{margin:0;flex:1 1 220px;max-width:390px}
+figcaption{font-size:.8rem;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:.9rem}td,th{border:1px solid var(--line);padding:6px;text-align:left;vertical-align:top}
+.scroll{overflow-x:auto}
+code{font-size:.85em;overflow-wrap:anywhere}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px;font-size:.8rem}
+</style>
+</head>
+<body><main>
+<h1>PickProphets: live site walk, logged out, read-only</h1>
+<p class="muted">2026-10-15 · https://pickprophets.com/ · four public Walkers plus three silly walks · plan A walk server · no form submitted, no account made</p>
+
+<h2>Did each Walker reach their goal?</h2>
+<div class="goals">
+<div class="goal"><span class="tag no">No</span><b>Marcus, casual predictor (phone)</b>Ran away: the leaderboard said "0 Total Participants, No data available". This is likely caused by the walk server; see "Not confirmed" below.</div>
+<div class="goal"><span class="tag partly">Partly</span><b>Renee, pool organizer (desktop)</b>Ran away at the sign-up wall. Learned it is free; never learned whether a private group exists.</div>
+<div class="goal"><span class="tag partly">Partly</span><b>Renee, pool organizer (phone)</b>Ran away at the sign-in wall. Same answer; the wall fits the phone.</div>
+<div class="goal"><span class="tag yes">Yes, with doubts</span><b>Priya, data enthusiast (desktop)</b>Found a 10,000-run NBA simulation and a method panel, but everything dates from June.</div>
+<div class="goal"><span class="tag partly">Partly</span><b>Walt, insights follower (phone)</b>Read a dated explainer; nothing on an upcoming game; no way to follow without an account.</div>
+<div class="goal"><span class="tag no">No</span><b>Marcus, silly walk: slow 3G (phone)</b>The leaderboard spun for over 30 seconds, then showed 0 participants.</div>
+<div class="goal"><span class="tag partly">Partly</span><b>Walt, silly walk: text at 200% (phone)</b>Read the article, but the page shrank to a half-width strip and the menu ran off the screen.</div>
+<div class="goal"><span class="tag yes">Yes</span><b>Priya, silly walk: all cookies declined (desktop)</b>Nothing broke or nagged.</div>
+</div>
+<p><b>Wall reached:</b> the sign-up form asks for a Display Name, an Email and a Password, or "Sign in with Google". Sign in asks for an Email and a Password. Nothing was typed or sent.</p>
+
+<h2>Top 10 findings, by severity</h2>
+<p class="muted">Nielsen's 0–4 scale. "Floor" means the spec's floor set the severity (axe serious or critical: 3). Findings that probably come from the walk server are listed separately below.</p>
+
+<div class="f"><h3><span class="sev sev3">3</span>Large text collapses pages into a half-width strip</h3>
+<dl><dt>Walker</dt><dd>Walt, phone, text at 200% (silly walk)</dd><dt>Screen</dt><dd>Home and article</dd>
+<dt>Happened</dt><dd>With large text the page squeezed into a column about half the screen wide. On the home page the type got smaller, not bigger; on the article, three or four words fit on a line. The right half is blank and the menu runs past the edge. The server approximates text scale with the root font size, so confirm on a real phone.</dd>
+<dt>Expected</dt><dd>Large text that fills the width and wraps, with the menu fitting.</dd></dl>
+<div class="shots"><figure><img src="shots/home-large-text.jpg" alt="Home page at 200% text: content in a narrow left column, right half blank"><figcaption>Home, text 200%</figcaption></figure><figure><img src="shots/article-large-text.jpg" alt="Article at 200% text in a half-width column"><figcaption>Article, text 200%</figcaption></figure></div></div>
+
+<div class="f"><h3><span class="sev sev3">3</span>The only simulation is a finished series from June</h3>
+<dl><dt>Walker</dt><dd>Priya (desktop), Marcus (phone)</dd><dt>Screen</dt><dd>Play</dd>
+<dt>Happened</dt><dd>"NBA Finals 2026, Game 6: SAS @ NYK". The same card says "NYK lead 4–1" and championship odds "NYK 100.0%", so the series was over, yet it gives Game 6 win odds of 35.5% / 64.5%. Data line: "Updated Jun 19".</dd>
+<dt>Expected</dt><dd>Dated simulations of upcoming games; an archived example labeled as one.</dd></dl>
+<div class="shots"><figure><img src="shots/play-game6-desktop.jpg" alt="Play page with the NBA Finals Game 6 simulation card"><figcaption>Play, desktop</figcaption></figure></div></div>
+
+<div class="f"><h3><span class="sev sev3">3</span>Nothing says whether private groups exist, even at sign-up</h3>
+<dl><dt>Walker</dt><dd>Renee, desktop and phone</dd><dt>Screen</dt><dd>Home → Predict → Weekly Pick'em → sign-up</dd>
+<dt>Happened</dt><dd>Nothing on the way to the sign-up form says whether a private group or pool is possible, how to invite friends, or what friends must do. The home page says "Free to play, no stakes" and nothing about groups.</dd>
+<dt>Expected</dt><dd>A plain line on private groups and joining, before the sign-up.</dd></dl>
+<div class="shots"><figure><img src="shots/signup-wall-desktop.jpg" alt="Sign-up form: Display Name, Email, Password (blacked out by the walk server), Create Account, Sign in with Google"><figcaption>Sign-up wall (password field masked by the walk server)</figcaption></figure></div></div>
+
+<div class="f"><h3><span class="sev sev3">3</span>A usage ping is sent after "Reject All"</h3>
+<dl><dt>Walker</dt><dd>None saw it; from the server's blocked-request log</dd><dt>Screen</dt><dd>Every page</dd>
+<dt>Happened</dt><dd>After "Reject All", each page still sent <code>POST …cloudfunctions.net/usagePing</code> (Marcus's walk events 64 and 84; Priya's cookie-declined walk events 60, 90, 93, 104). The banner says "Nothing but the essentials runs until you choose". The server blocked them, so their content is unknown.</dd>
+<dt>Expected</dt><dd>No usage analytics after "Reject All", or the banner says the ping is essential.</dd><dt>Screenshot</dt><dd>None: a background request is not visible.</dd></dl></div>
+
+<div class="f"><h3><span class="sev sev3">3</span>Leaderboard tabs and sport picker have no names <span class="muted">(floor)</span></h3>
+<dl><dt>Walker</dt><dd>Marcus, phone</dd><dt>Screen</dt><dd>Leaderboard</dd>
+<dt>Happened</dt><dd>Four filter tabs are bare icons; the sport picker has no label. axe: <code>button-name</code> (critical, 4), <code>select-name</code> (critical, 1). Marcus could not tell what any tab would change.</dd>
+<dt>Expected</dt><dd>Text labels or accessible names.</dd></dl>
+<div class="shots"><figure><img src="shots/leaderboard-empty-phone.jpg" alt="Leaderboard on phone: icon-only tabs, All Time, This Year, This Month, This Week, All Sports, No data available"><figcaption>Leaderboard, phone</figcaption></figure></div></div>
+
+<div class="f"><h3><span class="sev sev3">3</span>Leaderboard has no page title and drops the site header <span class="muted">(floor)</span></h3>
+<dl><dt>Walker</dt><dd>Marcus, phone</dd><dt>Screen</dt><dd>Leaderboard</dd>
+<dt>Happened</dt><dd>No <code>&lt;title&gt;</code> (axe <code>document-title</code>, serious). The header loses Learn, Predict and Play, and the button reads "Sign In" instead of "Sign in". Marcus felt he had left the site.</dd>
+<dt>Expected</dt><dd>A page title and the same header as every page.</dd><dt>Screenshot</dt><dd>As above.</dd></dl></div>
+
+<div class="f"><h3><span class="sev sev3">3</span>Low text contrast on Play and the lab <span class="muted">(floor)</span></h3>
+<dl><dt>Walker</dt><dd>Priya, desktop; Renee, desktop</dd><dt>Screen</dt><dd>Play, MONTA CARLO lab, Weekly Pick'em</dd>
+<dt>Happened</dt><dd>axe <code>color-contrast</code> (serious): 11 elements on one look of Play, 1 on others; axe does not say which. Renee read the pale "Sign in to join" button as disabled.</dd>
+<dt>Expected</dt><dd>Contrast of at least 4.5:1.</dd></dl>
+<div class="shots"><figure><img src="shots/weekly-desktop.jpg" alt="Weekly Pick'em page with a pale Sign in to join button"><figcaption>Weekly Pick'em, desktop</figcaption></figure></div></div>
+
+<div class="f"><h3><span class="sev sev2">2</span>The leaderboard is only in the footer</h3>
+<dl><dt>Walker</dt><dd>Marcus, phone</dd><dt>Screen</dt><dd>Predict footer</dd>
+<dt>Happened</dt><dd>The only link to the standings is a small footer link beside Terms and Privacy; on the phone the cookie box covers it until dismissed. Marcus tried Play and Predict first.</dd>
+<dt>Expected</dt><dd>The standings in the top menu or on the home page.</dd><dt>Screenshot</dt><dd>See the leaderboard above.</dd></dl></div>
+
+<div class="f"><h3><span class="sev sev2">2</span>"Insights" are undated explainers, with no way to follow</h3>
+<dl><dt>Walker</dt><dd>Walt, phone</dd><dt>Screen</dt><dd>Explore insights → Learn</dd>
+<dt>Happened</dt><dd>"Explore insights" opens "Learn": four explainers, undated cards, none about this week's games. The article says "Updated Aug 2, 2026". No newsletter, follow or email option without an account.</dd>
+<dt>Expected</dt><dd>Dated pieces on upcoming games, and a light way to come back.</dd></dl>
+<div class="shots"><figure><img src="shots/learn-phone.jpg" alt="Learn page on phone with a featured explainer card and no date"><figcaption>Learn, phone</figcaption></figure></div></div>
+
+<div class="f"><h3><span class="sev sev2">2</span>Model claims without visible output or a track record</h3>
+<dl><dt>Walker</dt><dd>Priya, desktop</dd><dt>Screen</dt><dd>Home, Play, method panel</dd>
+<dt>Happened</dt><dd>The home page claims "16 ML bots to beat" and "213K games modeled", but neither is visible logged out. The method panel explains the 1–20 scale and a possession simulation "calibrated against real NBA data", with no track record or calibration. The margin chart has no y-axis.</dd>
+<dt>Expected</dt><dd>A sample of model output, a short track record, and labeled axes.</dd></dl>
+<div class="shots"><figure><img src="shots/method-panel-desktop.jpg" alt="How MONTA CARLO works panel over the matchup lab"><figcaption>Method panel, desktop</figcaption></figure></div></div>
+
+<p>Other findings: the sign-in box uses the browser's default serif font (severity 1; the run-away floor raised it to 3). Desktop LCP was 5.5 s, and CLS reached 0.24 on Learn and the lab; the box reaches the site through a proxy, so these timings are indicative only. Withdrawn: "MONTA CARLO" is a deliberate backronym, explained at the bottom of Play, not a typo.</p>
+
+<h2>Not confirmed: probably caused by the walk server</h2>
+<p>The site reads its data from Firestore over <code>POST</code> requests, and read-only mode blocks every <code>POST</code>. The server blocked 73 Firestore reads, 56 Firestore writes and 12 usage pings. These are not reported as site defects until a walk can let Firestore reads through:</p>
+<ul>
+<li>Leaderboard: "0 Total Participants, No data available"; on slow 3G, a spinner for over 30 seconds first.</li>
+<li>Predict: "No games on the board right now". Weekly Pick'em: "No NFL games scheduled yet", a dash for the week, inert week arrows and an inert "Sign in to join".</li>
+<li>Console errors on every page: Firestore connection failures, and CSP errors for <code>www.google.com/images/cleardot.gif</code> that Firestore loads while retrying.</li>
+</ul>
+<div class="shots"><figure><img src="shots/leaderboard-spinner-slow3g.jpg" alt="Leaderboard on slow 3G showing only a spinner"><figcaption>Leaderboard, slow 3G</figcaption></figure><figure><img src="shots/weekly-phone-next-week.jpg" alt="Weekly Pick'em on phone: No NFL games scheduled yet"><figcaption>Weekly Pick'em, phone, after "next week"</figcaption></figure></div>
+<p>Whether the site writes to Firestore for a logged-out visitor (56 blocked write requests) is worth a look by the owner.</p>
+
+<h2>Each Walker's story</h2>
+<p><b>Marcus</b>, 34, manages a tire shop and is on a ten-minute break. He wanted to check his cousin's claim to be "top of the board". He tried Play and Predict, found the footer link, and got an empty board. "Couldn't even find the standings."</p>
+<p><b>Renee</b>, 41, organizes her friends' pool every year. She read the home page, went to Weekly Pick'em &amp; Survivor (the survivor rules are clear), pressed "Sign in to join" (nothing happened), then reached the sign-up form. "It's free, but I couldn't tell if we can have our own group."</p>
+<p><b>Priya</b>, 29, data analyst. She went to Play and opened the MONTA CARLO lab and its "how it works" panel, which she found informative. With cookies declined it still ran. "Nice toy, but nothing current, and no way to tell whether it's any good."</p>
+<p><b>Walt</b>, 66, retired mail carrier. He read one explainer comfortably on the phone, but found nothing about this week's games. At 200% text the article took half the screen. "Some decent reading, nothing new."</p>
+
+<h2>The Inspection</h2>
+<p>A separate session on a different model (Claude Sonnet 5.5) got only the five-step guide and the walk-server tools. <b>Result: <code>## STATUS: PASS</code></b>; all five steps confirmed. Its suggestions: say the Play card is a results display, not the thing to press, and that the MONTA CARLO card sits next to "More experiments, soon". Plan A has no guide or inspect skill: the guide was written by hand, and the Inspector had to start as a Walker. No human has walked the guide yet.</p>
+
+<h2>Run health</h2>
+<div class="scroll"><table>
+<tr><th>Check</th><th>Result</th></tr>
+<tr><td>Signed events (<code>verified</code>)</td><td>true on all 8 Survey walks and the Inspection walk</td></tr>
+<tr><td>Dead Parrot (<code>alive</code>)</td><td>false on all 9. Pages change between the two arrival looks, so states get one screenshot each. Signed, not certified.</td></tr>
+<tr><td>Reproduction</td><td>13 of 24 Walker findings reproduced; most of the rest are on pages that fill in from Firestore</td></tr>
+<tr><td>Individuals</td><td>Not run (no tool). By hand: four different first moves</td></tr>
+<tr><td>Operator error</td><td>One act on Walt's walk used a stale option number and cost two patience</td></tr>
+</table></div>
+<p class="muted">Full Markdown report, decisions and evidence: REPORT.md, MSW-PLAN-B.md and walks/ in the same folder.</p>
+</main></body></html>

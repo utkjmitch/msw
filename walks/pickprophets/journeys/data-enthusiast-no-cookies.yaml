@@ -1,0 +1,20 @@
+id: data-enthusiast-no-cookies
+walker: data-enthusiast
+goal: See the site's simulated predictions for an upcoming game with every cookie declined, as I always browse
+arrival: shared-link
+success:
+  - sees at least one model output with cookies declined
+  - the site does not break or nag because cookies are refused
+step_budget: 10
+viewports: [desktop]
+silly:
+  category: privacy-minded
+  conditions:
+    cookies: declined
+  moves: []
+origins: ["https://pickprophets.com"]
+payment_origins: []
+planned: false
+mode: read-only
+audience: public
+start_url: https://pickprophets.com/

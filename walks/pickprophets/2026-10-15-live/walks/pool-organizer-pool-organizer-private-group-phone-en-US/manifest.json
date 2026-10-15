@@ -1,0 +1,42 @@
+{
+  "run": {
+    "id": "pickprophets-2026-10-15-live",
+    "out_dir": ".",
+    "environment": {
+      "name": "pickprophets-live",
+      "kind": "live",
+      "test_copy": false,
+      "seeded_data": false
+    },
+    "allowed_for_transact": [],
+    "payment_test_mode": false,
+    "mask_personal_data": true
+  },
+  "inputs": {
+    "walker": {
+      "path": "../walkers/pool-organizer.yaml",
+      "sha256": "475a271e06829b40c63652edff76a4a6072ddc0d550339fa3f1c8f8142f26cc0"
+    },
+    "journey": {
+      "path": "../journeys/pool-organizer-private-group.yaml",
+      "sha256": "b013e04341ba92e11e297d493dd99fa91c8bf2f22629ac9ef0914481199f739c"
+    },
+    "viewport": "phone",
+    "locale": "en-US"
+  },
+  "versions": {
+    "msw_server": "0.0.1",
+    "node": "v20.20.2",
+    "playwright": "1.63.0",
+    "chromium": "153.0.8010.12",
+    "axe_core": "4.13.0"
+  },
+  "times": {
+    "started": "2026-10-15T15:10:16.225Z",
+    "ended": "2026-10-15T15:13:25.213Z"
+  },
+  "outcome": {
+    "reason": "run-away",
+    "ended": null
+  }
+}

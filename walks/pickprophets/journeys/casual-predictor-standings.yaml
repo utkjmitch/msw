@@ -1,0 +1,15 @@
+id: casual-predictor-standings
+walker: casual-predictor
+goal: See who is on top of the rankings right now and roughly how they earned their points
+arrival: shared-link
+success:
+  - can see a ranking of players with their positions and points
+  - can say in one sentence what earns points
+step_budget: 12
+viewports: [phone]
+origins: ["https://pickprophets.com"]
+payment_origins: []
+planned: false
+mode: read-only
+audience: public
+start_url: https://pickprophets.com/

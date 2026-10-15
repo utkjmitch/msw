@@ -1,0 +1,30 @@
+{
+  "outcome": "run-away",
+  "ended": null,
+  "events": 75,
+  "head": "2b13a13139a369272cb8e297ec409281b5d68459b32314ca4e3c936018968846",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page 1006256b has 1 screenshot"
+  ],
+  "steps_used": 4,
+  "patience_charges": [
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "back",
+      "n": 1
+    },
+    {
+      "reason": "repeat-state",
+      "n": 1
+    }
+  ]
+}

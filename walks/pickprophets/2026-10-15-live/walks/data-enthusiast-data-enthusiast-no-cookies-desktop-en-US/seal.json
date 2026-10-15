@@ -1,0 +1,24 @@
+{
+  "outcome": "done",
+  "ended": null,
+  "events": 114,
+  "head": "cfe8604e9b0f305af0eca5aaacf62f3989a3cf113aad12a909fe7d211cd6cbd6",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page 993ff5d4 has 1 screenshot",
+    "page e9912082 has 1 screenshot",
+    "page d97d01a7 has 1 screenshot"
+  ],
+  "steps_used": 5,
+  "patience_charges": [
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "no-change",
+      "n": 1
+    }
+  ]
+}

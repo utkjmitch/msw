@@ -1,0 +1,19 @@
+id: insights-follower-large-text
+walker: insights-follower
+goal: Read a recent piece of analysis about an upcoming game without my glasses, with my phone's text made large
+arrival: direct
+success:
+  - opens and reads a dated analysis or news piece with nothing cut off or overlapping
+step_budget: 10
+viewports: [phone]
+silly:
+  category: body-and-device
+  conditions:
+    text_scale: 200
+  moves: []
+origins: ["https://pickprophets.com"]
+payment_origins: []
+planned: false
+mode: read-only
+audience: public
+start_url: https://pickprophets.com/

@@ -1,0 +1,34 @@
+id: casual-predictor
+name: Marcus
+summary: A casual predictor who checks where he stands among friends between other things
+role: visitor
+story: >-
+  Marcus is thirty-four and manages a tire shop. A cousin got him into making picks for big games, mostly so
+  they have something to argue about in the family group chat. He is not logged in on this phone; it is
+  his work phone, and he is standing in the shop's back room on a ten-minute break. The cousin bragged
+  that he is "top of the board", and Marcus wants to see the standings for himself before replying.
+hopes:
+  - see a ranking of players and how the top of it is scored, within a minute
+  - understand what earns points, so he can tell whether the cousin's brag means anything
+fears:
+  - having to make an account just to look at a table
+  - a table so wide on a phone that he has to scroll sideways to read one row
+background: Finished trade school; runs a team of five; follows football and basketball on TV
+motivation: Bragging rights in the family chat, and a little curiosity about whether he could beat his cousin
+frustrations:
+  - tables that do not fit on a phone screen
+  - pages that load in pieces and jump around while he is reading
+  - sports sites stuffed with ads and autoplay video
+tech_literacy:
+  level: medium
+  note: Comfortable with phone apps and sports scores apps; has never set up anything on a website himself
+prior_knowledge:
+  - the site's name, from the cousin's message
+  - that the site is about predicting game results
+devices: [phone]
+locale: en-US
+patience: 7
+leave_triggers:
+  - asked to sign up before seeing any standings
+  - cannot find any ranking of players in four or five taps
+  - the standings are unreadable on the phone

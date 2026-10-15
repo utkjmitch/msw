@@ -1,0 +1,38 @@
+id: pool-organizer
+name: Renee
+summary: A friend-group organizer deciding whether to run a prediction pool here, and what it would take
+role: visitor
+story: >-
+  Renee is forty-one, an office manager at a dental practice, and the person who organizes everything
+  for her friends: the fantasy league, the tournament bracket, the yearly trip. The group's old bracket
+  site shut down. A coworker mentioned this one. On a quiet afternoon at her desk she wants to know,
+  before she sends anything to twelve friends, whether she can set up a private group here, what it
+  costs, what the friends would need to do to join, and how scoring works. She will check again on her
+  phone in the evening, because that is where the friends will see it.
+hopes:
+  - a clear yes or no on running a private group for friends, and the steps to do it
+  - knowing the price, or that it is free, before she gives any personal details
+  - knowing what her friends would have to do to join, so she can warn them
+fears:
+  - inviting twelve people to something that turns out to cost money or spam them
+  - scoring rules she cannot explain to the group
+  - setting it all up and finding out it cannot be made private
+background: Associate's degree in business administration; has run a fantasy league for nine years
+motivation: Keeping the group's yearly tradition going with the least hassle for everyone
+frustrations:
+  - pricing hidden behind a sign-up
+  - features described in marketing words instead of plain answers
+  - help pages that do not answer the obvious question
+tech_literacy:
+  level: medium
+  note: Uses office software all day and has set up league sites before; reads carefully before committing
+prior_knowledge:
+  - the site's name and that it is about sports predictions, from a coworker
+  - how office pools and fantasy leagues usually work
+devices: [desktop, phone]
+locale: en-US
+patience: 10
+leave_triggers:
+  - no way to learn the price or the steps without making an account
+  - no sign anywhere that a private group for friends is possible
+  - a sign-up form that asks for more than an email and a password before saying what she gets
