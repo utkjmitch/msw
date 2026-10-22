@@ -153,7 +153,7 @@ evidence:
   - server/src/walk/session.ts
   - server/tests/drift.test.ts
   - walks/comunidad-connect/2026-10-14-live/REPORT.md
-disposition: none
+disposition: "ruled 2026-10-22 by Jimmy (PC chat, Accept all three recommendations): keep it and review it in plan B"
 private: false
 ```
 
@@ -169,7 +169,7 @@ rationale: [Likely] The signed events, findings and seals carry the audit trail;
 evidence:
   - walks/comunidad-connect/2026-10-14-live/.gitignore
   - walks/comunidad-connect/2026-10-14-live/REPORT.md
-disposition: none
+disposition: "ruled 2026-10-22 by Jimmy (PC chat, Accept all three recommendations): commit only text evidence and cited screenshots"
 private: false
 ```
 
@@ -185,6 +185,6 @@ rationale: [Likely] The findings are concrete and evidenced, but the spec requir
 evidence:
   - docs/superpowers/specs/2026-10-11-ministry-of-silly-walks-design.md
   - walks/comunidad-connect/2026-10-14-live/inspection/guide-partner-seeker.md
-disposition: none
+disposition: "ruled 2026-10-22 by Jimmy (PC chat, Accept all three recommendations): Minister's Walk first, then share as the before"
 private: false
 ```
