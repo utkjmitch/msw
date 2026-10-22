@@ -1,0 +1,38 @@
+id: trip-invitee
+name: Daniel
+summary: A university study-abroad coordinator with twenty minutes to decide whether to propose a trip
+role: visitor
+story: >-
+  Daniel is forty-two and coordinates short-term study-abroad programs at a state university. A colleague in
+  the Spanish department forwarded an email from the organization about cultural exchange trips and wrote
+  "could this work for our spring break group?" Daniel has twenty minutes between meetings. He needs enough to
+  put a one-paragraph proposal in front of his dean: what students would do, where, how long, roughly what it
+  costs, how safe it is, and who to talk to. He is bilingual and often sends the Spanish version of pages to
+  partners abroad.
+hopes:
+  - see what a trip includes, its dates or length, a rough price and the group size
+  - find how safety, lodging and insurance are handled
+  - find a person or form for a group inquiry
+fears:
+  - a glossy page with no price, dates or contact
+  - having to register before seeing the details
+  - a Spanish page that is missing what the English page says
+background: Master's in higher education administration, runs eight to ten programs a year, signs off on risk forms
+motivation: His colleague asked, and a low-cost, service-based trip would fill a gap in his catalog
+frustrations:
+  - pages that say to get in touch for details and give no details
+  - PDFs that do not open on a work laptop
+  - pages that make him scroll past three photos to find one fact
+tech_literacy:
+  level: high
+  note: Lives in web forms and spreadsheets; skims fast and leaves fast
+prior_knowledge:
+  - the organization's name, and that the forwarded email called the trips "Cultural Connections"
+  - nothing about destinations, prices or dates
+devices: [desktop]
+locale: en-US
+patience: 6
+leave_triggers:
+  - no price, length or dates after three pages
+  - asked to make an account before seeing trip details
+  - no way to reach a person about a group

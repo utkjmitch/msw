@@ -1,0 +1,48 @@
+{
+  "outcome": "run-away",
+  "ended": "run-away: patience",
+  "events": 235,
+  "head": "a49d961b85f34ee78c3f5c12e59ef70a1615a4423631130d5baf82b8f07f047c",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page f8844f4f has 1 screenshot",
+    "page 35b70b92 has 1 screenshot",
+    "page 23ff6740 has 1 screenshot",
+    "page 0c29a039 has 1 screenshot",
+    "page a30ab530 has 1 screenshot",
+    "page d8b3b625 has 1 screenshot",
+    "page f80a484c has 1 screenshot"
+  ],
+  "steps_used": 11,
+  "patience_charges": [
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "repeat-state",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 2
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "outcome": "stuck",
+  "ended": null,
+  "events": 101,
+  "head": "373fb49ab7bf2f829b80641ac42316f28896637d8ff22d45a52f94190f3725dc",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page 6523e8b7 has 1 screenshot",
+    "page d8aa46a5 has 1 screenshot",
+    "page 8b26dc9b has 1 screenshot",
+    "page f46ee30c has 1 screenshot",
+    "page f46ee30c has no instrument record",
+    "page 00baf82b has 1 screenshot",
+    "page 1917698a has 1 screenshot"
+  ],
+  "steps_used": 1,
+  "patience_charges": [
+    {
+      "reason": "slow-page",
+      "n": 1
+    }
+  ]
+}

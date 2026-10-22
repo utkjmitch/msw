@@ -1,0 +1,42 @@
+{
+  "outcome": "stuck",
+  "ended": null,
+  "events": 276,
+  "head": "5b2482fb8b1daa77ad8533b0bfef39d68281e46378b8941b9fff31ae2bee2ec5",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page 13fe986f has 1 screenshot",
+    "page 37d30f86 has 1 screenshot",
+    "page d51ed263 has 1 screenshot",
+    "page d51ed263 has no instrument record",
+    "page d8b3b625 has 1 screenshot",
+    "page bb4100eb has 1 screenshot",
+    "page bb4100eb has no instrument record",
+    "page 23ff6740 has 1 screenshot",
+    "page fb45fe04 has 1 screenshot",
+    "page a30ab530 has 1 screenshot",
+    "page ee469805 has 1 screenshot",
+    "page eb2156eb has 1 screenshot",
+    "page 6b1a996b has 1 screenshot"
+  ],
+  "steps_used": 16,
+  "patience_charges": [
+    {
+      "reason": "slow-page",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "repeat-state",
+      "n": 1
+    }
+  ]
+}

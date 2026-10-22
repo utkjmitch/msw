@@ -1,0 +1,18 @@
+id: slightly-motivated-giver-give
+walker: slightly-motivated-giver
+audience: public
+goal: See what a gift of about fifty dollars would pay for, then get as far as giving it once, without joining anything
+start_url: https://www.comunidadconnect.org/
+arrival: search
+success:
+  - can say what her gift pays for, from the site
+  - reaches the step where card details would be entered, for a one-time gift she chose
+  - was never required to create an account or a password on the way
+step_budget: 18
+mode: read-only
+origins:
+  - https://www.comunidadconnect.org/
+  - https://comunidadconnect.org/
+payment_origins: []
+viewports: [desktop]
+planned: false

@@ -1,0 +1,17 @@
+id: existing-donor-manage
+walker: existing-donor
+audience: public
+goal: Lower my monthly gift for a while without stopping it, and catch up on recent news and stories from the communities
+start_url: https://www.comunidadconnect.org/
+arrival: direct
+success:
+  - finds how a monthly donor changes the amount (a self-service route or a named contact), without cancelling
+  - reads a news item or story and can tell how recent it is
+step_budget: 18
+mode: read-only
+origins:
+  - https://www.comunidadconnect.org/
+  - https://comunidadconnect.org/
+payment_origins: []
+viewports: [phone]
+planned: false
