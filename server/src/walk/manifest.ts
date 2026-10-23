@@ -9,7 +9,7 @@ const req = createRequire(import.meta.url);
 const version = (load: () => { version?: string }) => { try { return load().version ?? "unknown"; } catch { return "unknown"; } };
 export interface Manifest {
   run: RunConfig;
-  inputs: { walker: { path: string; sha256: string }; journey: { path: string; sha256: string }; viewport: string; locale: string };
+  inputs: { walker: { path: string; sha256: string }; journey: { path: string; sha256: string }; viewport: string; locale: string; read_channels?: unknown[] };
   versions: Record<string, string>;
   times: { started: string; ended: string | null };
   outcome: { reason: string; ended: string | null } | null;

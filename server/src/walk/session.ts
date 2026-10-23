@@ -1,5 +1,5 @@
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
-import { mkdirSync, writeFileSync, appendFileSync, rmSync } from "node:fs";
+import { mkdirSync, writeFileSync, appendFileSync, rmSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { loadWalker, loadJourney } from "../formats/load.js";
@@ -11,7 +11,7 @@ import { checkAct, whartonNos, type Rating, type Wharton } from "./rules.js";
 import { deadParrot } from "./parrot.js";
 import { installGuard, transactAllowed, adminAllowed, type Blocked } from "../browser/guard.js";
 import { perceive, optionLine, type Perception, type Option } from "../browser/perceive.js";
-import { maskText, maskDeep, isSecretField, PAYMENT_SELECTOR } from "../browser/mask.js";
+import { maskText, maskDeep, isSecretField, setMaskNames, PAYMENT_SELECTOR } from "../browser/mask.js";
 import { contextOptions, setupConditions, applyStepConditions, emulateNetwork } from "../browser/conditions.js";
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
 import { reproduce } from "./replay.js";
@@ -53,7 +53,10 @@ export class WalkSession {
   // The visible fields of a form being submitted, masked, for a blocked submit's record (spec 5.6).
   private submitting?: { label: string; type: string; value: string }[];
 
-  constructor(private run: RunConfig, private headless = true, private reproduceFindings = true) {}
+  constructor(private run: RunConfig, private headless = true, private reproduceFindings = true) {
+    // The names file stays outside the run folder; only its path is in the manifest.
+    setMaskNames(run.mask_names_file ? readFileSync(run.mask_names_file, "utf8").split("\n") : []);
+  }
   get lastState(): string | undefined { return this.last?.state; }
   /** Every text record goes through this before it is written or returned (spec 12). */
   private m<T>(v: T): T { return this.run.mask_personal_data ? maskDeep(v) : v; }
@@ -80,14 +83,15 @@ export class WalkSession {
     this.budget = new Budget(this.journey.step_budget, this.walker.patience);
     try {
       this.browser = await chromium.launch({ headless: this.headless });
-      this.manifest = { run: this.run, inputs: { walker: fileInput(a.walker), journey: fileInput(a.journey), viewport: this.viewport, locale: this.locale },
+      this.manifest = { run: this.run, inputs: { walker: fileInput(a.walker), journey: fileInput(a.journey), viewport: this.viewport, locale: this.locale, read_channels: this.journey.read_channels },
         versions: versions(this.browser), times: { started: new Date().toISOString(), ended: null }, outcome: null };
       writeManifest(join(this.dir, "manifest.json"), this.manifest);
       this.context = await this.browser.newContext(contextOptions(this.viewport, this.locale, this.cond, this.journey.storage_state));
       this.context.once("close", () => this.clearTimers());
       await this.context.addInitScript(REAL_PERFORMANCE_INIT);
       await this.context.addInitScript(VITALS_INIT);
-      await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], payments: this.journey.payment_origins, onBlocked: b => this.onBlocked(b) });
+      await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], payments: this.journey.payment_origins,
+        reads: this.journey.read_channels, onBlocked: b => this.onBlocked(b), onRead: r => this.place(r.page, st => this.log.append("read", { ...this.m(r) }, st)) });
       // axe opens a temporary page without an opener during analysis.
       this.context.on("page", async p => { if (await p.opener()) await this.adopt(p); });
       const page = await this.context.newPage(); await this.adopt(page);
@@ -115,7 +119,7 @@ export class WalkSession {
     if (!this.browser) throw new Error("no walk in progress");
     if (this.ended) return { refused: `the walk has ended (${this.ended})` };
     let last = this.last;
-    const now = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length });
+    const now = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length, maskSelectors: this.run.mask_selectors });
     // A page that moves by itself (a carousel, a ticker) changes its state between the look and the act. If the address
     // is the same and the chosen control is still there, with the same identity and as many twins in the same order,
     // the server looks again itself, logs that look, and acts on the control there. Anything else is still refused.
@@ -292,7 +296,7 @@ export class WalkSession {
   private async snap(): Promise<Perception & { seq: number }> {
     let p: Perception;
     for (let tries = 1; ; tries++) {
-      try { p = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length }); break; }
+      try { p = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length, maskSelectors: this.run.mask_selectors }); break; }
       catch (e) {
         // a click can start a navigation after settle() returned; look again once the new page has loaded
         if (tries >= 3 || !/Execution context was destroyed|navigation/i.test(String(e))) throw e;

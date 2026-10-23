@@ -1,5 +1,6 @@
 // schemas.ts
 import { z } from "zod";
+import { ReadChannelZ } from "../browser/read-channels.js";
 const Id = z.string().regex(/^[a-z0-9-]+$/);
 export const ViewportNameZ = z.enum(["phone-small", "phone", "tablet", "desktop"]);
 export const Role = z.enum(["visitor", "member", "admin"]);
@@ -41,6 +42,8 @@ export const Journey = z.object({
   origins: z.array(z.url()).default([]), storage_state: z.string().optional(),
   // Payment providers a transact walk may write to (spec 5.6). Never used in read-only.
   payment_origins: z.array(z.url()).default([]),
+  // POST requests a read-only walk lets through because they only read (plan B, task 1). None by default.
+  read_channels: z.array(ReadChannelZ).default([]),
   viewports: z.array(ViewportNameZ).optional(), locales: z.array(z.string()).optional(),
   planned: z.boolean().default(false),
   silly: z.object({ category: SillyCategory, conditions: Conditions.default({}), moves: z.array(Move).default([]) }).optional(),
@@ -56,6 +59,14 @@ export const RunConfig = z.object({
   allowed_for_transact: z.array(z.url()).default([]),
   payment_test_mode: z.boolean().default(false),
   mask_personal_data: z.boolean().default(true),
+  // Names to hide as [name] in screenshots and text records, one per line, in a file kept outside the run folder
+  // so the list itself is not part of the evidence. Applied only while mask_personal_data is on.
+  mask_names_file: z.string().optional(),
+  // CSS selectors for elements boxed out of every screenshot (a logo, a column of names). Their text is not changed.
+  mask_selectors: z.array(z.string().min(1)).default([]),
+  // A person's written permission for read-only admin walks on this environment, when it is not a seeded test copy.
+  // Who gave it, the date (YYYY-MM-DD) and their words. Transact admin walks still need a seeded test copy (spec 12).
+  admin_read_only: z.object({ authorized_by: z.string().trim().min(1), authorized_on: z.iso.date(), quote: z.string().trim().min(1) }).optional(),
 });
 export type RunConfig = z.infer<typeof RunConfig>;
 
