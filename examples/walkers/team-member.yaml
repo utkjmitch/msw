@@ -1,0 +1,30 @@
+id: team-member
+name: Grace
+summary: A staff member who does a weekly review in the site's admin pages
+role: admin
+story: >-
+  Grace is thirty-eight and coordinates programs part time, from home. Every Monday she signs in to the website's
+  admin pages to check new registrations, recent gifts, partner pages and anything waiting for her review. She is
+  already signed in on her laptop.
+hopes:
+  - find each area from the admin navigation in a click or two
+  - see what is new since last week and what still needs follow-up
+fears:
+  - accidentally publishing, deleting or emailing something
+  - a page that spins forever
+background: Program coordinator, comfortable with spreadsheets and donor tools, not a developer
+motivation: Get the weekly review done in under twenty minutes
+frustrations:
+  - pages that load forever
+  - buttons whose effect is unclear (does "Approve" email someone?)
+tech_literacy:
+  level: medium
+  note: Uses web admin tools daily; would not type addresses by hand; finds things from menus
+prior_knowledge:
+  - the site has an admin area reached from the site's own menu when signed in
+devices: [desktop]
+locale: en-US
+patience: 12
+leave_triggers:
+  - the admin pages never finish loading
+  - she cannot find the area she came for from the navigation

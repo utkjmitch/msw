@@ -9,6 +9,9 @@ test("example files load", async () => {
   const j = await loadJourney("../examples/journeys/first-timer-learn.yaml");
   const r = await loadRun("../examples/run.json");
   expect(w.role).toBe("visitor"); expect(j.mode).toBe("read-only"); expect(r.mask_personal_data).toBe(true);
+  const tw = await loadWalker("../examples/walkers/team-member.yaml");
+  const tj = await loadJourney("../examples/journeys/team-member-review.yaml");
+  expect(audienceAllowed(tw.role, tj.audience)).toBe(true); expect(tj.mode).toBe("read-only"); expect(tj.read_channels).toHaveLength(2);
 });
 test("journey goal may not be empty and budget is bounded", () => {
   const base = { id: "x", walker: "w", audience: "public", goal: "find out", start_url: "https://a.test/", arrival: "direct", success: ["s"], step_budget: 10 };
