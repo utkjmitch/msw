@@ -76,3 +76,9 @@ test("names the run hides are masked in text, in URLs and on the page for the sc
     await ctx.close();
   } finally { setMaskNames([]); }
 });
+test("the walk browser takes the box's proxy from the environment, so the server's own fetches go through it too", async () => {
+  const { proxyFromEnv } = await import("../src/walk/session.js");
+  expect(proxyFromEnv({})).toBeUndefined();
+  expect(proxyFromEnv({ HTTPS_PROXY: "http://proxy:8888", NO_PROXY: "localhost,127.0.0.1" })).toEqual({ server: "http://proxy:8888", bypass: "localhost,127.0.0.1" });
+  expect(proxyFromEnv({ http_proxy: "http://p:1" })).toEqual({ server: "http://p:1" });
+});

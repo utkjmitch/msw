@@ -36,6 +36,15 @@ const find = (now: Option[], before: Option[], o: Option | undefined) => {
   const was = before.filter(x => sameControl(x, o)); const is = now.filter(x => sameControl(x, o));
   return was.length === is.length ? is[was.indexOf(o)] : undefined;
 };
+/**
+ * The box's egress proxy, from the environment. Chromium finds it by itself, but the server's own fetch for a write
+ * or a read channel it lets through (route.fetch) does not; without this, every such request fails behind a proxy.
+ */
+export const proxyFromEnv = (env: NodeJS.ProcessEnv = process.env) => {
+  const server = env.HTTPS_PROXY || env.https_proxy || env.HTTP_PROXY || env.http_proxy;
+  const bypass = env.NO_PROXY || env.no_proxy;
+  return server ? { server, ...(bypass ? { bypass } : {}) } : undefined;
+};
 const REAL_PERFORMANCE_INIT = `Object.defineProperty(window, "__mswPerformance", { value: performance });`;
 
 export class WalkSession {
@@ -82,7 +91,7 @@ export class WalkSession {
     this.log = new EventLog(events);
     this.budget = new Budget(this.journey.step_budget, this.walker.patience);
     try {
-      this.browser = await chromium.launch({ headless: this.headless });
+      this.browser = await chromium.launch({ headless: this.headless, proxy: proxyFromEnv() });
       this.manifest = { run: this.run, inputs: { walker: fileInput(a.walker), journey: fileInput(a.journey), viewport: this.viewport, locale: this.locale, read_channels: this.journey.read_channels },
         versions: versions(this.browser), times: { started: new Date().toISOString(), ended: null }, outcome: null };
       writeManifest(join(this.dir, "manifest.json"), this.manifest);
