@@ -3,5 +3,6 @@
 <label for="q">Type a role</label><input id="q" role="combobox" aria-expanded="false" aria-autocomplete="list">
 <label for="s">Team size</label><select id="s"><option>Small</option><option>Large</option></select>
 <p id="echo"></p>
+<ul role="listbox" aria-label="Roles"><li role="option" aria-selected="false" onclick="location.href='about.html'">Registered Nurses</li></ul>
 <script>document.getElementById("q").addEventListener("input", e => { document.getElementById("echo").textContent = "Results for " + e.target.value; });</script>
 </main></body></html>
