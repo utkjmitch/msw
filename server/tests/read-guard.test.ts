@@ -82,3 +82,15 @@ test("the walk browser takes the box's proxy from the environment, so the server
   expect(proxyFromEnv({ HTTPS_PROXY: "http://proxy:8888", NO_PROXY: "localhost,127.0.0.1" })).toEqual({ server: "http://proxy:8888", bypass: "localhost,127.0.0.1" });
   expect(proxyFromEnv({ http_proxy: "http://p:1" })).toEqual({ server: "http://p:1" });
 });
+test("a hidden name can say what it is, so a Walker can still tell the hidden thing apart", async () => {
+  const { setMaskNames, maskText, maskPage } = await import("../src/browser/mask.js");
+  try {
+    setMaskNames(["Acme Deaf Fund=Deaf program", "Acme"]);
+    expect(maskText("Give to Acme Deaf Fund, run by Acme")).toBe("Give to [Deaf program], run by [name]");
+    expect(maskText("/programs/acme-deaf-fund")).toBe("/programs/[Deaf program]");
+    const ctx = await browser.newContext(); const p = await ctx.newPage();
+    await p.setContent("<select><option>Where it is needed</option><option id='o'>Acme Deaf Fund</option></select>");
+    const restore = await maskPage(p); expect(await p.textContent("#o")).toBe("[Deaf program]");
+    await restore(); await ctx.close();
+  } finally { setMaskNames([]); }
+});
