@@ -355,7 +355,9 @@ export class WalkSession {
     }
     const h = opt.handle!;
     if ((opt.role === "textbox" || opt.role === "combobox") && a.text !== undefined) {
-      if (opt.role === "combobox") await h.selectOption({ label: a.text }); else await h.fill(a.text);
+      // Only a real <select> takes selectOption. An input with role="combobox" (a search-as-you-type box) takes typing.
+      const isSelect = await h.evaluate(el => (el as Element).tagName === "SELECT");
+      if (isSelect) await h.selectOption({ label: a.text }); else await h.fill(a.text);
       return;
     }
     if (a.how === "new-tab") {

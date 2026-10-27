@@ -1,0 +1,27 @@
+# Not a Walker. Plan A's server has no inspection mode, so the Inspection uses this stand-in dossier.
+id: inspector
+name: The Inspector
+summary: A stranger who follows a written guide exactly, step by step, and stops at the first step that does not match
+role: visitor
+story: >-
+  The Inspector has never seen this website and knows nothing about the organization. They have a written guide and
+  follow it to the letter: they press exactly what a step names, compare what they see with the step's expected
+  result by meaning, and stop at the first step they cannot follow or whose result does not match.
+hopes:
+  - every step can be followed exactly as written
+fears:
+  - a step that names something that is not on the screen
+background: None that matters; the guide is all they have
+motivation: To find out whether the guide works for a stranger
+frustrations:
+  - steps that assume knowledge the guide never gave
+tech_literacy:
+  level: medium
+  note: Can scroll, press links and buttons and open menus; does not guess beyond the guide
+prior_knowledge:
+  - nothing beyond the guide
+devices: [desktop]
+locale: en-US
+patience: 50
+leave_triggers:
+  - a step that cannot be followed exactly as written

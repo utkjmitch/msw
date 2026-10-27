@@ -1,0 +1,33 @@
+{
+  "outcome": "stuck",
+  "ended": null,
+  "events": 179,
+  "head": "dec19aa531a0fcb50e19e7034d5d20525aeb8eb3667c8e4e13a817299e61ee9b",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page 09c4b5df has 1 screenshot",
+    "page 1917698a has 1 screenshot",
+    "page 0d30fca1 has 1 screenshot",
+    "page 76653281 has 1 screenshot"
+  ],
+  "steps_used": 11,
+  "patience_charges": [
+    {
+      "reason": "slow-page",
+      "n": 1
+    },
+    {
+      "reason": "no-change",
+      "n": 1
+    },
+    {
+      "reason": "no-change",
+      "n": 1
+    },
+    {
+      "reason": "no-change",
+      "n": 1
+    }
+  ]
+}

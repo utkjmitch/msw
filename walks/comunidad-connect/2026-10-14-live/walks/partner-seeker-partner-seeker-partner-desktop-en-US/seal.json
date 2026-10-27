@@ -1,0 +1,29 @@
+{
+  "outcome": "done",
+  "ended": null,
+  "events": 231,
+  "head": "4a8f2817daeb1841d2efc6514a31799be7e459c10dd66aef0d30cfde5d51e260",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page a5d9c510 has 1 screenshot",
+    "page 56be8bb7 has 1 screenshot",
+    "page 9bdcc356 has 1 screenshot",
+    "page 1917698a has 1 screenshot"
+  ],
+  "steps_used": 13,
+  "patience_charges": [
+    {
+      "reason": "slow-page",
+      "n": 1
+    },
+    {
+      "reason": "no-change",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    }
+  ]
+}

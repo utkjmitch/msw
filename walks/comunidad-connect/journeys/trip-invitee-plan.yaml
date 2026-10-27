@@ -1,0 +1,20 @@
+id: trip-invitee-plan
+walker: trip-invitee
+audience: public
+goal: In twenty minutes, find enough about the cultural exchange trips to propose one for a spring break student group, and know whom to contact
+start_url: https://www.comunidadconnect.org/
+arrival: email
+success:
+  - finds what a trip includes and where it goes
+  - finds the length or dates and a price or a price range
+  - finds how safety and lodging are handled
+  - finds a contact route for a group inquiry, without submitting it
+step_budget: 18
+mode: read-only
+origins:
+  - https://www.comunidadconnect.org/
+  - https://comunidadconnect.org/
+payment_origins: []
+viewports: [desktop]
+locales: [en-US, es-419]
+planned: false

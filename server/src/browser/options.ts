@@ -7,7 +7,7 @@ export type MoveId = "scroll-down" | "scroll-up" | "back" | "reload" | "switch-t
 export const NAME_DISPLAY_MAX = 120;
 /** name: what the Walker sees. key: the full, unmasked name, kept in memory for replay and never written out. */
 export interface Option { n: number; kind: "element" | "move"; role: string; name: string; key: string; unlabeled: boolean; inputType?: string; autocomplete?: string; payment?: boolean; move?: MoveId; handle?: ElementHandle }
-const SELECTOR = "a[href], button, input:not([type=hidden]), select, textarea, summary, [role=button], [role=link], [role=tab], [role=menuitem], [role=checkbox], [role=radio], [role=switch]";
+const SELECTOR = "a[href], button, input:not([type=hidden]), select, textarea, summary, [role=button], [role=link], [role=tab], [role=menuitem], [role=menuitemcheckbox], [role=menuitemradio], [role=option], [role=checkbox], [role=radio], [role=switch]";
 export async function collectOptions(page: Page, moves: Move[], tabCount: number): Promise<Option[]> {
   const found: { h: ElementHandle; box: { x: number; y: number; w: number; h: number }; name: string; role: string; type: string; autocomplete: string; payment: boolean }[] = [];
   for (const h of await page.$$(SELECTOR)) {

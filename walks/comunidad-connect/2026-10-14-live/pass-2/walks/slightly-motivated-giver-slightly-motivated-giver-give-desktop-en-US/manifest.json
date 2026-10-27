@@ -1,0 +1,42 @@
+{
+  "run": {
+    "id": "cc-2026-10-14-live-pass-2",
+    "out_dir": "walks/comunidad-connect/2026-10-14-live/pass-2",
+    "environment": {
+      "name": "comunidadconnect.org (live, logged out)",
+      "kind": "live",
+      "test_copy": false,
+      "seeded_data": false
+    },
+    "allowed_for_transact": [],
+    "payment_test_mode": false,
+    "mask_personal_data": true
+  },
+  "inputs": {
+    "walker": {
+      "path": "walks/comunidad-connect/walkers/slightly-motivated-giver.yaml",
+      "sha256": "291ad40fad3b791adc1cccd1a6ea22f18940d92960420e51a4aeae4df0d5b375"
+    },
+    "journey": {
+      "path": "walks/comunidad-connect/journeys/slightly-motivated-giver-give.yaml",
+      "sha256": "d4a15efe88089894e1dc4bcaee0243c8ca28520a987707df45f886287b34a1bd"
+    },
+    "viewport": "desktop",
+    "locale": "en-US"
+  },
+  "versions": {
+    "msw_server": "0.0.1",
+    "node": "v20.20.2",
+    "playwright": "1.63.0",
+    "chromium": "153.0.8010.12",
+    "axe_core": "4.13.0"
+  },
+  "times": {
+    "started": "2026-10-15T13:47:35.900Z",
+    "ended": "2026-10-15T13:54:38.171Z"
+  },
+  "outcome": {
+    "reason": "stuck",
+    "ended": null
+  }
+}

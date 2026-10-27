@@ -1,0 +1,17 @@
+# The Inspection of the partner-seeker guide. Plan A's server has no inspection mode; see the run's REPORT.md.
+id: inspector-partner-seeker-guide
+walker: inspector
+audience: public
+goal: Follow the guide exactly, step by step, and say whether every step works
+start_url: https://www.comunidadconnect.org/
+arrival: direct
+success:
+  - every step of the guide is followed exactly and its expected result is seen
+step_budget: 30
+mode: read-only
+origins:
+  - https://www.comunidadconnect.org/
+  - https://comunidadconnect.org/
+payment_origins: []
+viewports: [desktop]
+planned: false
