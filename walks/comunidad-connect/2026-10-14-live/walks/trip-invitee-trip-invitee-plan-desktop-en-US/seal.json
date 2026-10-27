@@ -1,0 +1,34 @@
+{
+  "outcome": "run-away",
+  "ended": null,
+  "events": 210,
+  "head": "47e64b61fc0ee01473a19d9e90eb46211337f398bb153c95c631f5fc8b8731b0",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page a43c4f16 has 1 screenshot",
+    "page 7cb08a87 has 1 screenshot",
+    "page c8d687e0 has 1 screenshot",
+    "page ba1aca89 has 1 screenshot",
+    "page d8584ed9 has 1 screenshot"
+  ],
+  "steps_used": 13,
+  "patience_charges": [
+    {
+      "reason": "slow-page",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 2
+    }
+  ]
+}

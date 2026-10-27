@@ -28,6 +28,14 @@ type StartArgs = { walker: string; journey: string; viewport: ViewportName; loca
 /** Spec 5.4: a page whose load event takes longer than this costs one patience. */
 const SLOW_PAGE_MS = 3_000;
 // The wait move's fake clock replaces window.performance, so keep the real one for load timing.
+/** The same control on a page that moved by itself: same kind, role and full name. */
+const sameControl = (a: Option, b: Option) => a.kind === b.kind && a.role === b.role && a.key === b.key && a.move === b.move;
+/** The control in `now` that matches `o` from `before`: the same identity, the same number of twins, the same place among them. */
+const find = (now: Option[], before: Option[], o: Option | undefined) => {
+  if (!o) return undefined;
+  const was = before.filter(x => sameControl(x, o)); const is = now.filter(x => sameControl(x, o));
+  return was.length === is.length ? is[was.indexOf(o)] : undefined;
+};
 const REAL_PERFORMANCE_INIT = `Object.defineProperty(window, "__mswPerformance", { value: performance });`;
 
 export class WalkSession {
@@ -106,9 +114,25 @@ export class WalkSession {
   async act(a: ActArgs): Promise<LookResult | { refused: string }> {
     if (!this.browser) throw new Error("no walk in progress");
     if (this.ended) return { refused: `the walk has ended (${this.ended})` };
-    const last = this.last;
+    let last = this.last;
     const now = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length });
-    const chk = checkAct({ option: a.option, ratings: a.ratings ?? [], state: now.state }, last ? { state: last.state, optionCount: last.options.length } : null);
+    // A page that moves by itself (a carousel, a ticker) changes its state between the look and the act. If the address
+    // is the same and the chosen control is still there, with the same identity and as many twins in the same order,
+    // the server looks again itself, logs that look, and acts on the control there. Anything else is still refused.
+    const chosen = last?.options[a.option - 1];
+    let state = now.state; let drift: number | undefined;
+    if (last && chosen && now.state !== last.state && now.url === last.url && find(now.options, last.options, chosen)) {
+      // The act must still be a valid act on the look the Walker saw.
+      const pre = checkAct({ option: a.option, ratings: a.ratings ?? [], state: last.state }, { state: last.state, optionCount: last.options.length });
+      if (!pre.ok) return this.refuse(pre.reason, a.option);
+      if (!a.wharton) return this.refuse("answer the four Wharton questions", a.option);
+      const seen = last; const fresh = await this.snap(); await this.inspect(fresh.state);
+      const there = find(fresh.options, seen.options, chosen);
+      if (!there) return this.refuse("the page changed; look again", a.option);
+      a = { ...a, option: there.n, ratings: a.ratings!.map(r => ({ ...r, option: find(fresh.options, seen.options, seen.options[r.option - 1])?.n ?? r.option })) };
+      drift = seen.seq; last = fresh; state = fresh.state;
+    }
+    const chk = checkAct({ option: a.option, ratings: a.ratings ?? [], state }, last ? { state: last.state, optionCount: last.options.length } : null);
     if (!chk.ok) return this.refuse(chk.reason, a.option);
     if (!a.wharton) return this.refuse("answer the four Wharton questions", a.option);
     const wharton = a.wharton;
@@ -120,7 +144,8 @@ export class WalkSession {
     if ((a.how === "double-tap" || a.how === "new-tab") && !this.moves.includes(a.how)) return this.refuse("that move is not part of this walk", a.option);
     const how = a.how ?? "tap";
     const stored = a.text === undefined ? undefined : isSecretField(opt) ? "[masked]" : this.run.mask_personal_data ? maskText(a.text) : a.text;
-    const ev = this.log.append("act", { option: a.option, label: optionLine(opt), how, text: stored, ratings: this.m(a.ratings), wharton: this.m(wharton) }, last!.state);
+    const ev = this.log.append("act", { option: a.option, label: optionLine(opt), how, text: stored, ratings: this.m(a.ratings), wharton: this.m(wharton),
+      ...(drift !== undefined ? { drift_from: drift } : {}) }, last!.state);
     this.acts.push({ label: opt.name, key: opt.key, role: opt.role, how, text: a.text, event: ev.seq });
     this.steps += 1; this.budget.spendStep(); this.budget.charge("wharton-no", whartonNos(wharton));
     await this.perform(opt, a).catch(e => this.pending.push(`That did not work: ${String(e.message).split("\n")[0]}`));
