@@ -95,7 +95,18 @@
     },
     "reproduced": {
       "default": false,
-      "type": "boolean"
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string",
+          "enum": [
+            "pending",
+            "not-replayed"
+          ]
+        }
+      ]
     },
     "fingerprint": {
       "default": "",

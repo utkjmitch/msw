@@ -77,7 +77,9 @@ export const Finding = z.object({
   source: z.enum(["walker", "instrument"]), severity: z.number().int().min(0).max(4),
   title: z.string().min(1), what_happened: z.string(), expected: z.string(),
   evidence: z.array(z.number().int()), repro: z.array(z.object({ step: z.string(), event: z.number().int() })),
-  reproduced: z.boolean().default(false), fingerprint: z.string().default(""),
+  // true or false once replayed; "pending" while a replay is due and has not run; "not-replayed" when the walk had replay off.
+  // The last two are plain states, never a failure.
+  reproduced: z.union([z.boolean(), z.enum(["pending", "not-replayed"])]).default(false), fingerprint: z.string().default(""),
   silly: SillyCategory.optional(),
 });
 export type Finding = z.infer<typeof Finding>;

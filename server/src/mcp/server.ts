@@ -21,6 +21,8 @@ const say = (text: string, isError = false) => ({ content: [{ type: "text" as co
 export function createServer(run: RunConfig, headless = true): McpServer {
   const server = new McpServer({ name: "msw", version: "0.0.1" });
   let session: WalkSession | null = null;
+  // The last walk quit, kept for the replay step. Replay needs the acts' full names and typed text, which live only in memory.
+  let sealed: WalkSession | null = null;
   const guard = async <T>(f: (s: WalkSession) => Promise<T>) => {
     if (!session) return say("No walk in progress. Call start_walk first.", true);
     try { return await f(session) as never; } catch (e) { return say((e as Error).message, true); }
@@ -60,8 +62,23 @@ export function createServer(run: RunConfig, headless = true): McpServer {
   }, async a => guard(async s => {
     // A quit that throws has still closed the browser. Never leave the server locked.
     const q = await s.quit(a.reason, a.detail).finally(() => { session = null; });
-    return say(`Walk saved in ${q.dir}. Findings: ${q.findings}. verified: ${q.verified}. alive: ${q.alive}${q.failures.length ? ` (${q.failures.join("; ")})` : ""}.`);
+    sealed = s;
+    const replay = q.replay === "pending" ? ` Replay: ${q.pending.length} Walker finding(s) not replayed yet (${q.pending.join(", ")}). Call replay to reproduce them, or leave them: the walk is complete either way.`
+      : q.replay === "off" ? " Replay: off; Walker findings are not replayed." : " Replay: no Walker findings to replay.";
+    return say(`Walk saved in ${q.dir}. Findings: ${q.findings}. verified: ${q.verified}. alive: ${q.alive}${q.failures.length ? ` (${q.failures.join("; ")})` : ""}. The walk is sealed.${replay}`);
   }));
+  server.registerTool("replay", {
+    description: "Optional, after quit: replay the last walk's Walker findings on a fresh browser to see if they reproduce. Pass finding to replay just one. The walk is already sealed; this only updates each finding's reproduced value.",
+    inputSchema: { finding: z.string().optional() },
+  }, async a => {
+    if (session) return say("A walk is in progress. Quit it first; replay runs after the seal.", true);
+    if (!sealed) return say("No sealed walk to replay. Call quit first.", true);
+    try {
+      const r = await sealed.replay(a.finding);
+      const lines = r.replayed.map(x => `${x.finding}: ${x.reproduced ? "reproduced" : "did not reproduce"}${x.error ? ` (${x.error})` : ""}`);
+      return say([`Replayed ${r.replayed.length} finding(s) of ${r.dir}.`, ...lines, r.pending.length ? `Not replayed yet: ${r.pending.join(", ")}.` : "Nothing left to replay."].join("\n"));
+    } catch (e) { return say((e as Error).message, true); }
+  });
   return server;
 }
 
