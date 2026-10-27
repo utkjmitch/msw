@@ -1,0 +1,20 @@
+id: team-operator-engagement-sidebar
+walker: team-operator
+audience: member
+goal: Starting from the dashboard, open a demo engagement and reach its star map, its interview transcripts, one role's evolution timeline and one project's workflows by clicking only (PR #387 put these in the sidebar). Change nothing
+start_url: http://localhost:3000/dashboard
+arrival: direct
+success:
+  - opened a demo engagement from the dashboard
+  - opened the star map for that engagement
+  - opened the transcripts and read one
+  - opened one role's evolution timeline
+  - opened one project's workflows and read one
+step_budget: 40
+mode: read-only
+storage_state: /wt/.msw-walks/workgraph-ai/2026-10-25-demo/harness/demo-session.json  # made by the harness through the app's e2e sign-in as demo@workgraph.local
+origins:
+  - http://localhost:3000/
+payment_origins: []
+viewports: [desktop]
+planned: false
