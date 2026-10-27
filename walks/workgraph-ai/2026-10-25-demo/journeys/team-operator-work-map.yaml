@@ -1,0 +1,19 @@
+id: team-operator-work-map
+walker: team-operator
+audience: member
+goal: Starting from the dashboard, find a client's work map (the star map), the interview transcripts behind it, and one project's process flows (Workflows) with their evolution timeline, using only the sidebar and the pages. Change nothing
+start_url: http://localhost:3000/dashboard
+arrival: direct
+success:
+  - opened the star map (the work map of roles and tasks) for a client
+  - opened the interview transcripts and read one
+  - opened a project's process flows (Workflows) and read one
+  - opened that project's evolution timeline
+step_budget: 40
+mode: read-only
+storage_state: /wt/.msw-walks/workgraph-ai/2026-10-25-demo/harness/demo-session.json  # made by the harness through the app's e2e sign-in as demo@workgraph.local
+origins:
+  - http://localhost:3000/
+payment_origins: []
+viewports: [desktop]
+planned: false

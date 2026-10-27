@@ -1,0 +1,479 @@
+[
+ {
+  "folder": "walks/team-operator-team-operator-engagement-sidebar-desktop-en-US/",
+  "walker": "team-operator",
+  "journey": "team-operator-engagement-sidebar",
+  "viewport": "desktop",
+  "acts": 15,
+  "refused": 0,
+  "drift_acts": 0,
+  "quit": {
+   "reason": "run-away",
+   "detail": "Patience gone with the client call minutes away. I found the Work Evolution sidebar group, but the star map is empty (\"No synthetic project to map yet\"), no project has transcripts, Workflows has 0 named workflows and no timeline, and I couldn't find a role evolution timeline from Roles."
+  },
+  "sealed": true,
+  "verified": true,
+  "alive": false,
+  "ended": null,
+  "parrot_failures": 15,
+  "walker_findings": {
+   "2": 3,
+   "3": 4
+  },
+  "instrument_findings": {
+   "3": 9
+  },
+  "instrument_records": {
+   "requestfailed": 62,
+   "axe": 20,
+   "vitals": 14
+  },
+  "blocked": {},
+  "noise_records": 62,
+  "vitals": [
+   [
+    "/dashboard",
+    {
+     "lcp": 1076,
+     "cls": 0.04378792679398148,
+     "inp": 32
+    }
+   ],
+   [
+    "/dashboard/journey/42fbf723-92bf-46e4-8fb5-569ff61a733f",
+    {
+     "lcp": 1076,
+     "cls": 0.04378792679398148,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/journey/42fbf723-92bf-46e4-8fb5-569ff61a733f",
+    {
+     "lcp": 1076,
+     "cls": 0.04378792679398148,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/work-evolution/star-map",
+    {
+     "lcp": 1076,
+     "cls": 0.04378792679398148,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/work-evolution/star-map",
+    {
+     "lcp": 1076,
+     "cls": 0.04378792679398148,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/work-evolution/transcripts",
+    {
+     "lcp": 1076,
+     "cls": 0.04378792679398148,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/work-evolution/transcripts",
+    {
+     "lcp": 1076,
+     "cls": 0.043908618666409466,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/work-evolution/transcripts",
+    {
+     "lcp": 1076,
+     "cls": 0.04402931053883745,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/work-evolution/transcripts",
+    {
+     "lcp": 1076,
+     "cls": 0.04415000241126543,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/work-evolution/transcripts",
+    {
+     "lcp": 1076,
+     "cls": 0.04415000241126543,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/projects/b218ae5e-ac86-4924-8891-9bebace007da/workflows",
+    {
+     "lcp": 1076,
+     "cls": 0.04415000241126543,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/projects/b218ae5e-ac86-4924-8891-9bebace007da/workflows",
+    {
+     "lcp": 1076,
+     "cls": 0.24137222463348765,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/roles",
+    {
+     "lcp": 1076,
+     "cls": 0.24137222463348765,
+     "inp": 56
+    }
+   ],
+   [
+    "/dashboard/roles",
+    {
+     "lcp": 1076,
+     "cls": 0.24137222463348765,
+     "inp": 56
+    }
+   ]
+  ]
+ },
+ {
+  "folder": "walks/team-operator-team-operator-people-desktop-en-US/",
+  "walker": "team-operator",
+  "journey": "team-operator-people",
+  "viewport": "desktop",
+  "acts": 17,
+  "refused": 0,
+  "drift_acts": 0,
+  "quit": {
+   "reason": "done",
+   "detail": "Opened Roles and the CTO role, found a role evolution timeline (Software Engineer) only via Work Evolution \u2192 Company timeline \u2192 Role replay, checked Survey sends (Meridian: 0 held/queued/sent, no invitations), opened the Current-State Readout (generated Oct 25, 2026, but no readiness status; figures"
+  },
+  "sealed": true,
+  "verified": true,
+  "alive": false,
+  "ended": null,
+  "parrot_failures": 15,
+  "walker_findings": {
+   "2": 1,
+   "3": 3
+  },
+  "instrument_findings": {
+   "3": 12
+  },
+  "instrument_records": {
+   "requestfailed": 67,
+   "axe": 36,
+   "vitals": 18
+  },
+  "blocked": {},
+  "noise_records": 67,
+  "vitals": [
+   [
+    "/dashboard",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 16
+    }
+   ],
+   [
+    "/dashboard/roles",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 24
+    }
+   ],
+   [
+    "/dashboard/roles",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 24
+    }
+   ],
+   [
+    "/dashboard/roles",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 24
+    }
+   ],
+   [
+    "/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/work-evolution/company",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/evolution",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/roles/fd62a742-e75c-40b3-ba2d-2b74206771e2/evolution?at=2026-10-25T23%3A59%3A59.999Z",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/survey-sends",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ],
+   [
+    "/dashboard/current-state-readout",
+    {
+     "lcp": 400,
+     "cls": 0.04378792679398148,
+     "inp": 80
+    }
+   ]
+  ]
+ },
+ {
+  "folder": "walks/team-operator-team-operator-work-map-desktop-en-US/",
+  "walker": "team-operator",
+  "journey": "team-operator-work-map",
+  "viewport": "desktop",
+  "acts": 16,
+  "refused": 0,
+  "drift_acts": 0,
+  "quit": {
+   "reason": "run-away",
+   "detail": "Leave trigger: I looked in the sidebar and on the obvious pages and still can't show the client the map. Star map says \"No projects\" for every client. Transcripts are empty for Acme, Northwind and Meridian. The one interview I opened has 0 answers. Workflows has 0 saved flows and is only a builder. "
+  },
+  "sealed": true,
+  "verified": true,
+  "alive": false,
+  "ended": null,
+  "parrot_failures": 19,
+  "walker_findings": {
+   "3": 5
+  },
+  "instrument_findings": {
+   "3": 8
+  },
+  "instrument_records": {
+   "requestfailed": 88,
+   "axe": 15,
+   "vitals": 15
+  },
+  "blocked": {},
+  "noise_records": 88,
+  "vitals": [
+   [
+    "/dashboard",
+    {
+     "lcp": 1116,
+     "cls": 0.04378792679398148,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard",
+    {
+     "lcp": 1116,
+     "cls": 0.04378792679398148,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/work-evolution/star-map",
+    {
+     "lcp": 1116,
+     "cls": 0.04378792679398148,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/work-evolution/star-map",
+    {
+     "lcp": 1116,
+     "cls": 0.04378792679398148,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/work-evolution/transcripts",
+    {
+     "lcp": 1116,
+     "cls": 0.04378792679398148,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/work-evolution/transcripts",
+    {
+     "lcp": 1116,
+     "cls": 0.043908618666409466,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/work-evolution/transcripts",
+    {
+     "lcp": 1116,
+     "cls": 0.04402931053883745,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/interviews",
+    {
+     "lcp": 1116,
+     "cls": 0.04402931053883745,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+    {
+     "lcp": 1116,
+     "cls": 0.04402931053883745,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/roles/e324b07d-05c0-464a-8ad5-65258c1ef5bb/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+    {
+     "lcp": 1116,
+     "cls": 0.04402931053883745,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/roles/e324b07d-05c0-464a-8ad5-65258c1ef5bb/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+    {
+     "lcp": 1116,
+     "cls": 0.04402931053883745,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/workflows",
+    {
+     "lcp": 1116,
+     "cls": 0.04402931053883745,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/workflows",
+    {
+     "lcp": 1116,
+     "cls": 0.1683738984535751,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/workflows",
+    {
+     "lcp": 1116,
+     "cls": 0.1683738984535751,
+     "inp": 72
+    }
+   ],
+   [
+    "/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/evolution",
+    {
+     "lcp": 1116,
+     "cls": 0.1683738984535751,
+     "inp": 72
+    }
+   ]
+  ]
+ }
+]

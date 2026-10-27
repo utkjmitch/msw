@@ -1,0 +1,8 @@
+{
+  "id": "wgai-2026-10-25-demo-local",
+  "out_dir": "/wt/.msw-walks/workgraph-ai/2026-10-25-demo",
+  "environment": { "name": "workgraph-ai dev e073d441, local next start on a throwaway embedded Postgres seeded only with the five demo profiles (acme, northwind, riverpoint, corvane, merfintech)", "kind": "test", "test_copy": true, "seeded_data": true },
+  "allowed_for_transact": [],
+  "payment_test_mode": false,
+  "mask_personal_data": false
+}

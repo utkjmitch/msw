@@ -1,0 +1,3600 @@
+{
+ "skipped": [],
+ "checks": [
+  {
+   "url": "http://localhost:3000/dashboard",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US",
+    "team-operator-team-operator-people-desktop-en-US",
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".max-w-\\[150px\\]",
+      ".mt-2.gap-1\\.5.items-center > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Welcome back, WorkGraph."
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US",
+    "team-operator-team-operator-people-desktop-en-US",
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5.items-center.flex > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Welcome back, WorkGraph."
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/journey/42fbf723-92bf-46e4-8fb5-569ff61a733f",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/journey/42fbf723-92bf-46e4-8fb5-569ff61a733f",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".mt-2.gap-1\\.5.items-center > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "You are here on the journey"
+    ],
+    "main": true,
+    "nav": 2,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: Current State, 38% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/journey/42fbf723-92bf-46e4-8fb5-569ff61a733f",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/journey/42fbf723-92bf-46e4-8fb5-569ff61a733f",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5.items-center.flex > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "You are here on the journey"
+    ],
+    "main": true,
+    "nav": 2,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: Current State, 38% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/work-evolution/star-map",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US",
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/work-evolution/star-map",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Star map"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/work-evolution/star-map",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US",
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/work-evolution/star-map",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Star map"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/work-evolution/transcripts",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US",
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/work-evolution/transcripts",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Meeting transcripts"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/work-evolution/transcripts",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US",
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/work-evolution/transcripts",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Meeting transcripts"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/projects/b218ae5e-ac86-4924-8891-9bebace007da/workflows",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/projects/b218ae5e-ac86-4924-8891-9bebace007da/workflows",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Workflows"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/projects/b218ae5e-ac86-4924-8891-9bebace007da/workflows",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/projects/b218ae5e-ac86-4924-8891-9bebace007da/workflows",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Workflows"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/roles",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US",
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/roles",
+   "signin": false,
+   "axe": [
+    {
+     "id": "button-name",
+     "impact": "critical",
+     "help": "Buttons must have discernible text",
+     "nodes": 1,
+     "sample": [
+      ".hover\\:text-gray-600"
+     ]
+    },
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 20,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2.items-center > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > .tracking-\\[0\\.15em\\]"
+     ]
+    },
+    {
+     "id": "scrollable-region-focusable",
+     "impact": "serious",
+     "help": "Scrollable region must have keyboard access",
+     "nodes": 2,
+     "sample": [
+      ".max-h-48",
+      ".max-h-64"
+     ]
+    },
+    {
+     "id": "select-name",
+     "impact": "critical",
+     "help": "Select element must have an accessible name",
+     "nodes": 1,
+     "sample": [
+      ".border-gray-300"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Role Analysis"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 1,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/roles",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-engagement-sidebar-desktop-en-US",
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/roles",
+   "signin": false,
+   "axe": [
+    {
+     "id": "button-name",
+     "impact": "critical",
+     "help": "Buttons must have discernible text",
+     "nodes": 1,
+     "sample": [
+      ".hover\\:text-gray-600"
+     ]
+    },
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 17,
+     "sample": [
+      ".ml-auto > .gap-1\\.5.items-center.flex > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      ".grid-cols-5 > .bg-violet-50.border-violet-100.p-3 > .text-violet-500.tracking-wider.uppercase",
+      ".grid-cols-5 > .border-blue-100.bg-blue-50.p-3 > .text-blue-500.tracking-wider.uppercase"
+     ]
+    },
+    {
+     "id": "scrollable-region-focusable",
+     "impact": "serious",
+     "help": "Scrollable region must have keyboard access",
+     "nodes": 2,
+     "sample": [
+      ".max-h-48",
+      ".max-h-64"
+     ]
+    },
+    {
+     "id": "select-name",
+     "impact": "critical",
+     "help": "Select element must have an accessible name",
+     "nodes": 1,
+     "sample": [
+      ".border-gray-300"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Role Analysis"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 1,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 18,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".mt-2.gap-1\\.5.items-center > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > .tracking-\\[0\\.15em\\]"
+     ]
+    },
+    {
+     "id": "scrollable-region-focusable",
+     "impact": "serious",
+     "help": "Scrollable region must have keyboard access",
+     "nodes": 1,
+     "sample": [
+      ".p-6:nth-child(6) > .overflow-x-auto"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Chief Technology Officer"
+    ],
+    "main": true,
+    "nav": 2,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 1
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/roles/6df79d49-40eb-44e6-be5f-2ec522568c14",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 15,
+     "sample": [
+      ".ml-auto > .gap-1\\.5.items-center.flex > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      ".mb-3.items-baseline.justify-between > .text-xs.text-gray-400",
+      "#cite-internal-jd > .py-3\\.5.gap-4.justify-between > .min-w-0.flex-1 > .flex-wrap.gap-2.items-center > .bg-gray-100.rounded.text-\\[10px\\]"
+     ]
+    },
+    {
+     "id": "scrollable-region-focusable",
+     "impact": "serious",
+     "help": "Scrollable region must have keyboard access",
+     "nodes": 1,
+     "sample": [
+      ".p-6:nth-child(6) > .overflow-x-auto"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Chief Technology Officer"
+    ],
+    "main": true,
+    "nav": 2,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 1
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/work-evolution/company",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/work-evolution/company",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Company timeline"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/work-evolution/company",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/work-evolution/company",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Company timeline"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/evolution",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US",
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/evolution",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2.items-center > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > .tracking-\\[0\\.15em\\]"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Company and departments"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/evolution",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US",
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/evolution",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5.items-center > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Company and departments"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/roles/fd62a742-e75c-40b3-ba2d-2b74206771e2/evolution?at=2026-10-25T23%3A59%3A59.999Z",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/roles/fd62a742-e75c-40b3-ba2d-2b74206771e2/evolution?at=2026-10-25T23%3A59%3A59.999Z",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > .tracking-\\[0\\.15em\\]"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Work evolution"
+    ],
+    "main": true,
+    "nav": 3,
+    "clickableDivs": 1,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/roles/fd62a742-e75c-40b3-ba2d-2b74206771e2/evolution?at=2026-10-25T23%3A59%3A59.999Z",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/roles/fd62a742-e75c-40b3-ba2d-2b74206771e2/evolution?at=2026-10-25T23%3A59%3A59.999Z",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Work evolution"
+    ],
+    "main": true,
+    "nav": 3,
+    "clickableDivs": 1,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/survey-sends",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/survey-sends",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2.items-center > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Survey sends"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/survey-sends",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/survey-sends",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5.items-center > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Survey sends"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/current-state-readout",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/current-state-readout",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 52,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2.items-center > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Current-State Readout"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/current-state-readout",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-people-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/current-state-readout",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 49,
+     "sample": [
+      ".ml-auto > .gap-1\\.5.items-center.flex > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      ".normal-case",
+      ".rounded-xl.overflow-hidden.border-gray-200:nth-child(1) > .border-b.bg-gray-50.border-gray-100 > .flex-wrap.gap-2.text-xs > .font-bold.text-gray-900.tabular-nums > .ml-1.font-normal.text-gray-400"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Current-State Readout"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/interviews",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/interviews",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 10,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2.items-center > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Interview Q&A & analyst notes"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/interviews",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/interviews",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 7,
+     "sample": [
+      ".ml-auto > .gap-1\\.5.items-center.flex > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      "section:nth-child(2) > .border-b.border-gray-100.px-5 > .text-gray-400.text-xs",
+      "section:nth-child(3) > .border-b.border-gray-100.px-5 > .text-gray-400.text-xs"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Interview Q&A & analyst notes"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2 > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Chief Executive Officer"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5 > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Chief Executive Officer"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/roles/e324b07d-05c0-464a-8ad5-65258c1ef5bb/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/roles/e324b07d-05c0-464a-8ad5-65258c1ef5bb/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 6,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2.items-center > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > .tracking-\\[0\\.15em\\]"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Self assessment"
+    ],
+    "main": true,
+    "nav": 2,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/roles/e324b07d-05c0-464a-8ad5-65258c1ef5bb/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/roles/e324b07d-05c0-464a-8ad5-65258c1ef5bb/interviews/841d08ee-b950-4015-830d-ccb52a5bef0e",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 3,
+     "sample": [
+      ".ml-auto > .gap-1\\.5.items-center.flex > .bg-emerald-600[title=\"Environment: Local\"][data-env-badge=\"dev\"]",
+      ".py-2",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Self assessment"
+    ],
+    "main": true,
+    "nav": 2,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/workflows",
+   "viewport": "desktop",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/workflows",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 5,
+     "sample": [
+      ".tracking-\\[0\\.12em\\]",
+      ".gap-1\\.5.mt-2 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      "div[data-nav-group=\"evidencePlatform\"] > .mx-4.pl-3.border-l-2 > h3"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Workflows"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Collapse sidebar",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  },
+  {
+   "url": "http://localhost:3000/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/workflows",
+   "viewport": "phone",
+   "login": "platform",
+   "walkers": [
+    "team-operator-team-operator-work-map-desktop-en-US"
+   ],
+   "status": 200,
+   "landed": "http://localhost:3000/dashboard/projects/c381b664-4e54-4813-88c5-fc549446c11a/workflows",
+   "signin": false,
+   "axe": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "help": "Elements must meet minimum color contrast ratio thresholds",
+     "nodes": 2,
+     "sample": [
+      ".ml-auto > .gap-1\\.5 > .tracking-wider.bg-emerald-600[title=\"Environment: Local\"]",
+      ".leading-relaxed"
+     ]
+    }
+   ],
+   "page": {
+    "title": "WorkGraph AI | Built from the work up. Not the org chart down.",
+    "lang": "en",
+    "h1": [
+     "Workflows"
+    ],
+    "main": true,
+    "nav": 1,
+    "clickableDivs": 0,
+    "unnamedButtons": 0,
+    "svgNoText": 0
+   },
+   "firstTabs": [
+    {
+     "tag": "a",
+     "name": "WorkGraph AI™ THE HUMAN + AI WORKFORCE",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "button",
+     "name": "Close menu",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Your journey: 5 engagements, 47% complete. Open.",
+     "outline": true,
+     "ring": true
+    },
+    {
+     "tag": "a",
+     "name": "Home",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Roles",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Employees",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Chart",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Job Descriptions",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Org Dashboard",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Interview Q&A",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Survey sends",
+     "outline": true,
+     "ring": false
+    },
+    {
+     "tag": "a",
+     "name": "Current-State Readout",
+     "outline": true,
+     "ring": false
+    }
+   ]
+  }
+ ]
+}

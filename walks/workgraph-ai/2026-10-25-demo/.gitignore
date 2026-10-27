@@ -1,0 +1,6 @@
+# Raw evidence too large for the repository stays in the walk box (mac-box /wt/.msw-walks/workgraph-ai/2026-10-25-demo):
+# replay walks, the flags-off pass, Walker stream logs, app/build/seed logs.
+walks/
+pass-0-flags-off/
+harness-logs/
+*.log

@@ -1,0 +1,19 @@
+id: team-operator-people
+walker: team-operator
+audience: member
+goal: Starting from the dashboard, review a client's roles and one role's evolution timeline, check survey sends, and open the Current-State Readout, using only the sidebar and the pages. Send nothing and save nothing
+start_url: http://localhost:3000/dashboard
+arrival: direct
+success:
+  - opened the roles list and one role's detail
+  - opened that role's evolution timeline
+  - opened survey sends and can say what has been sent and what has not, without sending anything
+  - opened the Current-State Readout and can say whether it is ready to show the client
+step_budget: 40
+mode: read-only
+storage_state: /wt/.msw-walks/workgraph-ai/2026-10-25-demo/harness/demo-session.json  # made by the harness through the app's e2e sign-in as demo@workgraph.local
+origins:
+  - http://localhost:3000/
+payment_origins: []
+viewports: [desktop]
+planned: false

@@ -1,0 +1,10 @@
+organizations: 5
+demo     Acme Industrial Services  (acme)
+demo     Corvane Telematics  (corvane-telematics)
+demo     Meridian Financial Technologies  (merfintech)
+demo     Northwind Logistics  (northwind-logistics)
+demo     Riverpoint Software  (riverpoint-software)
+PE firms (demo profile sponsors): Riverbend Capital, Cascade Industrial Partners, Highline Growth Partners, Quillfeather Partners
+demo@workgraph.local is a member of: Acme Industrial Services, Corvane Telematics, Meridian Financial Technologies, Northwind Logistics, Riverpoint Software
+users: acme-customer@workgraph.local, corvane-customer@workgraph.local, corvane-ops@workgraph.local, demo@workgraph.local, merfintech-customer@workgraph.local, northwind-customer@workgraph.local, riverpoint-customer@workgraph.local
+ORG CHECK: PASS — every org is one of the five demo profiles

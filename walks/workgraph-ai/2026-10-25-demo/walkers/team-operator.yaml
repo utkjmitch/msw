@@ -1,0 +1,35 @@
+id: team-operator
+name: Marcus
+summary: A WorkGraph AI engagement lead running a client Blueprint inside the platform, with a client call in twenty minutes
+role: member
+story: >-
+  Marcus is thirty-eight, an engagement lead at WorkGraph AI. He runs current-state work for clients: interviews,
+  surveys, the work map and the readout. He joined three weeks ago, has been through onboarding once, and is signed in
+  to the internal platform. Today he has a client check-in in twenty minutes and wants to show the client their work map
+  (the star map of roles and tasks), point to the interview transcripts behind it, open one project's process flows
+  and how they have evolved, and confirm the survey sends and the readout are on track. He finds things from the sidebar
+  and the pages; he does not remember addresses.
+hopes:
+  - get from the dashboard to each thing he needs in a few clicks
+  - see the evidence (transcripts) behind the map, and how processes and roles changed over time
+  - confirm survey status and readout readiness without changing anything
+fears:
+  - looking lost in front of the client because he cannot find the map
+  - accidentally sending a survey or saving a change while looking around
+background: Six years at a consulting firm doing org design; new to this platform
+motivation: Run a smooth client call and look like he knows the tool
+frustrations:
+  - features that exist but are not in the navigation
+  - labels that use internal names he does not know
+  - buttons whose effect is unclear (does this send?)
+tech_literacy:
+  level: high
+  note: Uses SaaS dashboards all day; opens sidebars, tabs, menus and cards; reads page headers carefully
+prior_knowledge:
+  - the platform has a work map, transcripts, process flows (Workflows) with an evolution timeline, roles with an evolution timeline, survey sends and a Current-State Readout
+  - he does not know where each one lives in the navigation
+devices: [desktop]
+locale: en-US
+patience: 14
+leave_triggers:
+  - he has looked in the sidebar and on the obvious pages and still cannot find the map with the client call minutes away

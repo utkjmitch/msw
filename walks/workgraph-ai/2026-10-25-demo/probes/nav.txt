@@ -1,0 +1,27 @@
+at /dashboard
+WorkGraph AI™ THE HUMAN + AI WORKFORCE -> /
+YOUR JOURNEY 5 engagements 47% -> /dashboard
+Home -> /dashboard
+Roles -> /dashboard/roles
+Employees -> /dashboard/employees
+Org Chart -> /dashboard/org-chart
+Job Descriptions -> /dashboard/job-descriptions
+Org Dashboard -> /dashboard/overview
+Interview Q&A -> /dashboard/interviews
+Survey sends -> /dashboard/survey-sends
+Current-State Readout -> /dashboard/current-state-readout
+AI Org Design -> /dashboard/ai-org-design
+Future-State Blueprint -> /dashboard/future-state-blueprint
+Impact Analytics -> /dashboard/impact
+Value Waterfall -> /dashboard/value-waterfall
+Action Plan -> /dashboard/action-plan
+Augmentation Realization -> /dashboard/realization
+Skills -> /dashboard/skills
+Agent Store -> /dashboard/agent-store
+Clients & Snapshots -> /dashboard/projects
+Star map -> /dashboard/work-evolution/star-map
+Workflows -> /dashboard/work-evolution/workflows
+Company timeline -> /dashboard/work-evolution/company
+Transcripts -> /dashboard/work-evolution/transcripts
+New Client -> /dashboard/onboarding
+View as… -> /dashboard/view-as
