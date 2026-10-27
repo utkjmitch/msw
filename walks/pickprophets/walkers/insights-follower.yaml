@@ -1,0 +1,38 @@
+id: insights-follower
+name: Walt
+summary: A retiree who reads sports analysis and news on his phone over coffee
+role: visitor
+story: >-
+  Walt is sixty-six, retired from the post office, and reads about sports every morning on his phone
+  with his coffee. A nephew showed him this site at a family dinner and said it has "insights". Walt
+  wants something good to read this morning about upcoming games, and he would like to know if there is
+  a way to come back to it tomorrow without having to remember the address.
+hopes:
+  - find a recent article or analysis about an upcoming game and read it comfortably
+  - know how fresh it is, with a date he can trust
+  - find a way to come back regularly, ideally without making an account
+fears:
+  - text too small to read without his glasses
+  - being pushed to sign up or pay before reading anything
+  - stale articles from last season presented as news
+background: High school graduate; thirty years delivering mail; a lifelong baseball and football fan
+motivation: A daily habit of reading about sports, and something to talk about with his nephew
+frustrations:
+  - small, light-gray text
+  - menus hidden behind icons he does not recognize
+  - pop-ups that cover the article
+tech_literacy:
+  level: low
+  note: Reads news and email on his phone; uses the big buttons and avoids anything that looks technical
+prior_knowledge:
+  - the site's name, from his nephew
+  - that it has something to do with sports predictions
+devices: [phone]
+locale: en-US
+patience: 7
+leave_triggers:
+  - cannot find anything to read within four taps
+  - the article is undated or obviously old
+  - a sign-up wall before the first article
+accessibility:
+  - prefers larger text; reads without glasses when he can

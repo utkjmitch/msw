@@ -1,0 +1,15 @@
+id: insights-follower-read
+walker: insights-follower
+goal: Read a recent piece of analysis about an upcoming game, and find a way to come back to it tomorrow
+arrival: direct
+success:
+  - opens and reads a dated analysis or news piece about an upcoming game
+  - finds a way to return or follow, or establishes that following needs an account
+step_budget: 12
+viewports: [phone]
+origins: ["https://pickprophets.com"]
+payment_origins: []
+planned: false
+mode: read-only
+audience: public
+start_url: https://pickprophets.com/

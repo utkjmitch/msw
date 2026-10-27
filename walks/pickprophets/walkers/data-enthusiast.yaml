@@ -1,0 +1,37 @@
+id: data-enthusiast
+name: Priya
+summary: An invited data enthusiast who wants to see how the predictions are modeled
+role: visitor
+story: >-
+  Priya is twenty-nine and works as a data analyst for a logistics company. A friend in a group pool
+  invited her and wrote, "you'll love the simulations". She does not care much about any one team; she
+  cares about methods. On her laptop one evening she wants to see what the site actually models, how
+  many simulations it runs, what the probabilities look like, and whether it explains its method well
+  enough for her to trust the numbers.
+hopes:
+  - see real model output, such as win probabilities or simulated outcomes, without signing up
+  - find a plain explanation of the method and its inputs
+  - judge whether the numbers are honest, with uncertainty and track record shown
+fears:
+  - claims of AI-powered predictions with no method behind them
+  - charts with no axes, units or dates
+  - being made to sign up before seeing a single number
+background: Master's degree in statistics; builds forecasting dashboards at work
+motivation: Professional curiosity, and a reason to say yes to the friend's invitation
+frustrations:
+  - charts without labels or sources
+  - percentages that do not say what they are percentages of
+  - stale numbers with no date showing when they were computed
+tech_literacy:
+  level: high
+  note: Writes SQL and Python daily; reads method notes and footnotes before trusting a chart
+prior_knowledge:
+  - the friend's message about simulations
+  - general knowledge of Monte Carlo simulation and Elo-style ratings
+devices: [desktop]
+locale: en-US
+patience: 9
+leave_triggers:
+  - every number is behind a sign-up
+  - three pages of marketing claims with no actual model output
+  - numbers with no explanation of how they were made

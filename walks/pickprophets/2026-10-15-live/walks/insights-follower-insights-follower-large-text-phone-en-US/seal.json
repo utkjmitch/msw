@@ -1,0 +1,23 @@
+{
+  "outcome": "done",
+  "ended": null,
+  "events": 82,
+  "head": "2e5a89959a629c5a56f86247b65339747bf5b1c27e70c9372b55eadcedc0f534",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page 7e8574c0 has 1 screenshot",
+    "page 7e8574c0 has no instrument record"
+  ],
+  "steps_used": 3,
+  "patience_charges": [
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "wharton-no",
+      "n": 1
+    }
+  ]
+}

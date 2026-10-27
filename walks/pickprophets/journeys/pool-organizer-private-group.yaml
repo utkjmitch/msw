@@ -1,0 +1,17 @@
+id: pool-organizer-private-group
+walker: pool-organizer
+goal: Find out whether I can run a private prediction group for my friends here, what it costs, and what my friends would have to do to join
+arrival: search
+success:
+  - knows whether a private group for friends is possible
+  - knows the cost, or that it is free
+  - knows what an invited friend must do to join
+  - reaches the point where an account is needed, and knows what it asks for
+step_budget: 15
+viewports: [desktop, phone]
+origins: ["https://pickprophets.com"]
+payment_origins: []
+planned: false
+mode: read-only
+audience: public
+start_url: https://pickprophets.com/

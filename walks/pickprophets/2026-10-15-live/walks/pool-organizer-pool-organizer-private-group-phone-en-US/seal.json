@@ -1,0 +1,24 @@
+{
+  "outcome": "run-away",
+  "ended": null,
+  "events": 116,
+  "head": "b64a34c354532dd5db1144a648bbae541503e9739331270f194cd25eff2838b5",
+  "verified": true,
+  "alive": false,
+  "failures": [
+    "page 26ef4020 has 1 screenshot",
+    "page 26ef4020 has no instrument record",
+    "page 01e1e316 has 1 screenshot"
+  ],
+  "steps_used": 5,
+  "patience_charges": [
+    {
+      "reason": "wharton-no",
+      "n": 1
+    },
+    {
+      "reason": "no-change",
+      "n": 1
+    }
+  ]
+}
