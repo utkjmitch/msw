@@ -74,6 +74,82 @@
         "format": "uri"
       }
     },
+    "read_channels": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "preset": {
+                "type": "string",
+                "enum": [
+                  "firestore-listen",
+                  "firestore-rest-read"
+                ]
+              },
+              "origin": {
+                "type": "string",
+                "format": "uri"
+              }
+            },
+            "required": [
+              "preset"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "preset": {
+                "type": "string",
+                "const": "graphql-query"
+              },
+              "origin": {
+                "type": "string",
+                "format": "uri"
+              },
+              "path": {
+                "type": "string",
+                "format": "starts_with",
+                "pattern": "^\\/.*"
+              }
+            },
+            "required": [
+              "preset",
+              "origin",
+              "path"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "type": "string",
+                "format": "uri"
+              },
+              "path": {
+                "type": "string",
+                "format": "starts_with",
+                "pattern": "^\\/.*"
+              },
+              "method": {
+                "type": "string",
+                "const": "POST"
+              }
+            },
+            "required": [
+              "origin",
+              "path",
+              "method"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
     "viewports": {
       "type": "array",
       "items": {
@@ -214,6 +290,7 @@
     "mode",
     "origins",
     "payment_origins",
+    "read_channels",
     "planned"
   ],
   "additionalProperties": false

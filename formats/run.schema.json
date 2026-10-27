@@ -56,6 +56,41 @@
     "mask_personal_data": {
       "default": true,
       "type": "boolean"
+    },
+    "mask_names_file": {
+      "type": "string"
+    },
+    "mask_selectors": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "admin_read_only": {
+      "type": "object",
+      "properties": {
+        "authorized_by": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorized_on": {
+          "type": "string",
+          "format": "date",
+          "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+        },
+        "quote": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "authorized_by",
+        "authorized_on",
+        "quote"
+      ],
+      "additionalProperties": false
     }
   },
   "required": [
@@ -64,7 +99,8 @@
     "environment",
     "allowed_for_transact",
     "payment_test_mode",
-    "mask_personal_data"
+    "mask_personal_data",
+    "mask_selectors"
   ],
   "additionalProperties": false
 }

@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><title>Board</title></head><body>
+<main><h1>The board</h1><p id="board">Loading</p></main>
+<script>
+// A made-up page that reads its data over a Firestore-style POST channel and also tries a write.
+const fs = new URLSearchParams(location.search).get("fs");
+const post = p => fetch(fs + "/google.firestore.v1.Firestore/" + p + "/channel?VER=8", { method: "POST", body: "count=1" });
+post("Write").catch(() => {});
+post("Listen").then(r => r.json()).then(d => { document.getElementById("board").textContent = "Players on the board: " + d.leaders; })
+  .catch(() => { document.getElementById("board").textContent = "No data available"; });
+</script></body></html>
