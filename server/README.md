@@ -35,9 +35,9 @@ Use [the example run](../examples/run.json), [Walker](../examples/walkers/first-
 
 If Chromium lives somewhere other than Playwright's default, pass the path through: add `-e PLAYWRIGHT_BROWSERS_PATH=/path/to/browsers` before the `--`. MCP clients do not always pass their own environment to the server.
 
-Done when: `npm run build` succeeds and the MCP client lists exactly the five tools below.
+Done when: `npm run build` succeeds and the MCP client lists exactly the six tools below: the five walk tools and `replay`.
 
-## The five tools
+## The six tools
 
 | Tool | Takes | Returns |
 |---|---|---|
@@ -45,7 +45,8 @@ Done when: `npm run build` succeeds and the MCP client lists exactly the five to
 | `look` | nothing | A look at the current screen |
 | `act` | `option` (a number from the last look), optional `text` (for text fields, or minutes for `wait`), optional `how` (`tap`, `double-tap`, `new-tab`), `ratings`, `wharton` | The next look, or `Refused: <reason>` |
 | `note` | `kind`, `severity` (0–4), `title`, `what_happened`, `expected`, optional `blocks_step` (true if this stops the Walker finishing a step the goal needs) | `Noted as <finding id>.` The finding is saved against the last look. The signed `note` record keeps `blocks_step: true`, so a raised severity can be traced to it. |
-| `quit` | `reason` (`done`, `run-away`, `stuck`), optional `detail` | Closes the browser and attempts replay. Returns where the walk was saved, the number of findings, `verified` and `alive` |
+| `quit` | `reason` (`done`, `run-away`, `stuck`), optional `detail` | Closes the browser and writes `findings.jsonl`, `seal.json` and the manifest before it returns. It never replays. Returns where the walk was saved, the number of findings, `verified`, `alive`, and the Walker findings not replayed yet |
+| `replay` | optional `finding` (one finding id) | Optional, after `quit`. Replays the last quit walk's pending Walker findings (or just `finding`) and updates their `reproduced` value. Returns each result and what is still not replayed. Refused while a walk is in progress |
 
 A look is two parts:
 
@@ -80,7 +81,7 @@ There is no tool for page source, the DOM, scripts, typing an address, cookies o
 | Instrument pass | On every page and after every act, the server records console errors, page errors, HTTP responses of 400 or more, failed requests, serious and critical axe-core violations, and LCP, CLS and INP. Axe runs once per distinct page state. If the axe and vitals pass fails, the failure is recorded as an `inspect-error` record and the pass is tried once more; a second failure is recorded too, that state is not tried again, and the Dead Parrot check fails the run. These go to `instrument.jsonl` only and are never shown to the Walker. |
 | Severity floors | At `quit`, instrument records become findings: console or page errors and 5xx responses at 3, serious or critical axe violations at 3, missing files (404) at 2, LCP over 4 s or CLS over 0.25 at 2. On `phone` and `phone-small`, a note with `blocks_step` is at least 3. When the walk ends in a run-away, the Walker's findings at the final step are raised to at least 3; if there are none, the server adds one at 3 (`Ran away before finishing: <trigger>`). This assumes the final step was one the goal needs; the server cannot check that, and the plan A fixes report lists it as an open decision. A journey that cannot be completed on any viewport is at least 4: one walk cannot know that, so `journeyFloor` in `src/walk/floors.ts` takes every walk of a journey (it needs `phone` and `desktop`) for the reports to apply. Nothing calls it yet. |
 | Dead Parrot check | At `quit`: every act had an earlier look of the same page; every page has at least two screenshots; every page has an instrument record; every finding cites events from this walk; no two acts are less than 0.5 seconds apart; every instrument and blocked record carries the state of a page the walk looked at; no axe pass failed twice; slow-3g reached every page the walk adopted. A record from a page the walk never looked at is kept, written at quit with no state, and fails the check. Failures are listed in the seal. |
-| Reproduction | At `quit`, each Walker finding is replayed on a fresh browser with no model. Replay finds each control by its role and its full, unmasked name, which stays in memory and is never written out. If two controls on the page share that identity, the replay fails rather than guess. If the final page state matches, the finding gets `reproduced: true`. |
+| Reproduction | Seal first, replay after (ruling D4, 2026-10-27). `quit` seals the walk and returns without replaying, so a long replay can never cost a walk its seal. Each Walker finding is then `reproduced: "pending"`. The `replay` tool, a separate call, replays each one on a fresh browser with no model. Replay finds each control by its role and its full, unmasked name, which stays in memory and is never written out; so `replay` works only in the server process that ran the walk, on the last walk it quit. If two controls on the page share that identity, the replay fails rather than guess. If the final page state matches, the finding gets `reproduced: true`, otherwise `false`. After each finding, `replay` re-writes `findings.jsonl` and `replays.json`, so a replay cut short keeps what it finished. Replay is optional: a walk whose replay never runs is complete and sealed, and its Walker findings stay `pending`. A walk session made with replay off (as the replay walks themselves are) marks them `not-replayed`. Both read as "not replayed", a plain state: the Dead Parrot check ignores `reproduced`, and a report shows it as "not replayed", never as a failure. |
 
 Every arrival takes two looks one second apart. Both screenshots are saved. The second is returned. That is how each page gets its two screenshots without padding.
 
@@ -136,9 +137,10 @@ One folder holds one walk. If the walk folder already holds an `events.jsonl`, `
 | `events.jsonl` | The signed event log: `start`, `look`, `act`, `refused`, `note`, `quit`, `blocked`, `instrument`, `condition`. A blocked request's `why` is `would-submit`, `left-site` or `background-write` |
 | `screens/<event>.png` | One screenshot per look, named by its event number |
 | `instrument.jsonl` | Instrument records, each with its step and event number |
-| `findings.jsonl` | Findings. Walker findings are written the moment they are noted; the final file at `quit` adds instrument findings and reproduction results |
-| `replays/<finding>/` | The replay walks used for reproduction |
-| `seal.json` | The walk's summary |
+| `findings.jsonl` | Findings. Walker findings are written the moment they are noted; the file at `quit` adds instrument findings, with each Walker finding's `reproduced` at `pending` (or `not-replayed`). `replay` re-writes it with `true` or `false` |
+| `seal.json` | The walk's summary, written at `quit` before any replay and never re-written |
+| `replays.json` | Written by `replay` only: `sealed_head` (the seal's `head`), one record per replayed finding (`finding`, `reproduced`, `started`, `ended`, `dir`, `head`, `verified`, and `error` if the replay failed to run), and `pending` |
+| `replays/<finding>/` | The replay walks, each a full walk folder with its own events and seal |
 
 `seal.json` holds:
 
@@ -153,6 +155,10 @@ One folder holds one walk. If the walk folder already holds an `events.jsonl`, `
 | `failures` | The Dead Parrot failures, if any |
 | `steps_used` | Accepted acts |
 | `patience_charges` | Each patience charge, with its reason |
+| `replay` | `pending` (Walker findings wait for the `replay` step), `none` (no Walker findings) or `off` (this walk does not replay) |
+| `reproduced` | Each Walker finding's id and its `reproduced` value at the seal: `pending` or `not-replayed` |
+
+The seal's integrity covers the event log, not the findings: `head` is the last event's HMAC, and `replay` adds no events, so the chain head never changes. A replay update stays checkable without touching the seal. `seal.json`'s `reproduced` keeps each Walker finding's value at the seal, so any later value in `findings.jsonl` must come from `replays.json`. There, `sealed_head` names the walk the record belongs to, and each record's `dir` and `head` point at the replay walk's own folder and signed log. Undo the `reproduced` changes `replays.json` lists, and `findings.jsonl` reads as it did at the seal.
 
 The manifest is per walk, in the walk folder. Spec 4.4 names a run-level `run.json`; one server process serves one walk, so the run-level file is left to the later reports work. The manifest holds hashes of the Walker and journey files, not copies: keep the files themselves with the run.
 

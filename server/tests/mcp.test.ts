@@ -11,13 +11,13 @@ beforeAll(async () => { s = await serve(); });
 afterAll(async () => { await s.close(); });
 afterEach(() => { while (dirs.length) rmSync(dirs.pop()!, { recursive: true, force: true }); });
 
-test("only the five walk tools exist, and a look carries the screenshot and the untrusted-text rule", async () => {
+test("only the five walk tools and replay exist, and a look carries the screenshot and the untrusted-text rule", async () => {
   const f = walkFiles(s.url); dirs.push(f.dir);
   const [a, b] = InMemoryTransport.createLinkedPair();
   const server = createServer(f.run); await server.connect(a);
   const client = new Client({ name: "t", version: "0" }); await client.connect(b);
   const tools = (await client.listTools()).tools.map(t => t.name).sort();
-  expect(tools).toEqual(["act", "look", "note", "quit", "start_walk"]);
+  expect(tools).toEqual(["act", "look", "note", "quit", "replay", "start_walk"]);
   const r = await client.callTool({ name: "start_walk", arguments: { walker: f.walker, journey: f.journey, viewport: "phone" } }) as any;
   expect(r.content[0].type).toBe("image");
   expect(r.content[1].text).toContain("<<<PAGE TEXT");

@@ -1,6 +1,6 @@
 import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
 import { mkdirSync, writeFileSync, appendFileSync, rmSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 import { createHash } from "node:crypto";
 import { loadWalker, loadJourney } from "../formats/load.js";
 import { audienceAllowed, type RunConfig, type Walker, type Journey, type Finding, type Move, type Conditions } from "../formats/schemas.js";
@@ -14,14 +14,18 @@ import { perceive, optionLine, type Perception, type Option } from "../browser/p
 import { maskText, maskDeep, isSecretField, setMaskNames, PAYMENT_SELECTOR } from "../browser/mask.js";
 import { contextOptions, setupConditions, applyStepConditions, emulateNetwork } from "../browser/conditions.js";
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
-import { reproduce } from "./replay.js";
+import { reproduce, type Reproduce } from "./replay.js";
 import { versions, fileInput, writeManifest, type Manifest } from "./manifest.js";
 import { FLOOR, noteFloor } from "./floors.js";
 
 export interface LookResult { png: Buffer; text: string; url: string; options: string[]; stepsLeft: number; patienceLeft: number; notes: string[]; ended?: string }
 export interface ActArgs { option: number; text?: string; how?: "tap" | "double-tap" | "new-tab"; ratings?: Rating[]; wharton?: Wharton }
 export interface NoteArgs { kind: Finding["kind"]; severity: number; title: string; what_happened: string; expected: string; blocks_step?: boolean }
-export interface QuitResult { dir: string; alive: boolean; failures: string[]; findings: number; verified: boolean }
+/** replay: "pending" when Walker findings wait for the replay step, "off" when this walk does not replay, "none" when there is nothing to replay. */
+export interface QuitResult { dir: string; alive: boolean; failures: string[]; findings: number; verified: boolean; replay: "pending" | "off" | "none"; pending: string[] }
+/** One finding's replay, as replays.json records it. dir and head point at the replay walk's own sealed folder. */
+export interface ReplayRecord { finding: string; reproduced: boolean; started: string; ended: string; dir: string | null; head: string | null; verified: boolean | null; error?: string }
+export interface ReplayResult { dir: string; replayed: ReplayRecord[]; pending: string[] }
 /** label: the display name, for finding text. key: the full unmasked name that identifies the control on replay. */
 export interface ReplayStep { label: string; key: string; role: string; how: "tap" | "double-tap" | "new-tab"; text?: string; event: number }
 type StartArgs = { walker: string; journey: string; viewport: ViewportName; locale?: string };
@@ -61,8 +65,10 @@ export class WalkSession {
   private unplaced: { page: string; write: (state?: string) => void }[] = []; private stateAt = new Map<string, string>();
   // The visible fields of a form being submitted, masked, for a blocked submit's record (spec 5.6).
   private submitting?: { label: string; type: string; value: string }[];
+  // Set once quit has written the seal. Replay runs only after it, and never rewrites it.
+  private sealed?: { head: string | null }; private replays: ReplayRecord[] = []; private replaying = false;
 
-  constructor(private run: RunConfig, private headless = true, private reproduceFindings = true) {
+  constructor(private run: RunConfig, private headless = true, private reproduceFindings = true, private replayer: Reproduce = reproduce) {
     // The names file stays outside the run folder; only its path is in the manifest.
     setMaskNames(run.mask_names_file ? readFileSync(run.mask_names_file, "utf8").split("\n") : []);
   }
@@ -181,7 +187,7 @@ export class WalkSession {
       viewport: this.viewport, locale: this.locale, kind: nf.kind, source: "walker", severity: nf.severity, title: nf.title,
       what_happened: nf.what_happened, expected: nf.expected, evidence: [last.seq],
       repro: this.acts.map(a => ({ step: `${a.how} "${a.label}"${a.text !== undefined ? " and type" : ""}`, event: a.event })),
-      reproduced: false, fingerprint: createHash("sha1").update(`${this.journey.id}|${nf.kind}|${lastAct}`).digest("hex").slice(0, 12),
+      reproduced: this.reproduceFindings ? "pending" : "not-replayed", fingerprint: createHash("sha1").update(`${this.journey.id}|${nf.kind}|${lastAct}`).digest("hex").slice(0, 12),
       ...(this.journey.silly ? { silly: this.journey.silly.category } : {}) };
     this.findings.push(f); this.log.append("note", { id, title: nf.title, severity: nf.severity, ...(nf.blocks_step ? { blocks_step: true } : {}), ...(by === "server" ? { by } : {}) }, last.state);
     appendFileSync(join(this.dir, "findings.jsonl"), JSON.stringify(f) + "\n");
@@ -208,20 +214,56 @@ export class WalkSession {
     } finally { try { await this.browser.close(); } finally { this.browser = undefined; } }
     const ctx = { run: this.run.id, walker: this.walker.id, journey: this.journey.id, viewport: this.viewport, locale: this.locale };
     this.findings.push(...instrumentFindings(this.instrument, ctx));
-    if (this.reproduceFindings) {
-      const events = this.log.all();
-      for (const f of this.findings.filter(x => x.source === "walker")) {
-        const target = events.find(e => e.seq === f.evidence[0]);
-        f.reproduced = !!target?.state && await reproduce(this.run, this.args, this.acts, { state: target.state, upToEvent: target.seq }, join(this.dir, "replays", f.id));
-      }
-    }
+    // The seal is written before any replay, so a long replay can never cost the walk its seal. Replay is its own step.
     const verified = this.log.verify().ok; const parrot = deadParrot(this.log.all(), this.findings);
-    writeFileSync(join(this.dir, "findings.jsonl"), this.findings.map(f => JSON.stringify(f)).join("\n") + (this.findings.length ? "\n" : ""));
-    writeFileSync(join(this.dir, "seal.json"), JSON.stringify({ outcome: reason, ended: this.ended ?? null, events: this.log.all().length, head: this.log.all().at(-1)?.hmac, verified,
-      alive: parrot.alive, failures: parrot.failures, steps_used: this.steps, patience_charges: this.budget.charges }, null, 2) + "\n");
+    const walkerFindings = this.findings.filter(f => f.source === "walker");
+    const replay = !this.reproduceFindings ? "off" : walkerFindings.length ? "pending" : "none";
+    const head = this.log.all().at(-1)?.hmac ?? null;
+    this.writeFindings();
+    writeFileSync(join(this.dir, "seal.json"), JSON.stringify({ outcome: reason, ended: this.ended ?? null, events: this.log.all().length, head, verified,
+      alive: parrot.alive, failures: parrot.failures, steps_used: this.steps, patience_charges: this.budget.charges,
+      replay, reproduced: Object.fromEntries(walkerFindings.map(f => [f.id, f.reproduced])) }, null, 2) + "\n");
     if (this.manifest) writeManifest(join(this.dir, "manifest.json"), { ...this.manifest, times: { ...this.manifest.times, ended: new Date().toISOString() },
       outcome: { reason, ended: this.ended ?? null } });
-    return { dir: this.dir, alive: parrot.alive, failures: parrot.failures, findings: this.findings.length, verified };
+    this.sealed = { head };
+    return { dir: this.dir, alive: parrot.alive, failures: parrot.failures, findings: this.findings.length, verified, replay, pending: this.pendingReplays() };
+  }
+
+  /**
+   * The replay step, after quit: replays each pending Walker finding (or only `only`) on a fresh browser with no model, and
+   * after each one re-writes findings.jsonl and replays.json, so a replay cut short keeps what it finished. seal.json is never touched.
+   */
+  async replay(only?: string): Promise<ReplayResult> {
+    if (!this.sealed) throw new Error("quit the walk first; replay runs after the seal");
+    if (!this.reproduceFindings) throw new Error("replay is off for this walk");
+    if (this.replaying) throw new Error("a replay of this walk is already running");
+    const todo = this.findings.filter(f => f.source === "walker" && f.reproduced === "pending" && (only === undefined || f.id === only));
+    if (only !== undefined && !todo.length) throw new Error(`no finding ${only} is waiting for replay`);
+    this.replaying = true; const done: ReplayRecord[] = [];
+    try {
+      const events = this.log.all();
+      for (const f of todo) {
+        const target = events.find(e => e.seq === f.evidence[0]); const started = new Date().toISOString();
+        let r: { reproduced: boolean; dir?: string; error?: string };
+        try { r = target?.state ? await this.replayer(this.run, this.args, this.acts, { state: target.state, upToEvent: target.seq }, join(this.dir, "replays", f.id)) : { reproduced: false, error: "the finding's page has no state" }; }
+        catch (e) { r = { reproduced: false, error: String((e as Error).message).split("\n")[0] }; }
+        const seal = r.dir ? (() => { try { return JSON.parse(readFileSync(join(r.dir!, "seal.json"), "utf8")) as { head?: string; verified?: boolean }; } catch { return undefined; } })() : undefined;
+        f.reproduced = r.reproduced;
+        const rec: ReplayRecord = { finding: f.id, reproduced: r.reproduced, started, ended: new Date().toISOString(),
+          dir: r.dir ? relative(this.dir, r.dir) : null, head: seal?.head ?? null, verified: seal?.verified ?? null, ...(r.error ? { error: this.m(r.error) } : {}) };
+        this.replays.push(rec); done.push(rec);
+        this.writeFindings(); this.writeReplays();
+      }
+    } finally { this.replaying = false; }
+    return { dir: this.dir, replayed: done, pending: this.pendingReplays() };
+  }
+  private pendingReplays() { return this.findings.filter(f => f.source === "walker" && f.reproduced === "pending").map(f => f.id); }
+  private writeFindings() {
+    writeFileSync(join(this.dir, "findings.jsonl"), this.findings.map(f => JSON.stringify(f)).join("\n") + (this.findings.length ? "\n" : ""));
+  }
+  /** sealed_head ties this file to the walk's seal; each replay's head is the chain head of the replay walk's own seal. */
+  private writeReplays() {
+    writeFileSync(join(this.dir, "replays.json"), JSON.stringify({ sealed_head: this.sealed!.head, replays: this.replays, pending: this.pendingReplays() }, null, 2) + "\n");
   }
 
   async replayAct(step: ReplayStep): Promise<boolean> {
