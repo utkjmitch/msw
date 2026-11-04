@@ -1,6 +1,6 @@
 # Walking from every browser and device, with usage models: design
 
-*Date: 2026-11-04. Status: draft for Jimmy's review. Nothing here is built.*
+*Date: 2026-11-04. Status: draft for the owner's review. Nothing here is built.*
 
 **What this recommends.** Add browsers in three levels, in this order. **Level 1, engines:** Firefox and WebKit next to Chromium, through the Playwright 1.63.0 the server already pins. All three are already baked into the box, so the box needs no new download. **Level 2, simulated devices:** phone and tablet sizes, touch and slow connections on those engines, each walk labeled as simulated. **Level 3, real devices:** an Android phone over ADB first, and a real iPhone only when a product's users justify it, because Playwright cannot drive iPhone Safari.
 
@@ -37,9 +37,9 @@ The Walker gets a `usage` block: how this person holds the device, types, connec
 ### 1.1 Settled
 
 <!-- decision-lint: not-a-decision -->
-Jimmy confirmed the reading of "usage models" and "tests" on 2026-11-04 ("yes"). A usage model is how a person actually uses a device: one thumb on a phone, mouse and keyboard, a shaky connection, an interrupted session. The persona carries it into the walk. Tests are repeatable checks built from what walks find. This spec treats that as ruled.
+The owner confirmed the reading of "usage models" and "tests" on 2026-11-04 ("yes"). A usage model is how a person actually uses a device: one thumb on a phone, mouse and keyboard, a shaky connection, an interrupted session. The persona carries it into the walk. Tests are repeatable checks built from what walks find. This spec treats that as ruled.
 
-The three levels and their order (1, then 2, with 3 where a product's users justify it) were put to Jimmy the same day. This spec keeps them.
+The three levels and their order (1, then 2, with 3 where a product's users justify it) were put to the owner the same day. This spec keeps them.
 
 ### 1.2 What was probed
 
@@ -458,7 +458,7 @@ On `chromium` / `phone` the Walker never sees a screenshot. It finds: icon butto
 
 ## 6. Walkers written by outside teams
 
-Jimmy expects outside teams to write their own Walkers from this repo's skills. The skills are not in the repo yet (spec section 6 lists them; `skills/` does not exist). For outside teams to get usable Walkers and usage models from them, the formats and skills need:
+The owner expects outside teams to write their own Walkers from this repo's skills. The skills are not in the repo yet (spec section 6 lists them; `skills/` does not exist). For outside teams to get usable Walkers and usage models from them, the formats and skills need:
 
 1. **Versioned schemas.** Each format file gets `schema_version`. The server reads the current and the previous version. A team's files keep loading after an upgrade, or `start_walk` says exactly which field changed.
 2. **A validator that needs no browser.** `msw validate <files>` checks Walkers, journeys, usage models, run files and matrices against the schemas and the composition rules in 5.4 (a one-thumb Walker with only `desktop` fails here, not at walk time). The skills tell the agent to run it after writing each file.
@@ -651,7 +651,7 @@ Levels 1 and 2: none. Level 3 Android: an Android phone and a cable, on a host y
 
 ## 10. Expert personas
 
-Jimmy asked for Walkers who are experts, for example for a particular kind of financial institution. Nothing in the browser and device design changes for them. The guide's rules stand (`docs/using-in-a-private-project.md`, "Writing Walkers who are experts"): a role, not a real person; simulated feedback labeled as such; sourced facts; claims checked against the source.
+The owner asked for Walkers who are experts, for example for a particular kind of financial institution. Nothing in the browser and device design changes for them. The guide's rules stand (`docs/using-in-a-private-project.md`, "Writing Walkers who are experts"): a role, not a real person; simulated feedback labeled as such; sourced facts; claims checked against the source.
 
 Three things in this spec touch them:
 
