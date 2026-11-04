@@ -106,7 +106,9 @@ export class WalkSession {
       await this.context.addInitScript(REAL_PERFORMANCE_INIT);
       await this.context.addInitScript(VITALS_INIT);
       await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], payments: this.journey.payment_origins,
-        reads: this.journey.read_channels, onBlocked: b => this.onBlocked(b), onRead: r => this.place(r.page, st => this.log.append("read", { ...this.m(r) }, st)) });
+        reads: this.journey.read_channels, onBlocked: b => this.onBlocked(b), onRead: r => this.place(r.page, st => this.log.append("read", { ...this.m(r) }, st)),
+        // A request the guard could not finish. With reached, the site took the write even though no page showed its answer.
+        onError: e => this.place(e.page, st => this.log.append("guard-error", { ...this.m(e) }, st)) });
       // axe opens a temporary page without an opener during analysis.
       this.context.on("page", async p => { if (await p.opener()) await this.adopt(p); });
       const page = await this.context.newPage(); await this.adopt(page);
@@ -307,6 +309,7 @@ export class WalkSession {
     this.place(b.page, st => this.log.append("blocked", { ...this.m(b), ...(fields ? { fields } : {}), ...missing }, st));
     // A person never sees a page's background write, so the Walker is not told about one.
     if (b.why === "would-submit") this.pending.push("Nothing seemed to happen. This walk is read-only, so the form was not sent; carry on as if it had failed.");
+    else if (b.why === "left-site" && b.reached) this.pending.push("The form was sent, but the page after it is on another site, which this walk does not visit.");
     else if (b.why === "left-site") this.pending.push("That leads off this site, which this walk does not visit.");
   }
   /** The walk is over once its budget ends, its context closes or it quits; a late offline restore must not run after that. */
