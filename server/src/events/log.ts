@@ -1,7 +1,7 @@
 import { appendFileSync, readFileSync, existsSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import { createHmac, randomBytes } from "node:crypto";
-export type EventKind = "start" | "look" | "act" | "refused" | "note" | "quit" | "blocked" | "instrument" | "condition" | "read";
+export type EventKind = "start" | "look" | "act" | "refused" | "note" | "quit" | "blocked" | "instrument" | "condition" | "read" | "guard-error";
 export interface MswEvent { seq: number; ts: string; kind: EventKind; state?: string; data: Record<string, unknown>; prev: string; hmac: string }
 export class EventLog {
   private events: MswEvent[] = [];

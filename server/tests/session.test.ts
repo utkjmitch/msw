@@ -425,3 +425,28 @@ test("the signed note record says when a note blocks a step", async () => {
     expect(readEvents(q.dir).filter(e => e.kind === "note").map(e => e.data.blocks_step)).toEqual([true, undefined]);
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("a pop-up to an origin off the list is blocked, recorded, and the Walker is told", async () => {
+  const f = setup(s.url + "leave.html"); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const r1 = await w.act({ option: n(r0, "Partner in a new window"), ratings: R(n(r0, "Partner in a new window"), n(r0, "Send and go")), wharton: W }) as LookResult;
+    expect(r1.notes.join(" ")).toContain("leads off this site");
+    const q = await w.quit("done");
+    expect(s.offsite).not.toContain("GET /partner.html");
+    expect(readEvents(q.dir).find(e => e.kind === "blocked")?.data).toMatchObject({ why: "left-site", method: "GET", url: s.otherOrigin + "/partner.html" });
+  } finally { await w.quit("done").catch(() => {}); }
+});
+test("transact: a form whose answer redirects off the list is recorded as sent, and the next page is blocked", async () => {
+  const f = setup(s.url + "leave.html", { mode: "transact" }); f.run.allowed_for_transact = [s.url]; const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const r1 = await w.act({ option: n(r0, "Send and go"), ratings: R(n(r0, "Send and go"), n(r0, "Partner in a new window")), wharton: W }) as LookResult;
+    expect(r1.notes.join(" ")).toContain("The form was sent");
+    const q = await w.quit("done");
+    expect(s.posts).toContain("/send-offsite"); expect(s.offsite).not.toContain("GET /offsite-after-post");
+    const blocked = readEvents(q.dir).find(e => e.kind === "blocked");
+    expect(blocked.data).toMatchObject({ why: "left-site", method: "GET", url: s.otherOrigin + "/offsite-after-post", redirect_status: 303,
+      reached: { method: "POST", url: s.url + "send-offsite", status: 303 } });
+    expect(blocked.state).toBeTruthy();
+  } finally { await w.quit("done").catch(() => {}); }
+});
