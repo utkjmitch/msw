@@ -1,0 +1,19 @@
+# A read-only admin walk. The guard allows it only when the run file records admin_read_only (who allowed it,
+# when, and their words) and masks personal data; see server/README.md. The storage state is a signed-in
+# session saved by a person; walkers never type passwords.
+id: team-member-review
+walker: team-member
+audience: admin
+goal: From the site's own navigation, open the admin pages and review what is new. Read only; save, publish, approve, send or delete nothing
+start_url: http://127.0.0.1:4810/
+arrival: direct
+success:
+  - reaches the admin pages from the navigation, without typing an address
+  - finds the area for registrations and the area for gifts
+step_budget: 30
+viewports: [desktop]
+mode: read-only
+storage_state: /path/to/signed-in-state.json
+read_channels:
+  - preset: firestore-listen
+  - preset: firestore-rest-read

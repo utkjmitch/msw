@@ -1,0 +1,8 @@
+<!doctype html><html lang="en"><head><title>Ticker</title></head><body>
+<main><h1>Home</h1><p id="t">Story one</p><button id="d">Go to story one</button><a href="about.html">About us</a><a href="contact.html">Contact</a></main>
+<footer><a href="contact.html">About us</a></footer>
+<script>
+// A ticker that changes the page by itself, the way a home page carousel does.
+const s = ["Story one", "Story two", "Story three"]; let i = 0;
+window.tick = () => { i = (i + 1) % s.length; document.getElementById("t").textContent = s[i]; document.getElementById("d").textContent = "Go to " + s[i].toLowerCase(); };
+</script></body></html>

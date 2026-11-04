@@ -96,7 +96,7 @@ A dossier is written about a role, never about a real person. When a real person
 
 ### 4.3 Finding (`finding.json`)
 
-`id`, `run`, `walker`, `journey`, `step`, `viewport`, `locale`, `kind` (`usability`, `function`, `content`, `accessibility`, `performance`, `vision-gap`), `source` (`walker` or `instrument`), `severity` (0–4, see 7), `title`, `what_happened`, `expected`, `evidence` (server event ids only), `repro` (steps, each with an event id), `reproduced` (`true` once replayed), `fingerprint` (for before/after matching, see 8.2).
+`id`, `run`, `walker`, `journey`, `step`, `viewport`, `locale`, `kind` (`usability`, `function`, `content`, `accessibility`, `performance`, `vision-gap`), `source` (`walker` or `instrument`), `severity` (0–4, see 7), `title`, `what_happened`, `expected`, `evidence` (server event ids only), `repro` (steps, each with an event id), `reproduced` (`true` or `false` once replayed; `pending` or `not-replayed` until then, a plain state, never a failure), `fingerprint` (for before/after matching, see 8.2).
 
 ### 4.4 Run
 
@@ -178,7 +178,7 @@ A run that fails is marked "ceased to be" in the report, with the failing checks
 
 ### 5.9 Reproduction
 
-A finding from the Walker is replayed by the server: the same option sequence on a fresh context, with no model involved. If the same state appears (screenshot hash within tolerance, the same option list), `reproduced: true`. Findings that do not reproduce stay in the report, labeled.
+A finding from the Walker is replayed by the server, after the walk is sealed and as a separate, optional step (ruling D4, 2026-10-27: seal first, replay after): the same option sequence on a fresh context, with no model involved. If the same state appears (screenshot hash within tolerance, the same option list), `reproduced: true`. Findings that do not reproduce stay in the report, labeled.
 
 ## 6. The skills
 
