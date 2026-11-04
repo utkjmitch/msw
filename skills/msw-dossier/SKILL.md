@@ -31,9 +31,9 @@ Ask the people who know the users: the owner, support staff, whoever answers the
 8. What language do they read best? Any needs that change how they read or act: large text, a screen reader, keyboard only, a slow connection?
 9. Which kinds of person matter most this time, and why?
 
-Write the answers into `<home>/brief.md` under a heading with today's date and who answered. Keep their words where you can.
+Write the answers into `<home>/brief.md` under a heading with today's date and who answered. Keep their words where you can. When the owner answered some questions and not others, quote what they said and mark each answer you had to infer `assumed`.
 
-**When nobody can be asked** (no one is available, or you are running unattended), use what the product's repo already says about its users (its README, docs, any brief), write it into `brief.md`, and mark every answer you inferred as `assumed`. Do not make up facts about real users. Say in the run's report that the Walkers rest on assumptions.
+**When nobody can be asked** (no one is available, or you are running unattended), use what the product's repo already says about its users (its README, docs, any brief), write it into `brief.md`, and mark every answer you inferred as `assumed`. Do not make up facts about real users. Add each assumption to the **Assumptions** list at the end of the run's `PLAN.md`, so the report can say the Walkers rest on them.
 
 **Do not ask** for real users' names, contact details or records. A Walker is a role, never a real person. When a real person will later take the Minister's Walk for that role, the dossier still describes the role.
 
@@ -57,13 +57,17 @@ Write down, for each edge Walker, which blind spot it is aimed at (from `PLAN.md
 
 ## 3. Find out what the Walker must not know
 
-A Walker who knows the product's labels will find them, and the walk will prove nothing. Before you write, make a short list of the product's own words: its menu items, button labels, page titles and product names. Get them from the product's repo (templates, route names, translation files) or from the brief. Keep the list in your notes, not in the dossier.
+A Walker who knows the product's labels will find them, and the walk will prove nothing. Before you write, make a short list of the product's own words: its menu items, button labels, page titles and product names. Get them from the product's repo (templates, route names, translation files) or from the brief. Keep the list in `<home>/product-words.md`, never in a dossier, and never give it to the agent that walks.
+
+The list is of the product's **own** labels: "Partner portal", "My Gift", "Impact Hub". Ordinary words the person would use anyway ("password", "give", "contact") may stay in a dossier when they are the person's words, not a hint about where to click.
 
 You may read the product's code to build that list. The Walker never sees it.
 
 ## 4. Write the dossier
 
-One file per Walker: `<home>/walkers/<id>.yaml`. The `id` is lowercase letters, digits and hyphens. Every field below is required unless marked optional.
+One file per Walker: `<home>/walkers/<id>.yaml` (make the `walkers/` folder if it isn't there). The `id` is lowercase letters, digits and hyphens. Every field below is required unless marked optional.
+
+YAML: put a list item or value in double quotes when it contains `: `, starts with a quote, or has a `#` in it. Otherwise YAML reads it as something else, and the check's complaint (`expected string, received object`) won't name the line.
 
 ```yaml
 id: night-shift-sister              # lowercase, digits, hyphens
@@ -98,7 +102,7 @@ accessibility:                       # optional: needs that change how they read
 How to fill the hard parts:
 
 - **`story`.** Specific beats general. "Opened the link on the bus home, phone at twenty percent" tells the Walker how to behave; "busy professional" doesn't.
-- **`patience`.** The server takes one point for each slow page (over 3 seconds), each action that changes nothing, each `back`, each return to a page already seen, and each "no" in the Walker's four questions. At zero the Walker leaves. As a guide: 5 to 8 for someone hurried or doubtful, 10 to 14 for someone who must get it done, 15 or more only for someone with a strong reason to persist. Most people are nearer 8 than 20.
+- **`patience`.** The server takes one point for each slow page (over 3 seconds), each action that changes nothing, each `back`, each return to a page already seen, and each "no" in the Walker's four questions. At zero the Walker leaves. As a guide: 5 to 9 for someone hurried or doubtful, 10 to 14 for someone who must get it done, 15 or more only for someone with a strong reason to persist. Most people are nearer 8 than 20.
 - **`leave_triggers`.** Concrete and checkable on a page: "asked to create an account before seeing a price", "a pop-up asking for my email in the first minute", "three pages in a row that don't say what they actually do". Not "bad UX".
 - **`prior_knowledge`.** What they know about the organization and the subject, in their terms. Never the product's own labels or screens. "Knows the organization runs trips abroad" is fine. "Knows the Trips page is under Programs" is not.
 - **`role`.** `admin` is for people who run the site. Admin walks need a test copy with seeded data, or a person's written permission for a read-only look (see [`msw-journeys`](../msw-journeys/SKILL.md)).
@@ -106,18 +110,18 @@ How to fill the hard parts:
 
 ## 5. Check it
 
-1. Run the check:
+1. Run the check, with absolute paths (the commands in these skills are easiest to get right that way):
 
    ```sh
    node <msw>/server/dist/formats/check.js --walker <home>/walkers/<id>.yaml
    ```
 
    Fix every problem it prints until it prints `ok`.
-2. Compare the dossier against your list of the product's own words from step 3. If any label, menu item or page name appears, rewrite that line in the Walker's own words.
+2. Compare the dossier against `<home>/product-words.md` from step 3. If any label, menu item or page name appears, rewrite that line in the Walker's own words.
 3. Read it as a stranger. Could you say what this person would do first on arrival, and what would make them leave? If not, the story is too vague.
 
 ## 6. Check the Walkers against each other
 
-When there is more than one Walker, read them side by side. If two of them would plausibly take the same path through the product for the same reason, they are one Walker twice: change who they are (device, arrival, prior knowledge, patience, goal) until they would part ways early. Write one line in the run plan saying how each differs.
+When there is more than one Walker, read them side by side. If two of them would plausibly take the same path through the product for the same reason, they are one Walker twice: change who they are (device, arrival, prior knowledge, patience, goal) until they would part ways early. Make sure the run plan has one line per Walker saying how each differs; if the planner already wrote those lines, check them against the dossiers you wrote and correct them.
 
 Done when: every Walker the plan names exists, the check prints `ok` for all of them together, no dossier uses the product's own labels, at least one edge Walker exists with the blind spot it targets written in the plan, and no two Walkers would take the same path.

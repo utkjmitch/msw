@@ -30,7 +30,7 @@ Ask whoever owns the product's repo, and give them these four options as they st
 | **3. A separate private repo** | Keeping the product repo small, or giving different people access | One more repo to look after, and findings sit away from the code |
 | **4. Reports in the repo, screenshots elsewhere** | Keeping the text with the code without the image weight | Links can go stale, and the storage needs its own access rules |
 
-Before you ask, check whether the product's repo is public. **A public repo can't use option 1**, because everything in it would be public; the same goes for the reports in option 4. Tell the owner that, and offer 2, 3, or 4 with the reports kept outside the public repo.
+Before you ask, check whether the product's repo is public. Run `git remote -v`. No remote means the repo lives only on this machine. A remote on a hosting service may be public: look it up there (for GitHub, `gh repo view <owner>/<repo> --json visibility`), or ask the owner and write down that the answer is their word. **A public repo can't use option 1**, because everything in it would be public; the same goes for the reports in option 4. Tell the owner that, and offer 2, 3, or 4 with the reports kept outside the public repo.
 
 Don't choose for them. Write down their answer in their words, who gave it and when.
 
@@ -47,12 +47,15 @@ Don't choose for them. Write down their answer in their words, who gave it and w
 
 `out_dir` is always written as an absolute path in the run file ([`msw-walk`](../msw-walk/SKILL.md) 2.2).
 
+Create `<home>` and its `README.md` now. The other folders are made by the skills that put files in them; git doesn't keep empty folders, and they don't need placeholder files.
+
 Inside `<home>`:
 
 ```
 <home>/
   README.md              where the records are kept, and why (1.4)
-  brief.md               what the owner and team said about their users
+  brief.md               what the owner and team said about their users (msw-dossier step 1 writes it)
+  product-words.md       the product's own labels, which Walkers must not know (msw-dossier step 3); never given to a walking agent
   walkers/               dossiers, and fact sheets for expert Walkers
   journeys/              journeys, including silly walks
   runs/<run-id>/
@@ -85,7 +88,7 @@ The other options were: <the three not chosen, one line each, from the table in 
 To change where records are kept, ask <who>, move the folders, and update this file.
 ```
 
-Done with part 1 when: `<home>` exists, its README records the choice, who made it and when (or that nobody has yet and option 2 is in use until they do), and, for option 2, `git check-ignore` confirms the folder is ignored.
+Done with part 1 when: `<home>` exists, its README records the choice, who made it and when (or that nobody has yet and option 2 is in use until they do), and `git check-ignore -v <home>/README.md` agrees with the choice: it names the ignore rule for option 2, and prints nothing for options 1 and 4.
 
 ---
 
@@ -102,6 +105,7 @@ For each walk folder in `<out_dir>/walks/<walker>-<journey>-<viewport>-<locale>/
 - `seal.json`: `outcome`, `ended`, `steps_used`, `verified`, `alive`, `failures`;
 - `findings.jsonl`: one finding per line, with `source` (`walker` or `instrument`), `severity`, `kind`, `title`, `what_happened`, `expected`, `reproduced`, and the event ids in `evidence`;
 - `replays.json`, if `replay` ran: the final `reproduced` values;
+- `events.jsonl`, for what the server stopped or saw: `blocked` events (`would-submit`, `left-site`, `background-write`) and `condition` events. A silly walk's evidence is often here: two `would-submit` events from one double tap mean the page let a second submission go;
 - the narration beside the folder (`<walker>-<journey>-<viewport>-<locale>.md`);
 - `screens/<event>.png` for the screenshots a finding cites;
 - the run's `PLAN.md`, for the blind spots and what was left out.
@@ -166,7 +170,8 @@ Every blind spot in the plan appears here, including the ones that came up empty
 ## 5. Each Walker
 
 Two or three lines per Walker: who they are, what they tried, where they struggled, and what they'd tell a friend
-(from the narration).
+(from the narration). If the Walkers rest on assumptions rather than on what the owner or team said (see `brief.md` and
+the plan's "Assumptions"), say so here.
 
 ## 6. Expert claims (only if an expert Walker walked)
 

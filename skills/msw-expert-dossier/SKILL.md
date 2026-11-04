@@ -24,7 +24,7 @@ Write this at the top of the fact sheet, and keep it in mind all the way through
 
 ## 1. Settle who the expert is
 
-Ask the owner, and write the answers in `<home>/brief.md`:
+Ask the owner, and write the answers in `<home>/brief.md`. Any answer you had to infer is marked `assumed`, as in `msw-dossier`:
 
 1. **A kind of organization, or one named organization?** "A compliance officer at a small savings bank" is a kind. "A compliance officer at [a named bank]" is one organization.
 2. **What job?** A role and its seniority: "branch operations manager, eight years in". Never a real person, and never a real employee's name, even with permission. The Walker gets a first name for the role, as any Walker does.
@@ -54,7 +54,7 @@ Do not use: forums, anonymous reviews, AI-generated summaries, or anything you c
 
 **When you have no route to the open web,** use what the product's repo, the owner and the team's material (if allowed) can give you, and say in the report which facts could not be sourced. A short sheet with real sources beats a long one without them.
 
-**When the organization is invented** (a practice example, or a demonstration), every fact is invented too. Say so in the sheet's header (`fictional: true`), make the organization's name obviously fictional, and set every fact's source to `fictional, invented for this example`. A reader must never be able to mistake an invented fact for a real one.
+**When the organization is invented** (a practice example, or a demonstration), every fact is invented too. Say so in the sheet's header (`fictional: true`), make the organization's name obviously fictional, and set every fact's source to `fictional, invented for this example` and its source date to `n/a (fictional)`. A reader must never be able to mistake an invented fact for a real one.
 
 ## 3. Write the fact sheet
 
@@ -91,7 +91,7 @@ Write the YAML as in [`msw-dossier`](../msw-dossier/SKILL.md) step 4, with these
 
 - **`summary`** starts with the role and the kind of workplace, and ends `(simulated)`: "A compliance officer at a small savings bank, checking how the product explains fees (simulated)".
 - **`background`** gives the job, the years in it, and what that trains a person to notice.
-- **`prior_knowledge`** holds what the expert knows **about the subject**, as short lines that point at the fact sheet: "how savings rates must be quoted (F1, F2)". Never the product's own labels or screens. Knowing the subject is not knowing the product.
+- **`prior_knowledge`** holds what the expert knows **about the subject**, as short lines that point at the fact sheet: `"how savings rates must be quoted (F1, F2)"`. Quote each line, as `msw-dossier` step 4 says, since these often hold colons. Never the product's own labels or screens. Knowing the subject is not knowing the product. Terms of the trade ("register number", "complaints procedure") are the expert's words, not product labels.
 - **`frustrations`** and **`leave_triggers`** include the expert's own: "a figure with no date on it", "a term of art used loosely", "a claim with no source". Keep them concrete enough to see on a page.
 - **`patience`**: experts are often short on time and long on doubt. 6 to 10 unless they must get it done.
 - **`tech_literacy`** is about computers, not the subject. A senior banker may be `low`.
@@ -110,7 +110,7 @@ The `check` command does not know about fact sheets. Keep the sheet's file name 
 2. Every line in `prior_knowledge` that states a fact points at a row in the fact sheet. Every row has a source and two dates.
 3. No real person's name appears in the dossier or the sheet.
 4. If the sheet is `private: true`, the place you are about to save it is private storage. If it is not, stop and ask the owner where it should go.
-5. If the sheet is `fictional: true`, every source says `fictional, invented for this example`, and the organization's name could not be mistaken for a real one.
+5. If the sheet is `fictional: true`, every source says `fictional, invented for this example`, every source date says `n/a (fictional)`, and the organization's name could not be mistaken for a real one.
 
 ## 6. After a walk: checking the expert's claims
 

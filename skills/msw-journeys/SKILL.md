@@ -9,13 +9,14 @@ description: Write Ministry journeys, one goal for one Walker, in the Walker's o
 
 You write one YAML file per journey, for one Walker. It must pass the `check` command together with its Walker.
 
-For silly walks (the situations nobody rehearsed), write the journey here and then add its `silly` block with [`msw-silly`](../msw-silly/SKILL.md).
+Silly walks (the situations nobody rehearsed) are journeys too. [`msw-silly`](../msw-silly/SKILL.md) writes them whole, following this skill's steps and adding a `silly` block.
 
 ## Before you start
 
 - The Walkers exist in `<home>/walkers/` and pass `check` ([`msw-dossier`](../msw-dossier/SKILL.md)). `<home>` is the Ministry folder in the product's repo ([`msw-file`](../msw-file/SKILL.md), part 1).
 - You know the address of the environment you will walk, and whether it is the live site or a test copy. Ask the owner if you don't. Write it in `<home>/brief.md`.
-- You have your list of the product's own words (labels, menus, page names) from `msw-dossier` step 3. The journey's `goal` must not use them either.
+- The product's own words (labels, menus, page names) are in `<home>/product-words.md`, from `msw-dossier` step 3. The journey's `goal` must not use them either.
+- You may open the site to confirm a start address and that the site is up. Whoever writes journeys doesn't walk them ([`msw-walk`](../msw-walk/SKILL.md) 3.1).
 
 ## 1. Pick the goal
 
@@ -41,16 +42,16 @@ For an admin Walker, the journeys cover three areas: **content** (publish or cor
 - "has seen the price of a one-year membership"
 - "reached a page that confirms the change was saved" (only in `transact` mode)
 
-Each condition is about what the Walker knows or has seen, never about which page they ended on. Two or three conditions is usual.
+Each condition is about what the Walker knows or has seen, never about which page they ended on. Two or three conditions is usual. Finding out that the site doesn't say something is a fair outcome when the question is whether it does: "knows the savings rate, or knows the site doesn't give one".
 
 ## 3. Choose the arrival and start
 
-- **`arrival`**: how they came: `search` (from a search engine), `shared-link` (a friend's message), `email` (a newsletter or a receipt), or `direct` (typed the address or used a bookmark).
+- **`arrival`**: how they came: `search` (from a search engine), `shared-link` (a friend's message), `email` (a newsletter or a receipt), or `direct` (typed the address or used a bookmark). If the brief doesn't say, choose from the dossier's story and add it to the plan's Assumptions.
 - **`start_url`**: the page they would land on. A shared link often lands deep in the site, not on the home page. Use the address of the environment you will walk.
 
 ## 4. Set the budget
 
-`step_budget` is the most actions the Walker gets (1 to 200). Each `act` costs one. Count how many actions a person who knows the site would need, then double it, and add a few for scrolling. 15 to 30 is usual for a public journey.
+`step_budget` is the most actions the Walker gets (1 to 200). Each `act` costs one. Count how many actions a person who knows the site would need, then double it, and add a few for scrolling. 15 to 30 is usual for a public journey; give more to a slow reader or an expert reading closely, fewer to a silly walk aimed at one moment.
 
 The budget is not patience. Patience is the Walker's and runs out on its own (see the dossier).
 
@@ -125,7 +126,7 @@ Viewports: every journey is walked on at least `phone` and `desktop`, whatever t
    ```
 
    It prints `ok`, or one line per problem. It also checks that the journey's Walker is among those given and that the Walker's role allows the audience. Fix everything until it prints `ok`.
-2. Read the goal against your list of the product's own words. No label, menu item or page name.
+2. Read the goal against `<home>/product-words.md`. No label, menu item or page name.
 3. Read each success condition and ask: could someone tell, from the walk's screenshots and narration alone, whether it was met? If not, rewrite it.
 
 Done when: every journey the plan names exists in `<home>/journeys/`, the check prints `ok` for all of them together with their Walkers, every goal is in the Walker's words with no product labels, every journey is `read-only` unless step 5's four conditions hold, and any saved login is a test account kept out of git.

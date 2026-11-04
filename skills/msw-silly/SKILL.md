@@ -7,7 +7,9 @@ description: Write silly walks, journeys for the situations a product's builders
 
 > Anybody can walk a website the way its designers intended. The Ministry's speciality is the other way: the walk nobody rehearsed, performed by a real person for a perfectly sensible reason. Dana did not double-tap Donate to break anything. Dana double-tapped Donate because the bus went over a pothole.
 
-A silly walk is an ordinary journey ([`msw-journeys`](../msw-journeys/SKILL.md)) with a `silly` block: a category, and the `conditions` and `moves` the server applies. You write two to four per product on every run, each grounded in a Walker's dossier.
+A silly walk is an ordinary journey ([`msw-journeys`](../msw-journeys/SKILL.md)) with a `silly` block: a category, and the `conditions` and `moves` the server applies. You write two to four per product on every run, each grounded in a Walker's dossier. You write the whole journey file, following `msw-journeys`.
+
+Files go in `<home>`, the Ministry folder in the product's repo ([`msw-file`](../msw-file/SKILL.md), part 1). The run plan is `<home>/runs/<run-id>/PLAN.md` ([`msw-walk`](../msw-walk/SKILL.md), part 1).
 
 **Every run includes silly walks.** Leaving them out needs the owner's stated reason, in their words, recorded in the run plan and the report. "We ran out of time" from you is not a reason; "not this week, the payment test copy is down" from the owner is.
 
@@ -45,6 +47,25 @@ What the server **cannot** do today, so don't write a walk that depends on it (s
 - **Text zoom on any site**: `text_scale` sets the root font size, which matches browser text zoom only for sites sized in `rem` or `em`.
 - **Keyboard only, or a screen reader**: the Walker chooses from the server's list of options; it does not press Tab. Write the need in the dossier's `accessibility` and let the Walker judge each option by it, and say in the report that keyboard use itself was not tested.
 
+### How to write each condition and move
+
+```yaml
+silly:
+  category: body-and-device
+  conditions:
+    text_scale: 200                         # percent, 100 to 400
+    color_scheme: dark                      # or light
+    reduced_motion: true
+    network: slow-3g                        # or, instead: { offline_at_step: 4, seconds: 10 } (1 to 120 seconds)
+    cookies: declined
+    rotate_at_step: 3
+    expire_session_at_step: 5
+    translate: true                         # recorded, not emulated
+  moves: [reload, double-tap, new-tab, switch-tab, wait]
+```
+
+Use only the ones the situation needs. The schema is `<msw>/formats/journey.schema.json`, under `silly`.
+
 ## 2. Pick two to four, and spread them
 
 Across the run, choose two to four silly walks that:
@@ -54,6 +75,8 @@ Across the run, choose two to four silly walks that:
 - aim at **a blind spot** in the run plan when there is one ([`msw-walk`](../msw-walk/SKILL.md) part 1): something the requester assumed, someone they did not mention, a situation nobody asked about.
 
 Prefer the ones where getting it wrong would cost the person something: money twice, a lost form, a page they cannot read.
+
+A silly walk needs something on the site to happen to. You may open the site to check there is a form to double-tap or a page to reload; whoever writes silly walks doesn't walk them. If the plan names a silly walk the site can't host (no form at all), say so in the plan and pick another.
 
 ## 3. Write each one
 
@@ -79,12 +102,14 @@ silly:
 ```
 
 - Put the Walker's reason in a `# Why:` comment above `silly`. The comment is for people; the report repeats it.
+- Write the `goal` in the language the Walker thinks in, if it isn't English; write `success` in the language of the people who will read the report.
+- If the walk needs the Walker to type something first (a name with accents, before the double tap), say so in the goal, in the Walker's words: "put my name down, as it's written on my ID".
 - `conditions` and `moves` must both be present; use `{}` and `[]` when there are none.
 - Conditions that happen at a step (`offline_at_step`, `rotate_at_step`, `expire_session_at_step`) count **accepted acts**: `rotate_at_step: 3` turns the phone after the Walker's third act. Pick a step where the Walker will be in the middle of something, such as a half-filled form, not at the start.
 - A move is only an option for this walk. The Walker uses it only when the person would: Dana double-taps once, not on every button.
 - Give the success conditions to what the situation tests: "knows whether it went through once or twice", "can still read the price at 200 percent", "the half-filled form is still there after coming back".
 
-In `read-only` mode a double-tap on a submit button is stopped twice and both are recorded as "would have submitted". That is the evidence: the report can say the button sent two submissions in a row, and the second was not prevented by the page.
+In `read-only` mode a double-tap on a submit button is stopped each time the page sends the form. Each one is a `blocked` event with `why: would-submit` in the walk's `events.jsonl`; the second often has no field list (`fields_error`), because the page sent it without its own submit control. Two such events from one act are the evidence that the page let a second submission through. On the practice site, a double tap on its one form gives two.
 
 ## 4. Check them
 
@@ -96,6 +121,6 @@ Fix every problem until it prints `ok`. Then read each one and ask: would a stra
 
 ## 5. In the run plan
 
-For each silly walk, add a line to the run plan's silly-walk list: the journey id, the Walker, the category, the reason, and which blind spot it is aimed at (or "none").
+For each silly walk, make sure the run plan's silly-walk list has a line (the planner may have written it already; correct it to match what you wrote): the journey id, the Walker, the category, the reason, and which blind spot it is aimed at (or "none").
 
 Done when: two to four silly walks exist for the run (or the owner's reason for leaving them out is recorded in their words), each from a different category, each with a `# Why:` line from the Walker's life, none relying on something the server cannot do, and each passes `check` with its Walker.
