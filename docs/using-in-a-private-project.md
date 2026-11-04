@@ -11,7 +11,24 @@ The walk server is the shared part. Your Walkers, journeys and findings describe
 | `run.json` | Your repo |
 | The run's output: screenshots, events, findings | Your repo, or a folder your repo ignores |
 
-Screenshots show whatever the page showed. Treat a run's output as carefully as the site it walked. Don't commit it to a public repo, including this one.
+Screenshots show whatever the page showed. Treat a run's output as carefully as the site it walked.
+
+**This repo never holds records of a real site.** It's public, and `walks/` and `runs/` are ignored here.
+
+## Where the findings go
+
+Findings go to the repo of the product that was walked. Before the first walk of a product, ask whoever owns that repo how to store them, give them these options, and record the answer in the run's report. If nobody has answered, keep the output in a folder git ignores until they do.
+
+| Option | Good for | The catch |
+|---|---|---|
+| **1. A folder in the repo**, such as `docs/walks/msw/` | Findings stay next to the code and get reviewed like any other change | Private repos only. Adds screenshots to the repo's history |
+| **2. A folder git ignores** | A quick walk, or anything too sensitive to share | Stays on one machine: not shared, not backed up |
+| **3. A separate private repo** | Keeping the product repo small, or giving different people access | One more repo to look after, and findings sit away from the code |
+| **4. Reports in the repo, screenshots elsewhere** | Keeping the text with the code without the image weight | Links can go stale, and the storage needs its own access rules |
+
+A public repo can't use option 1, because the output would be public. An owner may turn real findings into tickets as well, but the record of the walk still needs one of these homes.
+
+Set `out_dir` in `run.json` to match the choice. Add a short `README.md` beside the records saying where they're kept and what the other options are, so the next person doesn't have to ask.
 
 ## Set up
 

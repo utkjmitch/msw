@@ -21,7 +21,7 @@ The walk server is in [`server/`](server/README.md). To walk your own site and k
 - **Skills** for writing Walkers and journeys, walking a site, writing the guide, inspecting the guide, and finding gaps between what a product promises and what it does.
 - **An MCP server** that drives a real browser, gives the Walker only a screenshot, the visible text and the things it can click, and keeps the evidence.
 - **The Cheese Shop**, a practice site with planted flaws and an answer key, so the Ministry can say how much it actually finds. Its score is published with every release.
-- **Published walks** of real sites, with before-and-after comparisons once their owners have acted on the findings.
+- **Findings that go home.** A walk's findings go to the repo of the product that was walked, stored the way that repo's owner chooses. See [where the findings go](docs/using-in-a-private-project.md#where-the-findings-go).
 
 ## Credits
 

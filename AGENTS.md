@@ -10,5 +10,5 @@
 
 ## This repo
 
-- Public Apache-2.0 repo: nothing private goes in it.
+- Public Apache-2.0 repo: nothing private goes in it. No records of real sites: findings go to the repo of the product walked, stored the way its owner chooses (`docs/using-in-a-private-project.md`).
 - Tests: none yet. The README says the project is at design stage and nothing is runnable. The design is in `docs/superpowers/specs/`, the plans in `docs/superpowers/plans/`. Once plan A's server exists, its tests run with `cd server && npm install && npm test` (see the plan for the build-box Playwright note).

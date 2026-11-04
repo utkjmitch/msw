@@ -2,3 +2,7 @@ node_modules/
 dist/
 runs/
 *.key
+
+# Walk output lives with the product walked, never here.
+walks/
+runs/
