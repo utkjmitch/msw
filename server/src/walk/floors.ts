@@ -1,6 +1,7 @@
 // floors.ts: spec 7's severity floors that come from the walk, not from the instruments
 import type { ViewportName } from "../formats/viewports.js";
-export const FLOOR = { phoneBlocksStep: 3, runAwayAtRequiredStep: 3, journeyImpossible: 4 } as const;
+// hiddenOverflow: content past the far edge with nothing on screen to show it (a navigation finding at quit).
+export const FLOOR = { phoneBlocksStep: 3, runAwayAtRequiredStep: 3, journeyImpossible: 4, hiddenOverflow: 2 } as const;
 const PHONES: ViewportName[] = ["phone-small", "phone"];
 /** A phone layout that prevents completing a step: at least 3. The Walker says a note blocks a step. */
 export const noteFloor = (severity: number, viewport: ViewportName, blocksStep: boolean): number =>

@@ -1,0 +1,17 @@
+id: first-timer-silly-wide-map
+walker: first-timer
+audience: public
+goal: Find the last train home on the route map, on my phone, before the bus gets to my stop
+start_url: http://127.0.0.1:4810/wide.html
+arrival: shared-link
+success:
+  - knows the time of the last train
+  - knows whether the map goes on past the edge of the phone, and how they found out
+step_budget: 15
+mode: read-only
+viewports: [phone]
+# Why: the map was drawn for a wall poster, and Dana holds the phone upright in one hand on the bus.
+silly:
+  category: body-and-device
+  conditions: {}
+  moves: []

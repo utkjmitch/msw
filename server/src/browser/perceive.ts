@@ -3,6 +3,8 @@ import type { Page } from "playwright";
 import { collectOptions, NAME_DISPLAY_MAX, type Option } from "./options.js";
 import { maskPage, maskLocators, maskText } from "./mask.js";
 import type { Move } from "../formats/schemas.js";
+import { withHelpers } from "./screen.js";
+const SCREEN_TEXT = withHelpers(h => h.screenText());
 export type { Option };
 export interface Perception { png: Buffer; text: string; url: string; options: Option[]; state: string }
 export const optionLine = (o: Option) => (o.kind === "move" ? `${o.n}. ${o.name}` : `${o.n}. [${o.role}] ${o.name}`);
@@ -10,19 +12,9 @@ export async function perceive(page: Page, o: { mask: boolean; moves: Move[]; ta
   // Names are read from the page as it is, so each control keeps its own identity. Masking is for display only.
   const options = await collectOptions(page, o.moves, o.tabCount);
   // Mask the full name before cutting it, so a cut never splits an address out of reach of the mask.
-  if (o.mask) for (const option of options) if (option.kind === "element" && !option.unlabeled) option.name = maskText(option.key).slice(0, NAME_DISPLAY_MAX);
-  let text = await page.evaluate(() => {
-    const out: string[] = []; const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let n: Node | null;
-    while ((n = w.nextNode())) {
-      const t = (n.textContent ?? "").replace(/\s+/g, " ").trim(); const el = n.parentElement;
-      if (!t || !el || ["SCRIPT", "STYLE", "NOSCRIPT"].includes(el.tagName)) continue;
-      const st = getComputedStyle(el); if (st.visibility === "hidden" || st.display === "none") continue;
-      const r = el.getBoundingClientRect();
-      if (r.width === 0 || r.height === 0 || r.bottom <= 0 || r.top >= innerHeight || r.right <= 0 || r.left >= innerWidth) continue;
-      out.push(t);
-    }
-    return out.join("\n");
-  });
+  if (o.mask) for (const option of options) if (option.kind !== "move" && !option.unlabeled) option.name = maskText(option.key).slice(0, NAME_DISPLAY_MAX);
+  // Text cut off by the screen's edge, or by the edge of a box that clips it, is not on screen.
+  let text = await page.evaluate(SCREEN_TEXT);
   if (o.mask) text = maskText(text);
   // The page is masked only for the screenshot, then put back, so the next look reads the same names.
   const restore = o.mask ? await maskPage(page) : undefined;
