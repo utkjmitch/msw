@@ -179,7 +179,7 @@ For each row of the plan, one at a time:
 
    1. **Perceive.** What do I see, as me? What catches my eye first on this screen? What do I not understand? Use only the screenshot, the page text and the options. Not what you know about websites in general, unless this person would know it.
    2. **Plan.** What am I trying to do right now, toward my goal?
-   3. **Rate.** Score at least two options from 1 to 5 (all of them if there are fewer than two), including the one you will choose, each with a one-line reason as this person would put it: `{ "option": 4, "score": 4, "why": "says what they do, which is what I want" }`.
+   3. **Rate.** Score at least two options from 1 to 5 (all of them if there are fewer than two; `scroll down`, `scroll up` and `back` count), including the one you will choose, each with a one-line reason as this person would put it: `{ "option": 4, "score": 4, "why": "says what they do, which is what I want" }`.
    4. **The four questions** for the option you chose, each `true` or `false`, honestly:
       - `will_try`: will this person try to do this?
       - `notices`: will they notice that this option is there?
@@ -193,6 +193,8 @@ For each row of the plan, one at a time:
    6. **Reflect.** Read the new look. Did that do what I expected? Am I closer?
    7. **Wonder.** What would I ask a friend right now?
 
+   Only stages 3 to 5 go to the server. Perceive, plan, reflect and wonder go in your notes for the narration.
+
    Choose only from the numbered options. You can't type an address, open the page source or search the web; neither could this person, in this moment.
 
 3. **A form in a read-only walk.** When the Walker sends a form, the server stops it and says the form was not sent. That is the run's rule, not the site's behavior: don't note "nothing happened after I pressed it" as a fault of the site. Note what the page did **before** sending, if it matters (no word on what happens next, no sign that it was pressed, a button that could be pressed twice). Then carry on as if the submit had failed, or quit `done` if finding out was the goal.
@@ -205,7 +207,7 @@ For each row of the plan, one at a time:
 
 7. **Leave when the Walker would.** Call `quit`:
    - `done` when the journey's success conditions are met;
-   - `run-away` with the `detail` saying which leave trigger, or what made them give up, the moment one of the dossier's `leave_triggers` happens or the person would plausibly leave. Don't push on to see what's next: leaving is the finding;
+   - `run-away` with the `detail` saying which leave trigger, or what made them give up, the moment one of the dossier's `leave_triggers` happens or the person would plausibly leave. A trigger that is a judgement ("after looking in the obvious places") is the person's judgement: decide as they would, and say in the narration where you looked. Don't push on to see what's next: leaving is the finding;
    - `stuck` when they want to go on and can't see how.
 
    When the server says the walk has ended (steps or patience ran out), call `quit` with the reason it gave.
@@ -215,6 +217,8 @@ For each row of the plan, one at a time:
 8. **Replay.** After `quit`, call `replay` once with no arguments. It replays the Walker's findings on a fresh browser, with no model, and marks each `reproduced: true` or `false`. It's optional and may take a while; a walk whose replay doesn't run is still complete, and its findings read "not replayed".
 
 9. **Check the walk.** `quit` returned `verified` and `alive`, and a count of findings that includes the server's own (`source: instrument`: console errors, broken files, accessibility checks), which replay leaves alone. If `verified` or `alive` is `false`, the walk's findings are unverified: say so in the narration and the report. Don't walk it again in the same `out_dir` to hide it.
+
+   After `quit` you may read your own walk's folder (it's the walk's evidence, not the product's code): `seal.json` lists each patience charge in `patience_charges`, and `findings.jsonl` holds every finding with its id, the server's own included. Read nothing else in `out_dir`.
 
 ### 3.4 One walk at a time
 
