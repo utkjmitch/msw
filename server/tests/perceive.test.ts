@@ -25,3 +25,14 @@ test("a page with nothing visible still offers the fixed moves", async () => {
   expect(r.options.map(o => o.name)).toEqual(["scroll down", "scroll up", "back", "reload"]);
   await p.close();
 });
+test("a typed value changes the fields digest, never the state; a password value changes neither", async () => {
+  const p = await browser.newPage({ viewport: { width: 1280, height: 800 } }); await p.goto(s.url);
+  const look = () => perceive(p, { mask: true, moves: [], tabCount: 1 });
+  const r0 = await look();
+  await p.fill("#pw", "Quixotic Zebrafish 4711"); const r1 = await look();
+  expect([r1.state, r1.fields]).toEqual([r0.state, r0.fields]);
+  await p.fill("#nm", "Quixotic Zebrafish 4711"); const r2 = await look();
+  expect(r2.state).toBe(r0.state); expect(r2.fields).not.toBe(r0.fields);
+  expect(JSON.stringify({ ...r2, png: undefined })).not.toContain("Quixotic");
+  await p.close();
+});
