@@ -188,7 +188,7 @@ For each row of the plan, one at a time:
 
       Each `false` costs a point of patience. Don't answer `true` to save patience: the point of the walk is to find where the answer is no.
 
-      The server takes points too: for a page that loads slowly, an act after which the page looks the same, a `back`, and a return to a page already seen. Today that includes **typing into a field** (the server's page state doesn't include what is typed, so the page "looks the same") and a submit stopped by read-only. The seal lists every charge in `patience_charges`.
+      The server takes points too: for a page that loads slowly, an act after which the page looks the same, a `back`, and a return to a page already seen. Typing into a field is a change, so it costs nothing; typing the same text again does cost a point. A submit stopped by read-only leaves the page looking the same, so it costs a point. The seal lists every charge in `patience_charges`.
    5. **Act.** Call `act` with `option`, `ratings`, `wharton` and, for a text field, `text`. For a silly walk, `how: "double-tap"` or `how: "new-tab"` only if the journey lists that move and the person would do it now. To scroll a `[scroll area]` option (a table, a map or a list in a box that scrolls), choose it with `how: "scroll-right"`, `"scroll-left"`, `"scroll-down"` or `"scroll-up"`.
    6. **Reflect.** Read the new look. Did that do what I expected? Am I closer?
    7. **Wonder.** What would I ask a friend right now?

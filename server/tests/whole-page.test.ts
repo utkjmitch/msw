@@ -184,3 +184,43 @@ test("on a phone there is no scrollbar, so the record names what is cut off at t
     expect(lines(q.dir, "findings.jsonl").some(x => x.title.includes("right edge of the page"))).toBe(false);
   } finally { await w.quit("done").catch(() => {}); }
 });
+
+// The guard holds for the new acts: a script set off by scrolling sideways, or by a whole look, gets no further than one set off by a tap.
+const blockedIn = (dir: string) => events(dir).filter(e => e.kind === "blocked").map(e => e.data);
+test("scrolling sideways cannot open a pop-up, a WebSocket or a page off the list", async () => {
+  const f = setup(s.url + "scroll-leave.html"); const w = new WalkSession(f.run, true, false); s.offsite.length = 0;
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const r1 = await w.act({ option: n(r0, "scroll right"), ratings: R(n(r0, "scroll right"), 1), wharton: W }) as LookResult;
+    expect(r1.notes.join(" ")).toContain("leads off this site");
+    const r1b = await w.act({ option: n(r1, "scroll left"), ratings: R(n(r1, "scroll left"), 1), wharton: W }) as LookResult;
+    const box = n(r1b, "[scroll area] Wide box");
+    const r2 = await w.act({ option: box, how: "scroll-right", ratings: R(box, n(r1b, "back")), wharton: W }) as LookResult;
+    expect(r2.url).toBe(s.url + "scroll-leave.html"); expect(r2.notes.join(" ")).toContain("leads off this site");
+    const q = await w.quit("done"); expect(q.verified).toBe(true);
+    expect(s.offsite).toEqual([]);
+    const b = blockedIn(q.dir);
+    expect(b).toContainEqual(expect.objectContaining({ why: "left-site", url: s.otherOrigin + "/scroll-popup.html" }));
+    expect(b).toContainEqual(expect.objectContaining({ why: "background-write", method: "WEBSOCKET", url: "ws://localhost:" + new URL(s.url).port + "/scroll-ws" }));
+    expect(b).toContainEqual(expect.objectContaining({ why: "left-site", url: s.otherOrigin + "/box-leave.html" }));
+  } finally { await w.quit("done").catch(() => {}); }
+});
+test("a whole look cannot open a pop-up, a WebSocket or a page off the list either, and still costs nothing", async () => {
+  const f = setup(s.url + "scroll-leave.html"); const w = new WalkSession(f.run, true, false); s.offsite.length = 0;
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" });
+    const page = await w.look({ whole: "page" });
+    expect(page.whole!.tiles.length).toBeGreaterThan(1);
+    const area = await w.look({ whole: n(page, "[scroll area] Wide box") });
+    expect(area.whole!.tiles.length).toBeGreaterThan(1);
+    const after = await w.look();
+    expect(after.url).toBe(s.url + "scroll-leave.html");
+    expect(after.stepsLeft).toBe(r0.stepsLeft); expect(after.patienceLeft).toBe(r0.patienceLeft);
+    const q = await w.quit("done"); expect(q.verified).toBe(true);
+    expect(s.offsite).toEqual([]);
+    const b = blockedIn(q.dir);
+    expect(b).toContainEqual(expect.objectContaining({ why: "left-site", url: s.otherOrigin + "/scroll-popup.html" }));
+    expect(b).toContainEqual(expect.objectContaining({ why: "background-write", method: "WEBSOCKET" }));
+    expect(b).toContainEqual(expect.objectContaining({ why: "left-site", url: s.otherOrigin + "/box-leave.html" }));
+  } finally { await w.quit("done").catch(() => {}); }
+});

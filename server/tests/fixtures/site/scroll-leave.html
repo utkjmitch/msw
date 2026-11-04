@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><title>Scroll and leave</title><style>
+body { margin: 0; font: 16px sans-serif; }
+#strip { width: 3000px; height: 120px; background: #def; }
+#box { width: 400px; height: 150px; overflow: auto; border: 1px solid #888; }
+#box div { width: 1600px; height: 120px; }
+</style></head><body>
+<h1>Scroll and leave</h1>
+<div id="strip">Wide strip</div>
+<div id="box" role="region" aria-label="Wide box"><div>Box start</div></div>
+<script>
+// Scripts that act on scroll, the first time only: what a whole look or a sideways scroll could set off.
+const off = "http://localhost:" + location.port;
+let page = false, box = false;
+addEventListener("scroll", () => {
+  if (page || scrollX === 0) return; page = true;
+  window.open(off + "/scroll-popup.html");
+  new WebSocket("ws://localhost:" + location.port + "/scroll-ws");
+});
+document.getElementById("box").addEventListener("scroll", () => { if (box) return; box = true; location.href = off + "/box-leave.html"; });
+</script>
+</body></html>

@@ -32,7 +32,15 @@ All of it is in `server/README.md`, "Wide pages, scroll areas and the whole look
 - replay;
 - the MCP tools.
 
-`npm run typecheck`, `npm test` (120 tests) and `git diff --check` pass.
+`npm run typecheck`, `npm test` and `git diff --check` pass after the merge with `main`.
+
+## Merged with main
+
+`main` gained the patience fix (#3) and the guard fix (#4) after this branch was made. The merge kept both.
+
+- **Patience.** A whole look never calls the patience check, so it still costs nothing. The fields digest from #3 now uses the same visibility as the page text, so a field cut off by the box that holds it does not count. A test in `perceive.test.ts` checks this; it fails with #3's screen-edge-only check.
+- **Guard.** The guard from #4 works on the whole browser context, so it already covered the new acts; two tests now show it. `scroll-leave.html` has a scroll handler that opens a pop-up and a WebSocket to an origin off the list, and a box whose scroll handler sends the page off the list. Scrolling sideways, scrolling the box and a whole look of each all get those blocked and logged (`left-site`, and `background-write` with method `WEBSOCKET`), and nothing reaches the other origin. The Walker is told about the pop-up and the page, as for a tap. These run in Chromium only, like every session test.
+- `events.jsonl` lists both `whole` and `guard-error`.
 
 ## Firefox and WebKit
 

@@ -124,7 +124,9 @@ export class WalkSession {
       await this.context.addInitScript(REAL_PERFORMANCE_INIT);
       await this.context.addInitScript(VITALS_INIT);
       await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], payments: this.journey.payment_origins,
-        reads: this.journey.read_channels, onBlocked: b => this.onBlocked(b), onRead: r => this.place(r.page, st => this.log.append("read", { ...this.m(r) }, st)) });
+        reads: this.journey.read_channels, onBlocked: b => this.onBlocked(b), onRead: r => this.place(r.page, st => this.log.append("read", { ...this.m(r) }, st)),
+        // A request the guard could not finish. With reached, the site took the write even though no page showed its answer.
+        onError: e => this.place(e.page, st => this.log.append("guard-error", { ...this.m(e) }, st)) });
       // axe opens a temporary page without an opener during analysis.
       this.context.on("page", async p => { if (await p.opener()) await this.adopt(p); });
       const page = await this.context.newPage(); await this.adopt(page);
@@ -202,7 +204,7 @@ export class WalkSession {
     const walk = { origins: [this.journey.start_url, ...this.journey.origins], timers: this.timers };
     for (const c of await applyStepConditions(this.context!, this.page!, this.steps, this.cond, walk)) this.log.append("condition", { name: c, step: this.steps });
     // Spec 5.4: waiting is the Walker's own choice, so an unchanged page after a wait costs no patience.
-    return this.arrive(opt.move === "wait" ? undefined : last!.state);
+    return this.arrive(opt.move === "wait" ? undefined : last!);
   }
 
   note(raw: NoteArgs): { id: string } {
@@ -364,6 +366,7 @@ export class WalkSession {
     this.place(b.page, st => this.log.append("blocked", { ...this.m(b), ...(fields ? { fields } : {}), ...missing }, st));
     // A person never sees a page's background write, so the Walker is not told about one.
     if (b.why === "would-submit") this.pending.push("Nothing seemed to happen. This walk is read-only, so the form was not sent; carry on as if it had failed.");
+    else if (b.why === "left-site" && b.reached) this.pending.push("The form was sent, but the page after it is on another site, which this walk does not visit.");
     else if (b.why === "left-site") this.pending.push("That leads off this site, which this walk does not visit.");
   }
   /** The walk is over once its budget ends, its context closes or it quits; a late offline restore must not run after that. */
@@ -427,15 +430,17 @@ export class WalkSession {
       catch (e) { this.record({ type: "inspect-error", url: this.page!.url(), detail: { error: String((e as Error).message).split("\n")[0], attempt } }, state); }
     }
   }
-  private async arrive(prevState?: string): Promise<LookResult> {
+  /** Spec 5.4: the page as the Walker sees it, typed values included. Kept in memory for the patience check, never written. */
+  private seenAs(p: Perception) { return `${p.state}|${p.fields}`; }
+  private async arrive(prev?: Perception): Promise<LookResult> {
     await this.settle();
     if (await this.loadTime() > SLOW_PAGE_MS) this.budget.charge("slow-page");
     await this.snap(); await this.page!.waitForTimeout(1000); const p = await this.snap();
-    if (prevState !== undefined) {
-      if (p.state === prevState) this.budget.charge("no-change");
-      else if (this.seen.has(p.state)) this.budget.charge("repeat-state");
+    if (prev !== undefined) {
+      if (this.seenAs(p) === this.seenAs(prev)) this.budget.charge("no-change");
+      else if (this.seen.has(this.seenAs(p))) this.budget.charge("repeat-state");
     }
-    this.seen.add(p.state); await this.inspect(p.state);
+    this.seen.add(this.seenAs(p)); await this.inspect(p.state);
     const ex = this.budget.exhausted();
     if (ex && !this.ended) { this.clearTimers(); this.ended = ex === "steps" ? "out of steps" : "run-away: patience"; this.log.append("condition", { name: "ended", reason: this.ended }); }
     return this.result(p);
