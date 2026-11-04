@@ -1,0 +1,10 @@
+<!doctype html><html lang="en"><head><title>Live</title></head><body>
+<main><h1>Live scores</h1><p id="live">Connecting</p></main>
+<script>
+// A made-up page that reads live scores over a WebSocket to its own origin and sends a subscribe frame.
+const show = t => { document.getElementById("live").textContent = t; };
+const w = new WebSocket(location.origin.replace(/^http/, "ws") + "/live");
+w.onopen = () => w.send("subscribe:scores");
+w.onmessage = m => show("Live scores: " + m.data);
+w.onclose = () => { if (document.getElementById("live").textContent === "Connecting") show("Live scores are offline"); };
+</script></body></html>

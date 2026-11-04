@@ -57,7 +57,7 @@ export class WalkSession {
   private cond: Conditions = {}; private moves: Move[] = [];
   private log!: EventLog; private budget!: Budget; private dir!: string; private steps = 0; private manifest?: Manifest;
   private last: (Perception & { seq: number }) | null = null;
-  private seen = new Set<string>(); private inspected = new Set<string>(); private pending: string[] = [];
+  private seen = new Set<string>(); private inspected = new Set<string>(); private pending: string[] = []; private socketNoted = false;
   private instrument: (InstrumentRecord & { step: number; event: number })[] = [];
   private findings: Finding[] = []; private acts: ReplayStep[] = []; private ended?: string;
   // Records from a page the walk has not looked at yet wait here for that page's state.
@@ -98,7 +98,8 @@ export class WalkSession {
     this.budget = new Budget(this.journey.step_budget, this.walker.patience);
     try {
       this.browser = await chromium.launch({ headless: this.headless, proxy: proxyFromEnv() });
-      this.manifest = { run: this.run, inputs: { walker: fileInput(a.walker), journey: fileInput(a.journey), viewport: this.viewport, locale: this.locale, read_channels: this.journey.read_channels },
+      this.manifest = { run: this.run, inputs: { walker: fileInput(a.walker), journey: fileInput(a.journey), viewport: this.viewport, locale: this.locale, read_channels: this.journey.read_channels,
+        socket_channels: this.journey.socket_channels },
         versions: versions(this.browser), times: { started: new Date().toISOString(), ended: null }, outcome: null };
       writeManifest(join(this.dir, "manifest.json"), this.manifest);
       this.context = await this.browser.newContext(contextOptions(this.viewport, this.locale, this.cond, this.journey.storage_state));
@@ -106,7 +107,10 @@ export class WalkSession {
       await this.context.addInitScript(REAL_PERFORMANCE_INIT);
       await this.context.addInitScript(VITALS_INIT);
       await installGuard(this.context, { mode: this.journey.mode, origins: [this.journey.start_url, ...this.journey.origins], payments: this.journey.payment_origins,
-        reads: this.journey.read_channels, onBlocked: b => this.onBlocked(b), onRead: r => this.place(r.page, st => this.log.append("read", { ...this.m(r) }, st)),
+        reads: this.journey.read_channels, sockets: this.journey.socket_channels, onBlocked: b => this.onBlocked(b),
+        // A socket's records carry no page from the guard. They belong to the page in front of the Walker when they happen.
+        onRead: r => { const page = r.page ?? this.socketPage(r.method); this.place(page, st => this.log.append("read", { ...this.m(r) }, st)); },
+        onSocketSend: f => this.place(this.socketPage("WEBSOCKET"), st => this.log.append("socket-send", { ...this.m(f) }, st)),
         // A request the guard could not finish. With reached, the site took the write even though no page showed its answer.
         onError: e => this.place(e.page, st => this.log.append("guard-error", { ...this.m(e) }, st)) });
       // axe opens a temporary page without an opener during analysis.
@@ -302,7 +306,13 @@ export class WalkSession {
     if (state !== undefined) write(state);
     else this.place(typeof r.detail.page === "string" ? r.detail.page : r.url, write);
   }
+  /** The page a socket record belongs to. The guard's socket route has no frame, so it is the Walker's current page. */
+  private socketPage(method: string): string | undefined {
+    if (method !== "WEBSOCKET" || this.page?.isClosed() !== false) return undefined;
+    const url = this.page.url(); return url === "about:blank" ? undefined : url;
+  }
   private onBlocked(b: Blocked) {
+    if (b.page === undefined && b.method === "WEBSOCKET") b = { ...b, page: this.socketPage(b.method) };
     const fields = b.why === "would-submit" ? this.submitting : undefined;
     // A form sent by a script, not by its own submit control, has no captured fields; the record says so.
     const missing = b.why === "would-submit" && !fields ? { fields_error: "the form was not sent by its own submit control, so its fields were not captured" } : {};
@@ -311,6 +321,11 @@ export class WalkSession {
     if (b.why === "would-submit") this.pending.push("Nothing seemed to happen. This walk is read-only, so the form was not sent; carry on as if it had failed.");
     else if (b.why === "left-site" && b.reached) this.pending.push("The form was sent, but the page after it is on another site, which this walk does not visit.");
     else if (b.why === "left-site") this.pending.push("That leads off this site, which this walk does not visit.");
+    // The Walker sees whatever the page does without its socket. Told once, so that failure is not taken for the site's.
+    else if (b.why === "socket-refused" && !this.socketNoted) {
+      this.socketNoted = true;
+      this.pending.push("This walk is read-only, so the page's live connection to the site was refused. If part of the page does not load or update, that is the walk's doing, not the site's: do not note it.");
+    }
   }
   /** The walk is over once its budget ends, its context closes or it quits; a late offline restore must not run after that. */
   private clearTimers() { for (const t of this.timers) clearTimeout(t); this.timers.clear(); }

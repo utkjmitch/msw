@@ -49,3 +49,22 @@ export function matchReadChannel(req: ReadRequest, channels: ReadChannel[]): str
   }
   return null;
 }
+
+/**
+ * Socket channels (report D-2): the WebSockets to the site a read-only walk lets open. One names an exact ws:// or wss://
+ * origin and path; the query is not matched, since it often carries a session token. A socket's frames cannot be told
+ * apart into reads and writes the way a POST's body can, so `sends` is the author's call: `forward` lets the page's frames
+ * through, `drop` lets the page hear the site but sends it nothing. Either way each frame the page sends is recorded.
+ */
+const SocketOrigin = z.url().refine(u => /^wss?:$/.test(new URL(u).protocol), "a ws:// or wss:// origin")
+  .refine(u => new URL(u).origin === u.replace(/\/$/, ""), "an origin only, no path");
+export const SocketChannelZ = z.object({ origin: SocketOrigin, path: z.string().startsWith("/"), sends: z.enum(["forward", "drop"]) }).strict();
+export type SocketChannel = z.infer<typeof SocketChannelZ>;
+
+/** The channel that lets this socket open, or null. Its name is the origin and path. */
+export function matchSocketChannel(url: string, channels: SocketChannel[]): { name: string; channel: SocketChannel } | null {
+  let u: URL;
+  try { u = new URL(url); } catch { return null; }
+  for (const c of channels) if (u.origin === originOf(c.origin) && u.pathname === c.path) return { name: u.origin + u.pathname, channel: c };
+  return null;
+}

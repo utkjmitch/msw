@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { matchReadChannel, ReadChannelZ } from "../src/browser/read-channels.js";
+import { matchReadChannel, matchSocketChannel, ReadChannelZ, SocketChannelZ } from "../src/browser/read-channels.js";
 import { Journey } from "../src/formats/schemas.js";
 const FS = "https://firestore.googleapis.com";
 const req = (url: string, body: string | null = null, method = "POST", navigation = false) => ({ method, url, body, navigation });
@@ -48,4 +48,16 @@ test("the journey format: read_channels defaults to none and refuses unknown pre
   expect(() => ReadChannelZ.parse({ preset: "firestore-write" })).toThrow();
   expect(() => ReadChannelZ.parse({ origin: "https://a.test", path: "/x", method: "PUT" })).toThrow();
   expect(() => ReadChannelZ.parse({ preset: "graphql-query" })).toThrow(); // graphql needs an origin and a path
+});
+test("socket channels: an exact ws or wss origin and path, the query ignored; none by default", () => {
+  const base = { id: "j", walker: "w", audience: "public", goal: "g", start_url: "https://a.test/", arrival: "direct", success: ["s"], step_budget: 5 };
+  expect(Journey.parse(base).socket_channels).toEqual([]);
+  const ch = [SocketChannelZ.parse({ origin: "wss://a.test", path: "/live", sends: "drop" })];
+  expect(matchSocketChannel("wss://a.test/live?token=1", ch)).toEqual({ name: "wss://a.test/live", channel: ch[0] });
+  expect(matchSocketChannel("wss://a.test/live/2", ch)).toBeNull();
+  expect(matchSocketChannel("ws://a.test/live", ch)).toBeNull();
+  expect(matchSocketChannel("wss://b.test/live", ch)).toBeNull();
+  expect(() => SocketChannelZ.parse({ origin: "https://a.test", path: "/live", sends: "forward" })).toThrow(); // a socket origin only
+  expect(() => SocketChannelZ.parse({ origin: "wss://a.test/live", path: "/live", sends: "forward" })).toThrow(); // no path in the origin
+  expect(() => SocketChannelZ.parse({ origin: "wss://a.test", path: "/live" })).toThrow(); // sends is the author's call, never a default
 });

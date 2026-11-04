@@ -150,6 +150,37 @@
         ]
       }
     },
+    "socket_channels": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "origin": {
+            "type": "string",
+            "format": "uri"
+          },
+          "path": {
+            "type": "string",
+            "format": "starts_with",
+            "pattern": "^\\/.*"
+          },
+          "sends": {
+            "type": "string",
+            "enum": [
+              "forward",
+              "drop"
+            ]
+          }
+        },
+        "required": [
+          "origin",
+          "path",
+          "sends"
+        ],
+        "additionalProperties": false
+      }
+    },
     "viewports": {
       "type": "array",
       "items": {
@@ -291,6 +322,7 @@
     "origins",
     "payment_origins",
     "read_channels",
+    "socket_channels",
     "planned"
   ],
   "additionalProperties": false

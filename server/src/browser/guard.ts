@@ -1,17 +1,20 @@
-import type { BrowserContext, Route } from "playwright";
+import type { BrowserContext, Route, WebSocketRoute } from "playwright";
 import type { RunConfig, Journey } from "../formats/schemas.js";
-import { matchReadChannel, type ReadChannel } from "./read-channels.js";
+import { matchReadChannel, matchSocketChannel, type ReadChannel, type SocketChannel } from "./read-channels.js";
 /**
  * left-site: a navigation off the list. background-write: a script's or a widget's write off the list, which the Walker never sees.
  * reached: the write a redirect answered. It reached the site before the guard stopped the next hop.
  */
-export interface Blocked { why: "would-submit" | "left-site" | "background-write"; method: string; url: string; page?: string; redirect_status?: number; reached?: Reached }
+/** socket-refused: a read-only walk's WebSocket to the site that no socket channel names. It never connects. */
+export interface Blocked { why: "would-submit" | "left-site" | "background-write" | "socket-refused"; method: string; url: string; page?: string; redirect_status?: number; reached?: Reached }
 /** A request the site has answered. */
 export interface Reached { method: string; url: string; status: number }
 /** A request the guard could not finish. reached: the site had already answered it, so a write there took effect. */
 export interface GuardError { method: string; url: string; page?: string; error: string; reached?: Reached }
-/** A POST a read channel let through in read-only mode. */
+/** A POST a read channel let through in read-only mode, or a WebSocket a socket channel let open (method WEBSOCKET). */
 export interface Read { channel: string; method: string; url: string; page?: string; status?: number }
+/** A frame the page sent over a socket channel: its size only, never its content. sent: false when the channel drops it. */
+export interface SocketSend { channel: string; url: string; bytes: number; sent: boolean }
 const MUTATING = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 const REDIRECTS = new Set([301, 302, 303, 307, 308]);
 const MAX_HOPS = 10;
@@ -23,8 +26,8 @@ const refreshPage = (url: string) => `<!doctype html><meta http-equiv="refresh" 
 /** Headers that describe the redirect's own body or target, not the refresh page that replaces it. Cookies stay. */
 const NOT_CARRIED = new Set(["location", "content-length", "content-type", "content-encoding", "transfer-encoding"]);
 export async function installGuard(context: BrowserContext,
-  o: { mode: "read-only" | "transact"; origins: string[]; payments?: string[]; reads?: ReadChannel[]; onBlocked: (b: Blocked) => void; onRead?: (r: Read) => void;
-    onError?: (e: GuardError) => void }): Promise<void> {
+  o: { mode: "read-only" | "transact"; origins: string[]; payments?: string[]; reads?: ReadChannel[]; sockets?: SocketChannel[];
+    onBlocked: (b: Blocked) => void; onRead?: (r: Read) => void; onSocketSend?: (s: SocketSend) => void; onError?: (e: GuardError) => void }): Promise<void> {
   const allowed = new Set(o.origins.map(originOf));
   // Payment providers take writes in transact mode only. They are never walkable pages.
   const payments = new Set(o.mode === "transact" ? (o.payments ?? []).map(originOf) : []);
@@ -38,11 +41,22 @@ export async function installGuard(context: BrowserContext,
     }
   });
   // context.route never sees a WebSocket, and a socket can send anything once open. One to an origin off the list never connects.
-  // A socket to the site itself is left alone: its frames cannot be told apart into reads and writes.
+  // In read-only mode, one to the site connects only when a socket channel names it (report D-2). In transact mode it is left alone.
   const httpOrigin = (u: URL) => originOf(u.href.replace(/^ws/, "http"));
-  await context.routeWebSocket(u => { const to = httpOrigin(u); return !allowed.has(to) && !payments.has(to); }, ws => {
-    try { o.onBlocked({ why: "background-write", method: "WEBSOCKET", url: ws.url() }); } catch { /* the socket closes all the same */ }
-    void ws.close({ code: 1008, reason: "blocked by the walk's guard" }).catch(() => {});
+  const tell = (f: () => void) => { try { f(); } catch { /* a closed log must not keep a socket open */ } };
+  const refuse = (ws: WebSocketRoute, b: Blocked) => { tell(() => o.onBlocked(b)); void ws.close({ code: 1008, reason: "blocked by the walk's guard" }).catch(() => {}); };
+  await context.routeWebSocket(u => { const to = httpOrigin(u); return o.mode === "read-only" || (!allowed.has(to) && !payments.has(to)); }, ws => {
+    const url = ws.url(); const to = httpOrigin(new URL(url));
+    if (!allowed.has(to) && !payments.has(to)) return refuse(ws, { why: "background-write", method: "WEBSOCKET", url });
+    const named = matchSocketChannel(url, o.sockets ?? []);
+    if (!named) return refuse(ws, { why: "socket-refused", method: "WEBSOCKET", url });
+    const server = ws.connectToServer(); const forward = named.channel.sends === "forward";
+    tell(() => o.onRead?.({ channel: named.name, method: "WEBSOCKET", url }));
+    // Once onMessage is set, Playwright forwards nothing by itself: each of the page's frames goes on only from here.
+    ws.onMessage(m => {
+      tell(() => o.onSocketSend?.({ channel: named.name, url, bytes: typeof m === "string" ? Buffer.byteLength(m) : m.length, sent: forward }));
+      if (forward) server.send(m);
+    });
   });
   async function decide(route: Route): Promise<void> {
     const req = route.request(); const origin = originOf(req.url());

@@ -43,7 +43,7 @@ Each one is tested in `server/tests/guard-gaps.test.ts` on all three engines:
 | Service workers | Blocked by `serviceWorkers: "block"` | Same. The test checks that no worker becomes ready or controls the page, and it fails with workers allowed |
 | WebSocket to another origin | Connected and sent frames, on all three engines | Never connects, `background-write` |
 | Link in a frame that navigates only the frame | Loads the off-list page in the frame | Unchanged: D-1 |
-| WebSocket frames to the site in a read-only walk | Sent | Unchanged: D-2 |
+| WebSocket frames to the site in a read-only walk | Sent | D-2, since built: a socket to the site opens only when the journey names it in `socket_channels` (`2026-11-04-socket-channels.md`) |
 
 ## Results
 
@@ -83,6 +83,6 @@ rationale: [Guessing] Firestore and similar sites read over sockets as well as P
 evidence:
   - server/src/browser/guard.ts routeWebSocket, which checks off-list sockets only
   - server/src/browser/read-channels.ts
-disposition: none
+disposition: "BUILT 2026-11-04 - socket_channels built on mfx/msw-socket-channels; server/tests/socket-channels.test.ts on chromium, firefox and webkit; docs/reports/2026-11-04-socket-channels.md"
 private: false
 ```
