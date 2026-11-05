@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><title>Route map</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>
+body { margin: 0; font: 16px sans-serif; }
+#map { position: relative; width: 3000px; height: 160px; background: #def; }
+#map span, #map a { position: absolute; top: 60px; }
+.box { overflow: auto; border: 1px solid #888; margin: 8px; }
+#timetable { width: 600px; }
+#timetable table { width: 2000px; }
+#plan { width: 400px; height: 200px; }
+#plan div { position: relative; width: 1200px; height: 600px; }
+#plan p { position: absolute; margin: 0; }
+</style></head><body>
+<h1>Route map</h1>
+<div id="map" aria-label="Route map">
+  <span style="left: 100px">Stop A</span>
+  <span style="left: 1600px">Stop B</span>
+  <span style="left: 2800px">Stop C</span>
+  <a href="about.html" style="left: 2700px; top: 100px">Far stop details</a>
+</div>
+<div id="timetable" class="box" role="region" aria-label="Timetable">
+  <table><tr><td style="width: 100px">First train 05:10</td><td style="width: 700px"></td><td style="width: 200px">Last train 23:40</td><td><a href="contact.html">Timetable help</a></td></tr></table>
+</div>
+<div id="plan" class="box" aria-label="Floor plan">
+  <div><p style="left: 10px; top: 10px">Entrance</p><p style="left: 1000px; top: 500px">Room 404</p></div>
+</div>
+</body></html>

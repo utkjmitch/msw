@@ -179,7 +179,7 @@ For each row of the plan, one at a time:
 
    1. **Perceive.** What do I see, as me? What catches my eye first on this screen? What do I not understand? Use only the screenshot, the page text and the options. Not what you know about websites in general, unless this person would know it.
    2. **Plan.** What am I trying to do right now, toward my goal?
-   3. **Rate.** Score at least two options from 1 to 5 (all of them if there are fewer than two; `scroll down`, `scroll up` and `back` count), including the one you will choose, each with a one-line reason as this person would put it: `{ "option": 4, "score": 4, "why": "says what they do, which is what I want" }`.
+   3. **Rate.** Score at least two options from 1 to 5 (all of them if there are fewer than two; `scroll down`, `scroll up`, `scroll right`, `scroll left` and `back` count), including the one you will choose, each with a one-line reason as this person would put it: `{ "option": 4, "score": 4, "why": "says what they do, which is what I want" }`.
    4. **The four questions** for the option you chose, each `true` or `false`, honestly:
       - `will_try`: will this person try to do this?
       - `notices`: will they notice that this option is there?
@@ -189,13 +189,21 @@ For each row of the plan, one at a time:
       Each `false` costs a point of patience. Don't answer `true` to save patience: the point of the walk is to find where the answer is no.
 
       The server takes points too: for a page that loads slowly, an act after which the page looks the same, a `back`, and a return to a page already seen. Typing into a field is a change, so it costs nothing; typing the same text again does cost a point. A submit stopped by read-only leaves the page looking the same, so it costs a point. The seal lists every charge in `patience_charges`.
-   5. **Act.** Call `act` with `option`, `ratings`, `wharton` and, for a text field, `text`. For a silly walk, `how: "double-tap"` or `how: "new-tab"` only if the journey lists that move and the person would do it now.
+   5. **Act.** Call `act` with `option`, `ratings`, `wharton` and, for a text field, `text`. For a silly walk, `how: "double-tap"` or `how: "new-tab"` only if the journey lists that move and the person would do it now. To scroll a `[scroll area]` option (a table, a map or a list in a box that scrolls), choose it with `how: "scroll-right"`, `"scroll-left"`, `"scroll-down"` or `"scroll-up"`.
    6. **Reflect.** Read the new look. Did that do what I expected? Am I closer?
    7. **Wonder.** What would I ask a friend right now?
 
    Only stages 3 to 5 go to the server. Perceive, plan, reflect and wonder go in your notes for the narration.
 
    Choose only from the numbered options. You can't type an address, open the page source or search the web; neither could this person, in this moment.
+
+   **Wide pages and boxes that scroll.** Some content is wider or taller than the screen: a route map, a timetable, a long table. Reach it all; don't stop because it runs off the edge.
+   - The page scrolls sideways with `scroll right` and `scroll left`. They are on every look, so their being there tells you nothing; on a page that is not wide they change nothing.
+   - A box that scrolls by itself is a `[scroll area]` option; scroll it with `how` (above). Its being listed tells you it holds more. A person would know that only from what is on the screen: a scrollbar, something cut off at its edge, or an arrow or a "more" button. So judge from the screenshot whether this person would have found it, and say so in the narration.
+   - To see something wide whole, call `look` with `whole: "page"`, or with `whole` and the area's option number. You get your screen and then the screens you would see scrolling across it (an area: every corner), and the page is put back. It is a look: it costs no step and no patience, and needs no ratings. Use it when this person would stop and scan the whole thing, as someone looks along a map. Don't use it to find something they would never have looked for.
+   - Content you can only find by trying, with nothing on the screen to show it is there, is a finding about navigation, not something to skip: `note` it (`kind: usability`), saying what was there and what, if anything, showed the way. The server records where content runs past the edge, and adds its own finding when nothing on screen showed the way. You are not told this; judge from the screen.
+
+   **What the server cannot do**, so don't try and don't note it as the site's fault: zoom or pinch; drag a map that pans only by dragging (use the map's own buttons, if it has them); scroll a box that cuts off its content without scrolling (a carousel: use its own controls); press Tab or the arrow keys; walk in Firefox or Safari. The server's README lists the rest (`<msw>/server/README.md`, "What the server cannot do").
 
 3. **A form in a read-only walk.** When the Walker sends a form, the server stops it and says the form was not sent. That is the run's rule, not the site's behavior: don't note "nothing happened after I pressed it" as a fault of the site. Note what the page did **before** sending, if it matters (no word on what happens next, no sign that it was pressed, a button that could be pressed twice). Then carry on as if the submit had failed, or quit `done` if finding out was the goal.
 

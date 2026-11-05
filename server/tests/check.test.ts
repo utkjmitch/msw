@@ -6,6 +6,7 @@ import { tmpdir } from "node:os"; import { join } from "node:path";
 test("the examples check clean, together", async () => {
   expect(await check(["--walker", "../examples/walkers/first-timer.yaml", "--walker", "../examples/walkers/team-member.yaml",
     "--journey", "../examples/journeys/first-timer-learn.yaml", "--journey", "../examples/journeys/team-member-review.yaml",
+    "--journey", "../examples/journeys/first-timer-silly-wide-map.yaml",
     "--run", "../examples/run.json"])).toEqual([]);
 });
 test("a bad file, a missing Walker and an audience above the role are each reported", async () => {
