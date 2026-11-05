@@ -11,6 +11,8 @@ import { checkAct, whartonNos, type Rating, type Wharton } from "./rules.js";
 import { deadParrot } from "./parrot.js";
 import { installGuard, transactAllowed, adminAllowed, type Blocked } from "../browser/guard.js";
 import { perceive, optionLine, type Perception, type Option } from "../browser/perceive.js";
+import { wholeLook } from "../browser/whole.js";
+import { withHelpers, type Overflow, type Direction } from "../browser/screen.js";
 import { maskText, maskDeep, isSecretField, setMaskNames, PAYMENT_SELECTOR } from "../browser/mask.js";
 import { contextOptions, setupConditions, applyStepConditions, emulateNetwork } from "../browser/conditions.js";
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
@@ -18,8 +20,15 @@ import { reproduce, type Reproduce } from "./replay.js";
 import { versions, fileInput, writeManifest, type Manifest } from "./manifest.js";
 import { FLOOR, noteFloor } from "./floors.js";
 
-export interface LookResult { png: Buffer; text: string; url: string; options: string[]; stepsLeft: number; patienceLeft: number; notes: string[]; ended?: string }
-export interface ActArgs { option: number; text?: string; how?: "tap" | "double-tap" | "new-tab"; ratings?: Rating[]; wharton?: Wharton }
+/** whole: a whole look's extra screens and the text seen across them; of is how many screens it would take, when more than were shown. */
+export interface LookResult { png: Buffer; text: string; url: string; options: string[]; stepsLeft: number; patienceLeft: number; notes: string[]; ended?: string;
+  whole?: { target: string; tiles: Buffer[]; text: string; of: number } }
+/** A scroll direction is how a Walker scrolls a scroll area. */
+export type ScrollHow = "scroll-down" | "scroll-up" | "scroll-right" | "scroll-left";
+export type How = "tap" | "double-tap" | "new-tab" | ScrollHow;
+export interface ActArgs { option: number; text?: string; how?: How; ratings?: Rating[]; wharton?: Wharton }
+/** whole: "page" pans the page across; a number is a scroll area's option from the last look. */
+export interface LookArgs { whole?: "page" | number }
 export interface NoteArgs { kind: Finding["kind"]; severity: number; title: string; what_happened: string; expected: string; blocks_step?: boolean }
 /** replay: "pending" when Walker findings wait for the replay step, "off" when this walk does not replay, "none" when there is nothing to replay. */
 export interface QuitResult { dir: string; alive: boolean; failures: string[]; findings: number; verified: boolean; replay: "pending" | "off" | "none"; pending: string[] }
@@ -27,7 +36,7 @@ export interface QuitResult { dir: string; alive: boolean; failures: string[]; f
 export interface ReplayRecord { finding: string; reproduced: boolean; started: string; ended: string; dir: string | null; head: string | null; verified: boolean | null; error?: string }
 export interface ReplayResult { dir: string; replayed: ReplayRecord[]; pending: string[] }
 /** label: the display name, for finding text. key: the full unmasked name that identifies the control on replay. */
-export interface ReplayStep { label: string; key: string; role: string; how: "tap" | "double-tap" | "new-tab"; text?: string; event: number }
+export interface ReplayStep { label: string; key: string; role: string; how: How; text?: string; event: number }
 type StartArgs = { walker: string; journey: string; viewport: ViewportName; locale?: string };
 /** Spec 5.4: a page whose load event takes longer than this costs one patience. */
 const SLOW_PAGE_MS = 3_000;
@@ -49,6 +58,10 @@ export const proxyFromEnv = (env: NodeJS.ProcessEnv = process.env) => {
   const bypass = env.NO_PROXY || env.no_proxy;
   return server ? { server, ...(bypass ? { bypass } : {}) } : undefined;
 };
+const OVERFLOW = withHelpers((h, touch: boolean) => h.overflowScan(touch));
+const isScroll = (how?: How): how is ScrollHow => !!how && how.startsWith("scroll-");
+/** The far edges: content past them is what a person must find. Content past the left or top is where they came from. */
+const EDGE: Partial<Record<Direction, string>> = { right: "right", down: "bottom" };
 const REAL_PERFORMANCE_INIT = `Object.defineProperty(window, "__mswPerformance", { value: performance });`;
 
 export class WalkSession {
@@ -67,6 +80,8 @@ export class WalkSession {
   private submitting?: { label: string; type: string; value: string }[];
   // Set once quit has written the seal. Replay runs only after it, and never rewrites it.
   private sealed?: { head: string | null }; private replays: ReplayRecord[] = []; private replaying = false;
+  // Each look's overflow record, for the navigation findings at quit.
+  private overflow: { seq: number; step: number; list: Overflow[] }[] = [];
 
   constructor(private run: RunConfig, private headless = true, private reproduceFindings = true, private replayer: Reproduce = reproduce) {
     // The names file stays outside the run folder; only its path is in the manifest.
@@ -97,7 +112,10 @@ export class WalkSession {
     this.log = new EventLog(events);
     this.budget = new Budget(this.journey.step_budget, this.walker.patience);
     try {
-      this.browser = await chromium.launch({ headless: this.headless, proxy: proxyFromEnv() });
+      // Desktop Chrome on Windows and Linux draws scrollbars, and a scrollbar is how a person sees there is more.
+      // Headless Playwright hides them unless told not to. Touch screens keep theirs hidden, as phones do until you scroll.
+      this.browser = await chromium.launch({ headless: this.headless, proxy: proxyFromEnv(),
+        ...(VIEWPORTS[a.viewport].touch ? {} : { ignoreDefaultArgs: ["--hide-scrollbars"] }) });
       this.manifest = { run: this.run, inputs: { walker: fileInput(a.walker), journey: fileInput(a.journey), viewport: this.viewport, locale: this.locale, read_channels: this.journey.read_channels,
         socket_channels: this.journey.socket_channels },
         versions: versions(this.browser), times: { started: new Date().toISOString(), ended: null }, outcome: null };
@@ -130,10 +148,21 @@ export class WalkSession {
     }
   }
 
-  async look(): Promise<LookResult> {
+  async look(o: LookArgs = {}): Promise<LookResult> {
     if (!this.browser) throw new Error("no walk in progress");
     if (this.ended) return this.result(this.last!);
-    const p = await this.snap(); await this.inspect(p.state); return this.result(p);
+    if (o.whole === undefined) { const p = await this.snap(); await this.inspect(p.state); return this.result(p); }
+    // A whole look is a look: it takes no ratings, costs no step and no patience, and leaves the page as it was.
+    const before = this.last; const chosen = typeof o.whole === "number" ? before?.options[o.whole - 1] : undefined;
+    if (typeof o.whole === "number" && chosen?.kind !== "area") throw new Error(`option ${o.whole} is not a scroll area; look again, or use whole "page"`);
+    const p = await this.snap(); await this.inspect(p.state);
+    const area = chosen ? find(p.options, before!.options, chosen) : undefined;
+    if (chosen && !area) throw new Error("the page changed; look again");
+    const w = await wholeLook(this.page!, area?.handle ?? null, { mask: this.run.mask_personal_data, maskSelectors: this.run.mask_selectors });
+    const target = area ? optionLine(area) : "page";
+    const e = this.log.append("whole", { url: this.m(p.url), target, tiles: w.tiles.length, of: w.of }, p.state);
+    w.tiles.forEach((png, i) => writeFileSync(join(this.dir, "screens", `${e.seq}-${i + 1}.png`), png));
+    return { ...this.result(p), whole: { target, tiles: w.tiles, text: w.text, of: w.of } };
   }
 
   async act(a: ActArgs): Promise<LookResult | { refused: string }> {
@@ -167,6 +196,8 @@ export class WalkSession {
     if (a.text !== undefined && isSecretField(opt) && this.journey.mode === "transact" && !this.run.payment_test_mode)
       return this.refuse("this run is not in payment test mode, so Walkers do not type card details", a.option);
     if ((a.how === "double-tap" || a.how === "new-tab") && !this.moves.includes(a.how)) return this.refuse("that move is not part of this walk", a.option);
+    if (opt.kind === "area" && !isScroll(a.how)) return this.refuse("a scroll area takes a direction: how scroll-down, scroll-up, scroll-right or scroll-left", a.option);
+    if (opt.kind !== "area" && isScroll(a.how)) return this.refuse("only a scroll area takes a scroll direction; use the scroll moves for the page", a.option);
     const how = a.how ?? "tap";
     const stored = a.text === undefined ? undefined : isSecretField(opt) ? "[masked]" : this.run.mask_personal_data ? maskText(a.text) : a.text;
     const ev = this.log.append("act", { option: a.option, label: optionLine(opt), how, text: stored, ratings: this.m(a.ratings), wharton: this.m(wharton),
@@ -219,7 +250,7 @@ export class WalkSession {
       this.log.append("quit", { reason, detail: this.m(detail) ?? null, ended: this.ended ?? null });
     } finally { try { await this.browser.close(); } finally { this.browser = undefined; } }
     const ctx = { run: this.run.id, walker: this.walker.id, journey: this.journey.id, viewport: this.viewport, locale: this.locale };
-    this.findings.push(...instrumentFindings(this.instrument, ctx));
+    this.findings.push(...instrumentFindings(this.instrument, ctx), ...this.navigationFindings());
     // The seal is written before any replay, so a long replay can never cost the walk its seal. Replay is its own step.
     const verified = this.log.verify().ok; const parrot = deadParrot(this.log.all(), this.findings);
     const walkerFindings = this.findings.filter(f => f.source === "walker");
@@ -262,6 +293,32 @@ export class WalkSession {
       }
     } finally { this.replaying = false; }
     return { dir: this.dir, replayed: done, pending: this.pendingReplays() };
+  }
+  /**
+   * Content past the right or bottom edge of the page or a box that scrolls, with nothing on screen to show it in any
+   * look of the walk: no scrollbar, nothing cut off at that edge, no control. A person finds it only by trying.
+   */
+  private navigationFindings(): Finding[] {
+    const seen = new Map<string, { where: string; d: Direction; px: number; step: number; evidence: number[]; cued: boolean }>();
+    for (const o of this.overflow) for (const x of o.list) {
+      if (!x.scrolls) continue;
+      for (const d of ["right", "down"] as const) {
+        if (!x.past[d]) continue;
+        const k = `${x.where}|${d}`; const cued = x.cues.scrollbar.includes(d) || x.cues.cut_off.includes(d) || x.cues.control.length > 0;
+        const was = seen.get(k) ?? { where: x.where, d, px: x.past[d]!, step: o.step, evidence: [], cued: false };
+        was.evidence.push(o.seq); was.cued ||= cued; seen.set(k, was);
+      }
+    }
+    return [...seen.values()].filter(x => !x.cued).map((x, i) => {
+      const of = x.where === "page" ? "the page" : `the ${x.where.replace(/^scroll area: /, "scroll area \"")}"`;
+      return { id: `${this.walker.id}-${this.journey.id}-n${i + 1}`, run: this.run.id, walker: this.walker.id, journey: this.journey.id, step: x.step,
+        viewport: this.viewport, locale: this.locale, kind: "usability" as const, source: "instrument" as const, severity: FLOOR.hiddenOverflow,
+        title: `Content runs past the ${EDGE[x.d]} edge of ${of} with nothing on screen to show it`,
+        what_happened: `${x.px} px of content lay past the ${EDGE[x.d]} edge, and no look showed a scrollbar, something cut off at that edge or a control for it. A person finds it only by trying.`,
+        expected: "Something on screen shows there is more: a scrollbar, something cut off at the edge, or a control",
+        evidence: x.evidence, repro: [], reproduced: true,
+        fingerprint: createHash("sha1").update(`${this.journey.id}|navigation|${x.where}|${x.d}`).digest("hex").slice(0, 12) };
+    });
   }
   private pendingReplays() { return this.findings.filter(f => f.source === "walker" && f.reproduced === "pending").map(f => f.id); }
   private writeFindings() {
@@ -372,7 +429,10 @@ export class WalkSession {
         await this.settle();
       }
     }
-    const e = this.log.append("look", { url: this.m(p.url), options: p.options.map(optionLine) }, p.state);
+    // The record says where content runs past what shows and whether the screen shows the way. The Walker is not told.
+    const overflow = this.m(await this.page!.evaluate(OVERFLOW, VIEWPORTS[this.viewport].touch).catch(() => [] as Overflow[]));
+    const e = this.log.append("look", { url: this.m(p.url), options: p.options.map(optionLine), ...(overflow.length ? { overflow } : {}) }, p.state);
+    if (overflow.length) this.overflow.push({ seq: e.seq, step: this.steps, list: overflow });
     writeFileSync(join(this.dir, "screens", `${e.seq}.png`), p.png);
     this.last = { ...p, seq: e.seq }; this.stateAt.set(p.url, p.state); this.placeSeen(); return this.last;
   }
@@ -405,10 +465,18 @@ export class WalkSession {
       patienceLeft: this.budget.patienceLeft, notes: this.m(this.pending.splice(0)), ...(this.ended ? { ended: this.ended } : {}) };
   }
   private async perform(opt: Option, a: ActArgs): Promise<void> {
-    const page = this.page!; const dy = Math.round((page.viewportSize()?.height ?? 800) * 0.8);
+    const page = this.page!; const dy = Math.round((page.viewportSize()?.height ?? 800) * 0.8); const dx = Math.round((page.viewportSize()?.width ?? 800) * 0.8);
+    if (opt.kind === "area") {
+      // Like the page's scroll moves: four fifths of what the area shows.
+      await opt.handle!.evaluate((el: Element, how) => el.scrollBy({ left: how === "scroll-right" ? el.clientWidth * 0.8 : how === "scroll-left" ? -el.clientWidth * 0.8 : 0,
+        top: how === "scroll-down" ? el.clientHeight * 0.8 : how === "scroll-up" ? -el.clientHeight * 0.8 : 0 }), a.how);
+      return;
+    }
     if (opt.kind === "move") {
       if (opt.move === "scroll-down") await page.evaluate(y => window.scrollBy(0, y), dy);
       else if (opt.move === "scroll-up") await page.evaluate(y => window.scrollBy(0, -y), dy);
+      else if (opt.move === "scroll-right") await page.evaluate(x => window.scrollBy(x, 0), dx);
+      else if (opt.move === "scroll-left") await page.evaluate(x => window.scrollBy(-x, 0), dx);
       else if (opt.move === "back") { this.budget.charge("back"); await page.goBack({ timeout: 10_000 }); }
       else if (opt.move === "reload") await page.reload();
       else if (opt.move === "switch-tab") { this.page = this.pages[(this.pages.indexOf(page) + 1) % this.pages.length]; await this.page.bringToFront(); }

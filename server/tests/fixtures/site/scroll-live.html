@@ -1,0 +1,18 @@
+<!doctype html><html lang="en"><head><title>Scroll and listen</title><style>
+body { margin: 0; font: 16px sans-serif; }
+#strip { width: 3000px; height: 120px; background: #def; }
+</style></head><body>
+<h1>Scroll and listen</h1>
+<div id="strip">Wide strip</div>
+<p id="live">Not connected</p>
+<script>
+// A made-up page that opens a socket to its own origin the first time it is scrolled sideways: what a whole look could set off.
+let opened = false;
+addEventListener("scroll", () => {
+  if (opened || scrollX === 0) return; opened = true;
+  const w = new WebSocket(location.origin.replace(/^http/, "ws") + "/scroll-live");
+  w.onopen = () => w.send("subscribe:scores");
+  w.onmessage = m => { document.getElementById("live").textContent = "Live scores: " + m.data; };
+});
+</script>
+</body></html>

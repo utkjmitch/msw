@@ -47,3 +47,40 @@ test("a named socket channel: the page gets its live data, and the open and the 
     expect(manifest.inputs.socket_channels).toEqual([{ origin, path: "/live", sends: "forward" }]);
   } finally { await w.quit("done").catch(() => {}); }
 });
+
+// A whole look scrolls the page, so a socket a scroll handler opens meets the socket rules the same as one opened by a tap.
+test("a whole look that sets off a socket to the site: refused with no socket line, and still costs nothing", async () => {
+  const f = setup(s.url + "scroll-live.html"); const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" }) as LookResult;
+    expect(r0.notes.join(" ")).not.toContain("live connection");
+    const whole = await w.look({ whole: "page" });
+    expect(whole.whole!.tiles.length).toBeGreaterThan(1);
+    await expect.poll(() => events(join(f.run.out_dir, "walks", "tester-learn-desktop-en-US")).some(e => e.kind === "blocked")).toBe(true);
+    const after = await w.look();
+    expect([...whole.notes, ...after.notes].join(" ")).toContain("live connection to the site was refused");
+    expect(after.stepsLeft).toBe(r0.stepsLeft); expect(after.patienceLeft).toBe(r0.patienceLeft);
+    expect(s.sockets).toEqual([]);
+    const q = await w.quit("done"); expect(q.verified).toBe(true);
+    const blocked = events(q.dir).filter(e => e.kind === "blocked");
+    expect(blocked).toEqual([expect.objectContaining({ data: expect.objectContaining({ why: "socket-refused", method: "WEBSOCKET", url: s.url.replace("http", "ws") + "scroll-live" }), state: expect.any(String) })]);
+  } finally { await w.quit("done").catch(() => {}); }
+});
+test("a whole look that sets off a named socket: it opens, and the open and the page's frame are signed events", async () => {
+  const origin = s.url.replace("http", "ws").replace(/\/$/, "");
+  const f = setup(s.url + "scroll-live.html", { journeyExtra: `socket_channels:\n  - { origin: "${origin}", path: /scroll-live, sends: forward }\n` });
+  const w = new WalkSession(f.run, true, false);
+  try {
+    const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" }) as LookResult;
+    await w.look({ whole: "page" });
+    await expect.poll(() => s.sockets).toEqual(["OPEN /scroll-live", "FRAME /scroll-live"]);
+    const after = await w.look();
+    expect(after.notes.join(" ")).not.toContain("live connection");
+    expect(after.stepsLeft).toBe(r0.stepsLeft); expect(after.patienceLeft).toBe(r0.patienceLeft);
+    const q = await w.quit("done"); expect(q.verified).toBe(true);
+    const all = events(q.dir);
+    expect(all.filter(e => e.kind === "blocked")).toEqual([]);
+    expect(all.find(e => e.kind === "read")).toMatchObject({ data: { channel: origin + "/scroll-live", method: "WEBSOCKET" }, state: expect.any(String) });
+    expect(all.find(e => e.kind === "socket-send")).toMatchObject({ data: { channel: origin + "/scroll-live", bytes: 16, sent: true }, state: expect.any(String) });
+  } finally { await w.quit("done").catch(() => {}); }
+});
