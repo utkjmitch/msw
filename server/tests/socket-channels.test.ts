@@ -20,6 +20,8 @@ const sockets = new Set<import("node:stream").Duplex>(); let server: Server; let
 const hits: string[] = [];
 /** One unmasked text frame from the server: a short message is enough here. */
 const frame = (text: string) => Buffer.concat([Buffer.from([0x81, Buffer.byteLength(text)]), Buffer.from(text)]);
+/** Whether a chunk from the browser holds a close frame. The page's frames here are short, so a 7-bit or 16-bit length covers them. */
+const hasClose = (b: Buffer) => { for (let i = 0; i + 1 < b.length;) { if ((b[i] & 0x0f) === 8) return true; const n = b[i + 1] & 0x7f; i += 2 + (n === 126 ? 2 : 0) + (b[i + 1] & 0x80 ? 4 : 0) + (n === 126 ? b.readUInt16BE(i + 2) : n); } return false; };
 beforeAll(async () => {
   server = createServer((_req, res) => res.writeHead(200, { "content-type": "text/html; charset=utf-8" }).end("<!doctype html><title>t</title>Hello"));
   // A socket that greets the page and counts the frames it gets. context.route never sees one.
@@ -29,7 +31,8 @@ beforeAll(async () => {
     const accept = createHash("sha1").update(req.headers["sec-websocket-key"] + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11").digest("base64");
     sock.write(`HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: ${accept}\r\n\r\n`);
     sock.write(frame("hello"));
-    sock.on("data", () => hits.push(`${host} FRAME ${path}`)); sock.on("error", () => {});
+    // Answer the browser's close frame and end, so the browser lets the connection go and the walk can wait for it (see walk).
+    sock.on("data", (b: Buffer) => { hits.push(`${host} FRAME ${path}`); if (hasClose(b)) sock.end(Buffer.from([0x88, 0x00])); }); sock.on("error", () => {});
     sockets.add(sock); sock.on("close", () => sockets.delete(sock));
   });
   await new Promise<void>(r => server.listen({ port: 0, host: "::", ipv6Only: false }, r));
@@ -38,6 +41,12 @@ beforeAll(async () => {
 });
 afterAll(async () => { for (const k of sockets) k.destroy(); await new Promise<void>(r => server.close(() => r())); });
 
+/**
+ * ctx.close() returns before the browser's close frame reaches the site, so a walk's socket could write into the next walk's hits
+ * as "site FRAME". A walk ends only once the site has no socket open, so each walk's hits hold that walk's traffic and nothing else.
+ */
+const closedAtSite = () => new Promise<boolean>(r => { const until = Date.now() + 5_000;
+  const tick = () => sockets.size === 0 ? r(true) : Date.now() > until ? r(false) : setTimeout(tick, 10); tick(); });
 /** What the page saw: whether its socket opened, the first message it got, and how it ended within 500 ms. */
 interface Seen { opened: boolean; message?: string; error: boolean; closed?: number }
 const openSocket = (p: Page, url: string) => p.evaluate(u => new Promise<Seen>(r => {
@@ -54,11 +63,12 @@ for (const name of engines) describe(name, () => {
   afterAll(async () => { await browser?.close(); });
   async function walk(mode: "read-only" | "transact", channels: SocketChannel[], fn: (p: Page, rec: { blocked: Blocked[]; reads: Read[]; sends: SocketSend[] }) => Promise<void>) {
     const ctx = await browser.newContext(contextOptions("desktop", "en", { network: "fast" } as any));
-    const rec = { blocked: [] as Blocked[], reads: [] as Read[], sends: [] as SocketSend[] }; hits.length = 0;
+    const rec = { blocked: [] as Blocked[], reads: [] as Read[], sends: [] as SocketSend[] }; hits.length = 0; let drained = false;
     try {
       await installGuard(ctx, { mode, origins: [site], sockets: channels, onBlocked: b => rec.blocked.push(b), onRead: r => rec.reads.push(r), onSocketSend: s => rec.sends.push(s) });
       const p = await ctx.newPage(); await p.goto(site + "/"); await fn(p, rec);
-    } finally { await ctx.close(); }
+    } finally { await ctx.close(); drained = await closedAtSite(); }
+    if (!drained) throw new Error("a socket from this walk was still open at the site 5 s after its context closed");
   }
 
   test("read-only, no socket named: a socket to the site never connects, and the walk records the attempt", async () => {
