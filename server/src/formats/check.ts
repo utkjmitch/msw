@@ -21,6 +21,10 @@ export async function check(args: string[]): Promise<string[]> {
   }
   // A journey names its Walker by id; when that Walker was checked too, its role must allow the journey's audience.
   for (const { path, j } of journeys) {
+    // A socket channel on an origin off the journey's list is never opened: the guard refuses it before it looks at channels.
+    const listed = new Set([j.start_url, ...j.origins].map(u => new URL(u).origin));
+    for (const c of j.socket_channels) if (!listed.has(new URL(c.origin.replace(/^ws/, "http")).origin))
+      problems.push(`${path}: socket channel ${c.origin}${c.path} is on an origin not in the journey's origins, so it would never open`);
     const w = walkers.get(j.walker);
     if (!w) { if (walkers.size) problems.push(`${path}: walker "${j.walker}" is not among the Walkers checked`); continue; }
     if (!audienceAllowed(w.role, j.audience)) problems.push(`${path}: audience "${j.audience}" is above walker "${w.id}"'s role "${w.role}"`);

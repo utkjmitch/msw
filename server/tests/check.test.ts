@@ -28,3 +28,14 @@ test("no arguments, or an unknown flag, is a problem", async () => {
   expect(await check([])).toEqual([expect.stringMatching(/^usage/)]);
   expect(await check(["--dossier", "x"])).toEqual(["unknown flag --dossier"]);
 });
+test("a socket channel on an origin off the journey's list is reported; one on the site is clean", async () => {
+  const d = mkdtempSync(join(tmpdir(), "msw-check-"));
+  try {
+    const j = (origin: string) => `id: j\nwalker: first-timer\naudience: public\ngoal: find out\nstart_url: http://127.0.0.1:4810/\n` +
+      `arrival: direct\nsuccess: [knows]\nstep_budget: 5\nsocket_channels:\n  - { origin: "${origin}", path: /live, sends: drop }\n`;
+    const on = join(d, "on.yaml"); writeFileSync(on, j("ws://127.0.0.1:4810"));
+    const off = join(d, "off.yaml"); writeFileSync(off, j("wss://push.example.test"));
+    expect(await check(["--journey", on])).toEqual([]);
+    expect(await check(["--journey", off])).toEqual([expect.stringMatching(/socket channel wss:\/\/push\.example\.test\/live .* would never open/)]);
+  } finally { rmSync(d, { recursive: true }); }
+});

@@ -1,6 +1,6 @@
 // schemas.ts
 import { z } from "zod";
-import { ReadChannelZ } from "../browser/read-channels.js";
+import { ReadChannelZ, SocketChannelZ } from "../browser/read-channels.js";
 const Id = z.string().regex(/^[a-z0-9-]+$/);
 export const ViewportNameZ = z.enum(["phone-small", "phone", "tablet", "desktop"]);
 export const Role = z.enum(["visitor", "member", "admin"]);
@@ -44,6 +44,8 @@ export const Journey = z.object({
   payment_origins: z.array(z.url()).default([]),
   // POST requests a read-only walk lets through because they only read (plan B, task 1). None by default.
   read_channels: z.array(ReadChannelZ).default([]),
+  // WebSockets to the site a read-only walk lets open (report D-2). None by default: every socket to the site is refused.
+  socket_channels: z.array(SocketChannelZ).default([]),
   viewports: z.array(ViewportNameZ).optional(), locales: z.array(z.string()).optional(),
   planned: z.boolean().default(false),
   silly: z.object({ category: SillyCategory, conditions: Conditions.default({}), moves: z.array(Move).default([]) }).optional(),

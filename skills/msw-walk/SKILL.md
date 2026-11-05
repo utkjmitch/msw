@@ -207,6 +207,8 @@ For each row of the plan, one at a time:
 
 3. **A form in a read-only walk.** When the Walker sends a form, the server stops it and says the form was not sent. That is the run's rule, not the site's behavior: don't note "nothing happened after I pressed it" as a fault of the site. Note what the page did **before** sending, if it matters (no word on what happens next, no sign that it was pressed, a button that could be pressed twice). Then carry on as if the submit had failed, or quit `done` if finding out was the goal.
 
+   **A live connection refused in a read-only walk.** When the server says the page's live connection to the site was refused, a part of the page may say "offline", stay empty or never update. That is the walk's doing: don't note it. The refused socket is already in the record as a `blocked` event (`socket-refused`). If the journey cannot be judged without it, quit `stuck` and say so in the narration; the journey's author can name the socket in `socket_channels`.
+
 4. **Note a finding the moment something is wrong.** Call `note` straight away, not at the end, so it is tied to the right moment: `kind` (`usability`, `function`, `content`, `accessibility`, `performance`, `vision-gap`), `severity` 0 to 4 (0 not a problem, 1 cosmetic, 2 minor, 3 major, 4 the goal can't be met), a short `title`, `what_happened` and `expected` in plain words, and `blocks_step: true` if it stops a step the goal needs. Write fewer, deeper findings: one per problem, with what the person was trying to do.
 
 5. **Refusals.** If the server answers `Refused: …`, it cost nothing. "The page changed; look again" means call `look` and decide again. A refusal for missing ratings or Wharton answers means fix the call.
