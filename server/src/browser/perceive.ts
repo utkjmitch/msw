@@ -18,7 +18,7 @@ export type { Option };
  * It stays in memory: no record, log or result carries it, and the state is the same before and after typing.
  */
 export interface Perception { png: Buffer; text: string; url: string; options: Option[]; state: string; fields: string }
-export const optionLine = (o: Option) => (o.kind === "move" ? `${o.n}. ${o.name}` : `${o.n}. [${o.role}] ${o.name}`);
+export const optionLine = (o: Option) => (o.kind === "move" ? `${o.n}. ${o.name}` : `${o.n}. [${o.role}] ${o.name}${o.state ? ` (${o.state})` : ""}`);
 export async function perceive(page: Page, o: { mask: boolean; moves: Move[]; tabCount: number; maskSelectors?: string[]; links?: string[] }): Promise<Perception> {
   // Names are read from the page as it is, so each control keeps its own identity. Masking is for display only.
   const options = await collectOptions(page, o.moves, o.tabCount, o.links);
@@ -38,6 +38,6 @@ export async function perceive(page: Page, o: { mask: boolean; moves: Move[]; ta
   const url = page.url();
   // The state hashes full, unmasked names, so two controls that differ only in masked text are still two pages.
   // Only the hash is written out, never the names.
-  const state = createHash("sha256").update([url, text, options.map(x => `${x.role}:${x.key}`).join("|")].join("\n")).digest("hex");
+  const state = createHash("sha256").update([url, text, options.map(x => `${x.role}:${x.key}:${x.state ?? ""}`).join("|")].join("\n")).digest("hex");
   return { png, text, url, options, state, fields };
 }
