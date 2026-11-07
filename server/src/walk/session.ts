@@ -14,6 +14,7 @@ import { perceive, optionLine, type Perception, type Option } from "../browser/p
 import { wholeLook } from "../browser/whole.js";
 import { withHelpers, type Overflow, type Direction } from "../browser/screen.js";
 import { maskText, maskDeep, isSecretField, setMaskNames, PAYMENT_SELECTOR } from "../browser/mask.js";
+import { staleLogin } from "./login.js";
 import { contextOptions, setupConditions, applyStepConditions, emulateNetwork } from "../browser/conditions.js";
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
 import { reproduce, type Reproduce } from "./replay.js";
@@ -97,6 +98,10 @@ export class WalkSession {
     if (this.journey.walker !== this.walker.id) throw new Error(`journey ${this.journey.id} is for walker ${this.journey.walker}`);
     if (!audienceAllowed(this.walker.role, this.journey.audience)) throw new Error(`a ${this.walker.role} cannot walk a ${this.journey.audience} journey`);
     for (const t of [adminAllowed(this.run, this.journey), transactAllowed(this.run, this.journey)]) if (!t.ok) throw new Error(t.reason);
+    if (this.journey.storage_state) {
+      const stale = staleLogin(this.journey.storage_state, [this.journey.start_url, ...this.journey.origins]);
+      if (stale) throw new Error(stale);
+    }
     this.viewport = a.viewport; this.locale = a.locale ?? this.walker.locale;
     this.moves = this.journey.silly?.moves ?? []; this.cond = this.journey.silly?.conditions ?? {};
     this.dir = join(this.run.out_dir, "walks", `${this.walker.id}-${this.journey.id}-${this.viewport}-${this.locale}`);

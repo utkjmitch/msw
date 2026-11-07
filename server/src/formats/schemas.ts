@@ -25,6 +25,8 @@ export const Conditions = z.object({
   network: z.union([z.literal("slow-3g"),
     z.object({ offline_at_step: z.number().int().min(1), seconds: z.number().int().min(1).max(120) })]).optional(),
   text_scale: z.number().int().min(100).max(400).optional(),
+  // Browser zoom (Ctrl/Cmd +), in percent. Chrome's own limits are 25 to 500; below 100 is not a silly walk.
+  zoom: z.number().int().min(100).max(500).optional(),
   color_scheme: z.enum(["light", "dark"]).optional(),
   reduced_motion: z.boolean().optional(),
   cookies: z.literal("declined").optional(),
