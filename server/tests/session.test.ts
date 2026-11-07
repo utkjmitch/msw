@@ -458,3 +458,17 @@ test("a stale saved login stops the start before any browser opens, and leaves t
   await expect(w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" })).rejects.toThrow(/saved login .* is stale/);
   expect(existsSync(join(f.run.out_dir, "walks"))).toBe(false);
 });
+test("a visually hidden radio or checkbox is pressed through the label that covers it, as a person taps the label", async () => {
+  for (const viewport of ["phone", "desktop"] as const) {
+    const f = setup(s.url + "hidden-radio.html"); const w = new WalkSession(f.run, true, false);
+    try {
+      const r0 = await w.start({ walker: f.walker, journey: f.journey, viewport });
+      const r1 = await w.act({ option: n(r0, "One time"), ratings: R(n(r0, "One time"), n(r0, "Monthly")), wharton: W }) as LookResult;
+      expect(r1.notes.join(" ")).not.toContain("did not work");
+      expect(r1.text).toContain("Give $5 today");
+      const r2 = await w.act({ option: n(r1, "Cover the fees"), ratings: R(n(r1, "Cover the fees"), n(r1, "Monthly")), wharton: W }) as LookResult;
+      expect(r2.text).toContain("Give $5 today plus fees");
+      await w.quit("done");
+    } finally { await w.quit("done").catch(() => {}); }
+  }
+}, 120_000);

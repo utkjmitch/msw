@@ -501,7 +501,17 @@ export class WalkSession {
       await tab.goto(new URL(href, page.url()).href); return;
     }
     const touch = VIEWPORTS[this.viewport].touch;
-    const press = () => (touch ? h.tap({ timeout: 5_000 }) : h.click({ timeout: 5_000 }));
+    // A radio or checkbox drawn as its label (the input shrunk to a pixel under it) is pressed where a person presses:
+    // on the label. Pressing the input itself waits for a pointer the label always takes, and times out.
+    const covered = await h.evaluate((el: Element) => {
+      const input = el as HTMLInputElement;
+      if (el.tagName !== "INPUT" || !["radio", "checkbox"].includes(input.type) || !input.labels?.length) return null;
+      const r = el.getBoundingClientRect(); const at = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+      return [...input.labels].findIndex(l => at !== el && !!at && l.contains(at));
+    });
+    const pressed = covered !== null && covered >= 0
+      ? (await h.evaluateHandle((el: Element, i: number) => (el as HTMLInputElement).labels![i], covered)).asElement() ?? h : h;
+    const press = () => (touch ? pressed.tap({ timeout: 5_000 }) : pressed.click({ timeout: 5_000 }));
     // Touch taps do not wait for navigation. Register the wait before pressing.
     const { target, fields } = await h.evaluate((el: Element, paymentSelector: string) => {
       const link = el.closest<HTMLAnchorElement>("a[href]");
