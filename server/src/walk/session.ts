@@ -76,6 +76,8 @@ export class WalkSession {
   // Records from a page the walk has not looked at yet wait here for that page's state.
   private timers = new Set<ReturnType<typeof setTimeout>>();
   private unplaced: { page: string; write: (state?: string) => void }[] = []; private stateAt = new Map<string, string>();
+  // Addresses each tab's main frame went through since its last look: a client-side redirect passes through pages never looked at.
+  private passed = new Map<Page, string[]>();
   // The visible fields of a form being submitted, masked, for a blocked submit's record (spec 5.6).
   private submitting?: { label: string; type: string; value: string }[];
   // Set once quit has written the seal. Replay runs only after it, and never rewrites it.
@@ -343,6 +345,7 @@ export class WalkSession {
   private async adopt(p: Page): Promise<void> {
     if (this.pages.includes(p)) return;
     this.pages.push(p); this.page = p; attachInquisition(p, r => this.record(r));
+    p.on("framenavigated", f => { if (f === p.mainFrame()) this.passed.set(p, [...(this.passed.get(p) ?? []), f.url()]); });
     // a page that closes itself is never the current tab
     p.on("close", () => { this.pages = this.pages.filter(x => x !== p); if (this.page === p) this.page = this.pages.at(-1); });
     // A page the walk cannot throttle is not walked under the run's conditions. The first page fails the start;
@@ -431,10 +434,13 @@ export class WalkSession {
     }
     // The record says where content runs past what shows and whether the screen shows the way. The Walker is not told.
     const overflow = this.m(await this.page!.evaluate(OVERFLOW, VIEWPORTS[this.viewport].touch).catch(() => [] as Overflow[]));
-    const e = this.log.append("look", { url: this.m(p.url), options: p.options.map(optionLine), ...(overflow.length ? { overflow } : {}) }, p.state);
+    // Pages passed through on the way here were never on screen long enough to look at; their records belong to this look.
+    const via = [...new Set((this.passed.get(this.page!) ?? []).filter(u => u !== p.url && u !== "about:blank"))]; this.passed.set(this.page!, []);
+    const e = this.log.append("look", { url: this.m(p.url), ...(via.length ? { via: via.map(u => this.m(u)) } : {}), options: p.options.map(optionLine), ...(overflow.length ? { overflow } : {}) }, p.state);
     if (overflow.length) this.overflow.push({ seq: e.seq, step: this.steps, list: overflow });
     writeFileSync(join(this.dir, "screens", `${e.seq}.png`), p.png);
-    this.last = { ...p, seq: e.seq }; this.stateAt.set(p.url, p.state); this.placeSeen(); return this.last;
+    this.last = { ...p, seq: e.seq }; this.stateAt.set(p.url, p.state); for (const u of via) this.stateAt.set(u, p.state);
+    this.placeSeen(); return this.last;
   }
   private async inspect(state: string) {
     if (this.inspected.has(state)) return;
