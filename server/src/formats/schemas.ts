@@ -48,6 +48,9 @@ export const Journey = z.object({
   read_channels: z.array(ReadChannelZ).default([]),
   // WebSockets to the site a read-only walk lets open (report D-2). None by default: every socket to the site is refused.
   socket_channels: z.array(SocketChannelZ).default([]),
+  // Links the person was handed (a text from a friend, an email, a letter). Each is offered at every step as the move
+  // "open link: <label>", as a person opens it from their message or types it in. None by default.
+  links: z.array(z.object({ label: z.string().trim().min(1), url: z.url() })).default([]),
   viewports: z.array(ViewportNameZ).optional(), locales: z.array(z.string()).optional(),
   planned: z.boolean().default(false),
   silly: z.object({ category: SillyCategory, conditions: Conditions.default({}), moves: z.array(Move).default([]) }).optional(),

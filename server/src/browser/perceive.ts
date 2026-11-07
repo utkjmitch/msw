@@ -19,9 +19,9 @@ export type { Option };
  */
 export interface Perception { png: Buffer; text: string; url: string; options: Option[]; state: string; fields: string }
 export const optionLine = (o: Option) => (o.kind === "move" ? `${o.n}. ${o.name}` : `${o.n}. [${o.role}] ${o.name}`);
-export async function perceive(page: Page, o: { mask: boolean; moves: Move[]; tabCount: number; maskSelectors?: string[] }): Promise<Perception> {
+export async function perceive(page: Page, o: { mask: boolean; moves: Move[]; tabCount: number; maskSelectors?: string[]; links?: string[] }): Promise<Perception> {
   // Names are read from the page as it is, so each control keeps its own identity. Masking is for display only.
-  const options = await collectOptions(page, o.moves, o.tabCount);
+  const options = await collectOptions(page, o.moves, o.tabCount, o.links);
   // Mask the full name before cutting it, so a cut never splits an address out of reach of the mask.
   if (o.mask) for (const option of options) if (option.kind !== "move" && !option.unlabeled) option.name = maskText(option.key).slice(0, NAME_DISPLAY_MAX);
   // Text cut off by the screen's edge, or by the edge of a box that clips it, is not on screen.

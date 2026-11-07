@@ -174,7 +174,7 @@ export class WalkSession {
     if (!this.browser) throw new Error("no walk in progress");
     if (this.ended) return { refused: `the walk has ended (${this.ended})` };
     let last = this.last;
-    const now = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length, maskSelectors: this.run.mask_selectors });
+    const now = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length, maskSelectors: this.run.mask_selectors, links: this.journey.links.map(l => l.label) });
     // A page that moves by itself (a carousel, a ticker) changes its state between the look and the act. If the address
     // is the same and the chosen control is still there, with the same identity and as many twins in the same order,
     // the server looks again itself, logs that look, and acts on the control there. Anything else is still refused.
@@ -427,7 +427,7 @@ export class WalkSession {
   private async snap(): Promise<Perception & { seq: number }> {
     let p: Perception;
     for (let tries = 1; ; tries++) {
-      try { p = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length, maskSelectors: this.run.mask_selectors }); break; }
+      try { p = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length, maskSelectors: this.run.mask_selectors, links: this.journey.links.map(l => l.label) }); break; }
       catch (e) {
         // a click can start a navigation after settle() returned; look again once the new page has loaded
         if (tries >= 3 || !/Execution context was destroyed|navigation/i.test(String(e))) throw e;
@@ -486,6 +486,7 @@ export class WalkSession {
       else if (opt.move === "reload") await page.reload();
       else if (opt.move === "switch-tab") { this.page = this.pages[(this.pages.indexOf(page) + 1) % this.pages.length]; await this.page.bringToFront(); }
       else if (opt.move === "wait") await page.clock.fastForward(Math.max(1, Number(a.text ?? "1")) * 60_000);
+      else if (opt.move === "open-link") await page.goto(this.journey.links[opt.link!].url);
       return;
     }
     const h = opt.handle!;

@@ -181,6 +181,28 @@
         "additionalProperties": false
       }
     },
+    "links": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "label",
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
     "viewports": {
       "type": "array",
       "items": {
@@ -328,6 +350,7 @@
     "payment_origins",
     "read_channels",
     "socket_channels",
+    "links",
     "planned"
   ],
   "additionalProperties": false
