@@ -3,8 +3,9 @@ import { AxeBuilder } from "@axe-core/playwright";
 import { createHash } from "node:crypto";
 import type { Finding } from "../formats/schemas.js";
 import type { ViewportName } from "../formats/viewports.js";
-/** inspect-error: the axe and vitals pass itself failed on a page. It is evidence of a gap, not a finding about the site. */
-export interface InstrumentRecord { type: "console" | "pageerror" | "http" | "requestfailed" | "axe" | "vitals" | "inspect-error"; url: string; detail: Record<string, unknown> }
+/** inspect-error: the axe and vitals pass itself failed on a page. It is evidence of a gap, not a finding about the site.
+ *  inspect-skipped: the page was too big to give to axe, so only vitals were taken. */
+export interface InstrumentRecord { type: "console" | "pageerror" | "http" | "requestfailed" | "axe" | "vitals" | "inspect-error" | "inspect-skipped"; url: string; detail: Record<string, unknown> }
 /** Vitals belong to a document, not to an address: a site that changes address in the page (a client-side navigation)
  * keeps one LCP and one running CLS. doc names the document and start its first address, so a finding can judge
  * LCP only on that first address and CLS by the shift since the last look in the same document. */
@@ -22,10 +23,17 @@ export function attachInquisition(page: Page, sink: (r: InstrumentRecord) => voi
     if (!t.includes("BLOCKED_BY_CLIENT")) sink({ type: "requestfailed", url: r.url(), detail: { error: t, page: page.url() } });
   });
 }
-export async function inspectPage(page: Page, sink: (r: InstrumentRecord) => void): Promise<void> {
-  const res = await new AxeBuilder({ page }).analyze();
-  for (const v of res.violations) if (v.impact === "serious" || v.impact === "critical")
-    sink({ type: "axe", url: page.url(), detail: { id: v.id, impact: v.impact, help: v.help, nodes: v.nodes.length } });
+// Axe on a page of 152,000 elements ran for 28 minutes and then crashed the tab, and a call already inside the page
+// cannot be cancelled from outside. Pages over this size are not given to axe at all.
+export const AXE_MAX_ELEMENTS = 50_000;
+export async function inspectPage(page: Page, sink: (r: InstrumentRecord) => void, maxElements = AXE_MAX_ELEMENTS): Promise<void> {
+  const elements = await page.evaluate(() => document.getElementsByTagName("*").length);
+  if (elements > maxElements) sink({ type: "inspect-skipped", url: page.url(), detail: { elements, limit: maxElements } });
+  else {
+    const res = await new AxeBuilder({ page }).analyze();
+    for (const v of res.violations) if (v.impact === "serious" || v.impact === "critical")
+      sink({ type: "axe", url: page.url(), detail: { id: v.id, impact: v.impact, help: v.help, nodes: v.nodes.length } });
+  }
   const { start, ...vit } = await page.evaluate(() => (window as unknown as { __mswVitals?: Record<string, unknown> }).__mswVitals ?? {});
   sink({ type: "vitals", url: page.url(), detail: { ...vit, first_page: start === undefined || start === page.url().split("#")[0] } });
 }
@@ -49,6 +57,7 @@ export function instrumentFindings(records: (InstrumentRecord & { step: number; 
     else if (r.type === "http" && d.status >= 500) add(r, String(d.status), "function", 3, `Server error ${d.status} for ${path}`);
     else if (r.type === "http" && d.status === 404) add(r, "404", "content", 2, `Missing file ${path}`);
     else if (r.type === "axe") add(r, String(d.id), "accessibility", 3, `Accessibility: ${d.help}`);
+    else if (r.type === "inspect-skipped") add(r, "size", "performance", 2, `Page too big to check for accessibility: ${d.elements} elements on ${path}`);
     else if (r.type === "vitals") {
       const before = shiftSoFar.get(String(d.doc)) ?? 0; shiftSoFar.set(String(d.doc), d.cls ?? 0);
       const here = { lcp: d.first_page === false ? null : d.lcp ?? null, cls: Math.round(((d.cls ?? 0) - before) * 1000) / 1000, inp: d.inp ?? null };

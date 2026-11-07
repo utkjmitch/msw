@@ -45,6 +45,17 @@ test("the inquisition records console errors, 404s, axe violations and vitals", 
   expect(f.find(x => x.kind === "content")?.severity).toBe(2);
   await ctx.close();
 });
+test("a page over the element limit skips axe, keeps vitals and becomes a performance finding", async () => {
+  const ctx = await browser.newContext(); await ctx.addInitScript(VITALS_INIT); const p = await ctx.newPage();
+  await p.goto(s.url + "about.html");
+  const recs: InstrumentRecord[] = []; await inspectPage(p, r => recs.push(r), 3);
+  expect(recs.map(r => r.type)).toEqual(["inspect-skipped", "vitals"]);
+  expect(recs[0].detail).toMatchObject({ limit: 3 }); expect(recs[0].detail.elements).toBeGreaterThan(3);
+  const f = instrumentFindings(recs.map((r, i) => ({ ...r, step: 1, event: i + 1 })),
+    { run: "r", walker: "w", journey: "j", viewport: "desktop", locale: "en-US" });
+  expect(f.find(x => x.title.startsWith("Page too big"))).toMatchObject({ kind: "performance", severity: 2 });
+  await ctx.close();
+});
 test("session expiry also drops journey-host cookies on deep paths and parent domains", async () => {
   const ctx = await browser.newContext(); const page = await ctx.newPage();
   try {
