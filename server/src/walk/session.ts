@@ -501,6 +501,13 @@ export class WalkSession {
       const tab = await this.context!.newPage(); await this.adopt(tab);
       await tab.goto(new URL(href, page.url()).href); return;
     }
+    // A tapped <select> opens the browser's own list, which no screenshot shows. Say what a person would see in it.
+    const choices = await h.evaluate((el: Element) => el.tagName === "SELECT" ? [...(el as HTMLSelectElement).options].map(o => o.text.trim() + (o.selected ? " (chosen)" : "")) : null);
+    if (choices) {
+      const shown = choices.map(c => this.run.mask_personal_data ? maskText(c) : c).join(", ");
+      this.pending.push(`The list "${opt.name}" opened with these choices: ${shown || "none"}. To choose one, act on it again with the text of the choice.`);
+      return;
+    }
     const touch = VIEWPORTS[this.viewport].touch;
     // A radio or checkbox drawn as its label (the input shrunk to a pixel under it) is pressed where a person presses:
     // on the label. Pressing the input itself waits for a pointer the label always takes, and times out.
