@@ -450,3 +450,11 @@ test("transact: a form whose answer redirects off the list is recorded as sent, 
     expect(blocked.state).toBeTruthy();
   } finally { await w.quit("done").catch(() => {}); }
 });
+test("a stale saved login stops the start before any browser opens, and leaves the folder free", async () => {
+  const f = setup(s.url); const w = new WalkSession(f.run, true, false);
+  const host = new URL(s.url).hostname; const login = join(f.dir, "old-login.json");
+  writeFileSync(login, JSON.stringify({ cookies: [{ name: "gate", value: "x", domain: host, path: "/", expires: 1_700_000_000, httpOnly: true, secure: false, sameSite: "Lax" }], origins: [] }));
+  writeFileSync(f.journey, readFileSync(f.journey, "utf8") + `storage_state: ${login}\n`);
+  await expect(w.start({ walker: f.walker, journey: f.journey, viewport: "desktop" })).rejects.toThrow(/saved login .* is stale/);
+  expect(existsSync(join(f.run.out_dir, "walks"))).toBe(false);
+});

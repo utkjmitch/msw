@@ -256,6 +256,11 @@
               "minimum": 100,
               "maximum": 400
             },
+            "zoom": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 500
+            },
             "color_scheme": {
               "type": "string",
               "enum": [
