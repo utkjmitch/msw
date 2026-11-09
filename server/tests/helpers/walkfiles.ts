@@ -35,4 +35,6 @@ ${opts.mode ? `mode: ${opts.mode}\n` : ""}${opts.moves ? `silly:\n  category: im
 }
 export const R = (...opts: number[]) => opts.map(option => ({ option, score: 3 as const, why: "seems right" }));
 export const W = { will_try: true, notices: true, associates: true, sees_progress: true };
-export const n = (r: { options: string[] }, name: string) => Number(r.options.find(l => l.endsWith(name))!.split(".")[0]);
+// An option line may end with the control's state, as a screen reader says it: "3. [radio] Monthly (not checked)".
+export const n = (r: { options: string[] }, name: string) =>
+  Number((r.options.find(l => l.endsWith(name)) ?? r.options.find(l => l.replace(/ \([^)]*\)$/, "").endsWith(name)))!.split(".")[0]);

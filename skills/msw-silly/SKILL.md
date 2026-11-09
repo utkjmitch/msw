@@ -33,7 +33,7 @@ Read each dossier's `story`, `devices`, `frustrations`, `accessibility` and `tec
 | **Wandering attention** (`wandering-attention`) | Leaving a form half filled and coming back later; two tabs on the same thing; the phone locks and the session expires | moves `wait` (advances the page's clock), `new-tab`, `switch-tab`; condition `expire_session_at_step` |
 | **Unusual arrivals** (`unusual-arrivals`) | A link from a two-year-old email to a page that has moved; a campaign that has ended; a shared link in the other language | the journey's `start_url` and `arrival`: start where that link goes |
 | **Language and text** (`language-and-text`) | Switching language halfway; a name with accents, an apostrophe or sixty characters; pasting from a word processor; browser auto-translate on | the Walker types the text with `act`; condition `translate` is **recorded but not emulated** |
-| **The body and the device** (`body-and-device`) | Text at 200 percent; dark mode; reduced motion; rotating the phone mid-task; keyboard only; a slow connection; going offline for ten seconds; a map, timetable or table wider than the phone | conditions `text_scale`, `color_scheme`, `reduced_motion`, `rotate_at_step`, `network: slow-3g`, `network: { offline_at_step, seconds }`; viewport `phone-small`; for wide content, nothing to add: `scroll right`, `scroll left`, `[scroll area]` options and the whole look (`look` with `whole`) are in every walk |
+| **The body and the device** (`body-and-device`) | Text at 200 percent; browser zoom at 200 percent; dark mode; reduced motion; rotating the phone mid-task; keyboard only; a slow connection; going offline for ten seconds; a map, timetable or table wider than the phone | conditions `zoom`, `text_scale`, `color_scheme`, `reduced_motion`, `rotate_at_step`, `network: slow-3g`, `network: { offline_at_step, seconds }`; viewport `phone-small`; for wide content, nothing to add: `scroll right`, `scroll left`, `[scroll area]` options and the whole look (`look` with `whole`) are in every walk |
 | **Privacy-minded** (`privacy-minded`) | Declining all cookies; private browsing, so nothing is remembered | condition `cookies: declined` (incomplete: see below); a walk with no `storage_state` is already a fresh private window |
 | **Unusual intent** (`unusual-intent`) | Giving in memory of someone; acting for a company; a gift for a grandchild; asking for a refund; wanting a tax receipt in March | the journey's `goal` |
 | **Admin mishaps** (`admin-mishaps`) | An admin's session expiring mid-edit; publishing with one language empty; filing the same request twice | conditions `expire_session_at_step`; moves `double-tap`, `reload`. Admin silly walks need a test copy, as any admin journey does |
@@ -45,7 +45,7 @@ What the server **cannot** do today, so don't write a walk that depends on it (s
 - **A real day passing on the server**: `wait` moves the page's clock forward, not the site's server. A session that times out on the server side is better tested with `expire_session_at_step`.
 - **Declined cookies, completely**: scripts can't use cookies, and cookies are cleared after every act, but a cookie the site's server sets lives until the next act, and a saved login's cookies are not cleared at the start (`<msw>/server/README.md`, "Conditions").
 - **Text zoom on any site**: `text_scale` sets the root font size, which matches browser text zoom only for sites sized in `rem` or `em`.
-- **Zoom or pinch**: there is no zoom. A wide map is seen in screens instead: the whole look returns the screens a person would see scrolling across it.
+- **Pinch zoom**: there is no pinch. Browser zoom (`zoom`) lays the page out narrower, as Ctrl + does; it does not magnify one spot. A wide map is seen in screens instead: the whole look returns the screens a person would see scrolling across it.
 - **Drag**: a map that pans only by dragging can't be panned. Write the walk for a map that scrolls, or one with its own buttons.
 - **Keyboard only, or a screen reader**: the Walker chooses from the server's list of options; it does not press Tab. Write the need in the dossier's `accessibility` and let the Walker judge each option by it, and say in the report that keyboard use itself was not tested.
 
@@ -55,6 +55,7 @@ What the server **cannot** do today, so don't write a walk that depends on it (s
 silly:
   category: body-and-device
   conditions:
+    zoom: 200                               # browser zoom, percent, 100 to 500
     text_scale: 200                         # percent, 100 to 400
     color_scheme: dark                      # or light
     reduced_motion: true
