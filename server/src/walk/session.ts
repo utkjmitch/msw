@@ -14,6 +14,7 @@ import { perceive, optionLine, type Perception, type Option } from "../browser/p
 import { wholeLook } from "../browser/whole.js";
 import { withHelpers, type Overflow, type Direction } from "../browser/screen.js";
 import { maskText, maskDeep, isSecretField, setMaskNames, PAYMENT_SELECTOR } from "../browser/mask.js";
+import { staleLogin } from "./login.js";
 import { contextOptions, setupConditions, applyStepConditions, emulateNetwork } from "../browser/conditions.js";
 import { attachInquisition, inspectPage, instrumentFindings, VITALS_INIT, type InstrumentRecord } from "../instrument/inquisition.js";
 import { reproduce, type Reproduce } from "./replay.js";
@@ -76,6 +77,8 @@ export class WalkSession {
   // Records from a page the walk has not looked at yet wait here for that page's state.
   private timers = new Set<ReturnType<typeof setTimeout>>();
   private unplaced: { page: string; write: (state?: string) => void }[] = []; private stateAt = new Map<string, string>();
+  // Addresses each tab's main frame went through since its last look: a client-side redirect passes through pages never looked at.
+  private passed = new Map<Page, string[]>();
   // The visible fields of a form being submitted, masked, for a blocked submit's record (spec 5.6).
   private submitting?: { label: string; type: string; value: string }[];
   // Set once quit has written the seal. Replay runs only after it, and never rewrites it.
@@ -97,6 +100,10 @@ export class WalkSession {
     if (this.journey.walker !== this.walker.id) throw new Error(`journey ${this.journey.id} is for walker ${this.journey.walker}`);
     if (!audienceAllowed(this.walker.role, this.journey.audience)) throw new Error(`a ${this.walker.role} cannot walk a ${this.journey.audience} journey`);
     for (const t of [adminAllowed(this.run, this.journey), transactAllowed(this.run, this.journey)]) if (!t.ok) throw new Error(t.reason);
+    if (this.journey.storage_state) {
+      const stale = staleLogin(this.journey.storage_state, [this.journey.start_url, ...this.journey.origins]);
+      if (stale) throw new Error(stale);
+    }
     this.viewport = a.viewport; this.locale = a.locale ?? this.walker.locale;
     this.moves = this.journey.silly?.moves ?? []; this.cond = this.journey.silly?.conditions ?? {};
     this.dir = join(this.run.out_dir, "walks", `${this.walker.id}-${this.journey.id}-${this.viewport}-${this.locale}`);
@@ -169,7 +176,7 @@ export class WalkSession {
     if (!this.browser) throw new Error("no walk in progress");
     if (this.ended) return { refused: `the walk has ended (${this.ended})` };
     let last = this.last;
-    const now = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length, maskSelectors: this.run.mask_selectors });
+    const now = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length, maskSelectors: this.run.mask_selectors, links: this.journey.links.map(l => l.label) });
     // A page that moves by itself (a carousel, a ticker) changes its state between the look and the act. If the address
     // is the same and the chosen control is still there, with the same identity and as many twins in the same order,
     // the server looks again itself, logs that look, and acts on the control there. Anything else is still refused.
@@ -343,6 +350,7 @@ export class WalkSession {
   private async adopt(p: Page): Promise<void> {
     if (this.pages.includes(p)) return;
     this.pages.push(p); this.page = p; attachInquisition(p, r => this.record(r));
+    p.on("framenavigated", f => { if (f === p.mainFrame()) this.passed.set(p, [...(this.passed.get(p) ?? []), f.url()]); });
     // a page that closes itself is never the current tab
     p.on("close", () => { this.pages = this.pages.filter(x => x !== p); if (this.page === p) this.page = this.pages.at(-1); });
     // A page the walk cannot throttle is not walked under the run's conditions. The first page fails the start;
@@ -422,7 +430,7 @@ export class WalkSession {
   private async snap(): Promise<Perception & { seq: number }> {
     let p: Perception;
     for (let tries = 1; ; tries++) {
-      try { p = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length, maskSelectors: this.run.mask_selectors }); break; }
+      try { p = await perceive(this.page!, { mask: this.run.mask_personal_data, moves: this.moves, tabCount: this.pages.length, maskSelectors: this.run.mask_selectors, links: this.journey.links.map(l => l.label) }); break; }
       catch (e) {
         // a click can start a navigation after settle() returned; look again once the new page has loaded
         if (tries >= 3 || !/Execution context was destroyed|navigation/i.test(String(e))) throw e;
@@ -431,10 +439,13 @@ export class WalkSession {
     }
     // The record says where content runs past what shows and whether the screen shows the way. The Walker is not told.
     const overflow = this.m(await this.page!.evaluate(OVERFLOW, VIEWPORTS[this.viewport].touch).catch(() => [] as Overflow[]));
-    const e = this.log.append("look", { url: this.m(p.url), options: p.options.map(optionLine), ...(overflow.length ? { overflow } : {}) }, p.state);
+    // Pages passed through on the way here were never on screen long enough to look at; their records belong to this look.
+    const via = [...new Set((this.passed.get(this.page!) ?? []).filter(u => u !== p.url && u !== "about:blank"))]; this.passed.set(this.page!, []);
+    const e = this.log.append("look", { url: this.m(p.url), ...(via.length ? { via: via.map(u => this.m(u)) } : {}), options: p.options.map(optionLine), ...(overflow.length ? { overflow } : {}) }, p.state);
     if (overflow.length) this.overflow.push({ seq: e.seq, step: this.steps, list: overflow });
     writeFileSync(join(this.dir, "screens", `${e.seq}.png`), p.png);
-    this.last = { ...p, seq: e.seq }; this.stateAt.set(p.url, p.state); this.placeSeen(); return this.last;
+    this.last = { ...p, seq: e.seq }; this.stateAt.set(p.url, p.state); for (const u of via) this.stateAt.set(u, p.state);
+    this.placeSeen(); return this.last;
   }
   private async inspect(state: string) {
     if (this.inspected.has(state)) return;
@@ -481,6 +492,7 @@ export class WalkSession {
       else if (opt.move === "reload") await page.reload();
       else if (opt.move === "switch-tab") { this.page = this.pages[(this.pages.indexOf(page) + 1) % this.pages.length]; await this.page.bringToFront(); }
       else if (opt.move === "wait") await page.clock.fastForward(Math.max(1, Number(a.text ?? "1")) * 60_000);
+      else if (opt.move === "open-link") await page.goto(this.journey.links[opt.link!].url);
       return;
     }
     const h = opt.handle!;
@@ -495,8 +507,25 @@ export class WalkSession {
       const tab = await this.context!.newPage(); await this.adopt(tab);
       await tab.goto(new URL(href, page.url()).href); return;
     }
+    // A tapped <select> opens the browser's own list, which no screenshot shows. Say what a person would see in it.
+    const choices = await h.evaluate((el: Element) => el.tagName === "SELECT" ? [...(el as HTMLSelectElement).options].map(o => o.text.trim() + (o.selected ? " (chosen)" : "")) : null);
+    if (choices) {
+      const shown = choices.map(c => this.run.mask_personal_data ? maskText(c) : c).join(", ");
+      this.pending.push(`The list "${opt.name}" opened with these choices: ${shown || "none"}. To choose one, act on it again with the text of the choice.`);
+      return;
+    }
     const touch = VIEWPORTS[this.viewport].touch;
-    const press = () => (touch ? h.tap({ timeout: 5_000 }) : h.click({ timeout: 5_000 }));
+    // A radio or checkbox drawn as its label (the input shrunk to a pixel under it) is pressed where a person presses:
+    // on the label. Pressing the input itself waits for a pointer the label always takes, and times out.
+    const covered = await h.evaluate((el: Element) => {
+      const input = el as HTMLInputElement;
+      if (el.tagName !== "INPUT" || !["radio", "checkbox"].includes(input.type) || !input.labels?.length) return null;
+      const r = el.getBoundingClientRect(); const at = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+      return [...input.labels].findIndex(l => at !== el && !!at && l.contains(at));
+    });
+    const pressed = covered !== null && covered >= 0
+      ? (await h.evaluateHandle((el: Element, i: number) => (el as HTMLInputElement).labels![i], covered)).asElement() ?? h : h;
+    const press = () => (touch ? pressed.tap({ timeout: 5_000 }) : pressed.click({ timeout: 5_000 }));
     // Touch taps do not wait for navigation. Register the wait before pressing.
     const { target, fields } = await h.evaluate((el: Element, paymentSelector: string) => {
       const link = el.closest<HTMLAnchorElement>("a[href]");
