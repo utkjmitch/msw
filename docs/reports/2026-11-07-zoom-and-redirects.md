@@ -38,4 +38,6 @@ The Dead Parrot rule "at least two screenshots per page" (spec 5.8) also fails w
 
 ## Gates
 
-`cd server && npm test`: 27 files, 202 tests pass. `npm run typecheck` is clean.
+On the box, before this branch was put on top of `mfx/msw-cc-public-walk-3`: `cd server && npm test`, 27 files, 202 tests pass; `npm run typecheck` is clean.
+
+On top of it, on Windows (2026-11-09): `npm run typecheck` is clean; `npx vitest run`, 32 files, 174 tests, 169 pass and 5 fail. The 5 are a practice-site test that also fails on `main` on Windows (a `/` path check) and four 30-second timeouts in older walk tests, which move from run to run; `main` on the same host had 1 + 6 of the same kind. All 20 tests in the new and changed test files pass.
