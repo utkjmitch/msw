@@ -4,6 +4,7 @@ import { readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { serve } from "./helpers/serve.js";
 import { walkFiles } from "./helpers/walkfiles.js";
+import { launch, killAll, openBrowsers } from "../src/browser/live.js";
 
 // The server as an MCP client runs it: its own process, speaking JSON-RPC over stdio. A Walker whose client dies, or
 // that is killed, ends this way, never with quit. The browser it opened must end with it.
@@ -50,7 +51,7 @@ async function startWalk() {
     out += d; let i;
     while ((i = out.indexOf("\n")) >= 0) { const line = out.slice(0, i); out = out.slice(i + 1); try { const m = JSON.parse(line); waiting.get(m.id)?.(m); } catch { /* not ours */ } }
   });
-  let id = 0;
+  let id = 0; const stderr = () => err;
   const ask = (method: string, params: object) => new Promise<any>((resolve, reject) => {
     const n = ++id; waiting.set(n, resolve);
     p.once("exit", c => reject(new Error(`the server exited (${c}) before answering ${method}: ${err}`)));
@@ -63,7 +64,7 @@ async function startWalk() {
   const browser = descendants(p.pid!); strays.push(...browser);
   expect(browser.length).toBeGreaterThan(0);
   const exited = new Promise<{ code: number | null; signal: string | null }>(res => p.once("exit", (code, signal) => res({ code, signal })));
-  return { p, browser, exited };
+  return { p, browser, exited, ask, stderr };
 }
 
 test.skipIf(process.platform !== "linux")("closing the server's stdin closes its browser and ends the server", async () => {
@@ -80,4 +81,26 @@ test.skipIf(process.platform !== "linux")("SIGTERM to the server closes its brow
   expect(await until(() => alive(browser).length === 0, 5_000), `browser processes still running: ${alive(browser).join(", ")}`).toBe(true);
   expect(await until(() => p.exitCode !== null || p.signalCode !== null, 5_000), "the server is still running").toBe(true);
   expect((await exited).code).toBe(143);
+});
+
+test.skipIf(process.platform !== "linux")("SIGTERM after quit ends the server cleanly", async () => {
+  const { p, browser, exited, ask, stderr } = await startWalk();
+  const q = await ask("tools/call", { name: "quit", arguments: { reason: "done" } });
+  expect(q.result.content[0].text).toMatch(/verified: true/);
+  expect(await until(() => alive(browser).length === 0, 5_000)).toBe(true);
+  p.kill("SIGTERM");
+  expect((await exited).code).toBe(143);
+  expect(stderr()).toBe("");
+});
+
+test.skipIf(process.platform !== "linux")("the kill at exit kills a browser's processes and can run twice", async () => {
+  const b = await launch({ headless: true });
+  const mine = descendants(process.pid).filter(pid => readFileSync(`/proc/${pid}/cmdline`, "utf8").includes("--remote-debugging-pipe"));
+  strays.push(...mine);
+  expect(mine.length).toBeGreaterThan(0); expect(openBrowsers()).toBe(1);
+  const gone = new Promise<void>(r => b.once("disconnected", () => r()));
+  killAll(); killAll();
+  expect(openBrowsers()).toBe(0);
+  expect(await until(() => alive(mine).length === 0, 5_000), `still running: ${alive(mine).join(", ")}`).toBe(true);
+  await gone; await b.close();
 });

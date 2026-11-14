@@ -2,7 +2,7 @@
 
 The Ministry has found that if you ask an agent to pretend to be a retired teacher on a phone, it will agree warmly and then complete the checkout in four seconds flat. The walk server is the Ministry's remedy. It gives the Walker exactly what a person would have — a screen, the words on it, and the things they can press — and not one thing more. Then it writes down everything, signs it, and checks afterward that the walk really happened.
 
-The server speaks MCP over stdio. It drives Chromium through Playwright. It never calls a model: any MCP-capable agent can be the Walker. One server process serves one walk at a time.
+The server speaks MCP over stdio. It drives Chromium through Playwright. It never calls a model: any MCP-capable agent can be the Walker. One server process serves one walk at a time. However the server ends (`quit`, its client closing stdin, SIGINT, SIGTERM, SIGHUP, or a crash), its browsers end with it: each gets 3 seconds to close, then its process group is killed, and the server exits. A walk ended any way but `quit` has no seal.
 
 This is a draft implementation of plan A. The automated gates pass. The build report records remaining safety and spec gaps. Do not treat this draft as a completed safety boundary. See [the build report](../docs/reports/2026-10-11-plan-a-build.md) and [the plan A fixes report](../docs/reports/2026-10-12-plan-a-fixes.md).
 
