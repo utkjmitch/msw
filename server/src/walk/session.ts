@@ -1,4 +1,5 @@
-import { chromium, type Browser, type BrowserContext, type Page } from "playwright";
+import type { Browser, BrowserContext, Page } from "playwright";
+import { launch } from "../browser/live.js";
 import { mkdirSync, writeFileSync, appendFileSync, rmSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { createHash } from "node:crypto";
@@ -114,7 +115,7 @@ export class WalkSession {
     try {
       // Desktop Chrome on Windows and Linux draws scrollbars, and a scrollbar is how a person sees there is more.
       // Headless Playwright hides them unless told not to. Touch screens keep theirs hidden, as phones do until you scroll.
-      this.browser = await chromium.launch({ headless: this.headless, proxy: proxyFromEnv(),
+      this.browser = await launch({ headless: this.headless, proxy: proxyFromEnv(),
         ...(VIEWPORTS[a.viewport].touch ? {} : { ignoreDefaultArgs: ["--hide-scrollbars"] }) });
       this.manifest = { run: this.run, inputs: { walker: fileInput(a.walker), journey: fileInput(a.journey), viewport: this.viewport, locale: this.locale, read_channels: this.journey.read_channels,
         socket_channels: this.journey.socket_channels },
