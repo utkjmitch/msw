@@ -18,7 +18,7 @@ For msw: change `.github/workflows/ci.yml` so a PR commit runs CI once, not twic
 
 - No change to branch protection or rulesets. `main` still requires `test`.
 - Nothing about deploys: msw has none.
-- The parts of that chat that apply to other repos, or that the factory host kept for Jimmy to decide, are recorded in those repos and the factory, not here.
+- Other repos: their CI work is recorded in those repos and in the factory, not here.
 
 ## Changes
 
