@@ -1,14 +1,79 @@
 name: ci
-on: [push, pull_request]
+# ci-minutes (2026-11-22): this used to be `on: [push, pull_request]`, so every
+# commit on a PR branch ran twice, once for the push and once for the PR
+# (November 1-22: 10 duplicate runs, 51 billed min, measured). Now a branch
+# push runs nothing; its PR runs `test`, which `main` requires. Only pushes to
+# `main` run on push. Report: docs/reports/2026-11-22-ci-minutes.md.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# A new commit on a PR cancels that PR's older run. Pushes to main never
+# cancel each other: each merge keeps its own result.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
+  # `main` requires this check by name: keep the name `test`.
   test:
     runs-on: ubuntu-latest
+    # The longest November run was 17 min (measured); the default is 6 hours.
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: read
+      checks: read
     defaults: { run: { working-directory: server } }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # ci-minutes (2026-11-22): msw squash-merges, so a push to main is one
+      # commit with one parent. When its tree is byte-for-byte the head of the
+      # PR it came from, and that head already passed `test`, the files were
+      # already tested (November: 5 of 8 main pushes, measured). Every other
+      # push (a direct commit, a squash that combined newer main work, any API
+      # error) runs the full job.
+      - id: tested
+        if: github.event_name == 'push'
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -uo pipefail
+          skip=false
+          tree=$(gh api "repos/$REPO/commits/$SHA" --jq '.commit.tree.sha') || tree=""
+          heads=$(gh api "repos/$REPO/commits/$SHA/pulls" \
+            --jq ".[] | select(.merge_commit_sha == \"$SHA\") | .head.sha") || heads=""
+          for head in $heads; do
+            head_tree=$(gh api "repos/$REPO/commits/$head" --jq '.commit.tree.sha') || head_tree=""
+            passed=$(gh api "repos/$REPO/commits/$head/check-runs?check_name=test&per_page=100" \
+              --jq '[.check_runs[] | select(.conclusion == "success")] | length') || passed=0
+            if [ -n "$tree" ] && [ "$tree" = "$head_tree" ] && [ "${passed:-0}" -gt 0 ]; then
+              skip=true
+              echo "Tree $tree already passed test as PR head $head; skipping the rerun on ${GITHUB_REF_NAME}."
+              break
+            fi
+          done
+          echo "skip=$skip" >> "$GITHUB_OUTPUT"
+      - if: steps.tested.outputs.skip != 'true'
+        uses: actions/checkout@v4
+      - if: steps.tested.outputs.skip != 'true'
+        name: Test the push-skip step above
+        working-directory: .
+        run: bash .github/tests/push-skip.test.sh
+      - if: steps.tested.outputs.skip != 'true'
+        uses: actions/setup-node@v4
         with: { node-version: 22, cache: npm, cache-dependency-path: server/package-lock.json }
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: npm run typecheck
-      - run: npm test
+      - if: steps.tested.outputs.skip != 'true'
+        run: npm ci
+      - if: steps.tested.outputs.skip != 'true'
+        run: npx playwright install --with-deps chromium
+      - if: steps.tested.outputs.skip != 'true'
+        run: npm run typecheck
+      - if: steps.tested.outputs.skip != 'true'
+        run: npm test
