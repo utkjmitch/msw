@@ -3,12 +3,12 @@ import { PAYMENT_SELECTOR } from "./mask.js";
 import { readingOrder } from "./order.js";
 import { withHelpers, type Box } from "./screen.js";
 import type { Move } from "../formats/schemas.js";
-export type MoveId = "scroll-down" | "scroll-up" | "scroll-right" | "scroll-left" | "back" | "reload" | "switch-tab" | "wait";
+export type MoveId = "scroll-down" | "scroll-up" | "scroll-right" | "scroll-left" | "back" | "reload" | "switch-tab" | "wait" | "open-link";
 /** Names longer than this are cut for display only. Identity and the page state use the full name. */
 export const NAME_DISPLAY_MAX = 120;
 /** kind "area": a scroll area, a box that scrolls by itself. It takes a direction (how: scroll-right and so on), never a tap.
  * name: what the Walker sees. key: the full, unmasked name, kept in memory for replay and never written out. */
-export interface Option { n: number; kind: "element" | "area" | "move"; role: string; name: string; key: string; unlabeled: boolean; inputType?: string; autocomplete?: string; payment?: boolean; move?: MoveId; handle?: ElementHandle }
+export interface Option { n: number; kind: "element" | "area" | "move"; role: string; name: string; key: string; unlabeled: boolean; state?: string; inputType?: string; autocomplete?: string; payment?: boolean; move?: MoveId; link?: number; handle?: ElementHandle }
 // Cut to the screen and to any box that clips it: a link scrolled out of sight inside a box is not on screen.
 const visible = withHelpers((h, el: Element) => {
   const r = el.getBoundingClientRect(); const st = getComputedStyle(el);
@@ -17,8 +17,9 @@ const visible = withHelpers((h, el: Element) => {
 const areasOnScreen = withHelpers(h => [...document.body.querySelectorAll("*")].filter(el => h.isArea(el) && h.shown(el) !== null)
   .map(el => ({ el, box: h.shown(el)!, name: h.areaName(el) })));
 const SELECTOR = "a[href], button, input:not([type=hidden]), select, textarea, summary, [role=button], [role=link], [role=tab], [role=menuitem], [role=menuitemcheckbox], [role=menuitemradio], [role=option], [role=checkbox], [role=radio], [role=switch]";
-export async function collectOptions(page: Page, moves: Move[], tabCount: number): Promise<Option[]> {
-  const found: { h: ElementHandle; kind: "element" | "area"; box: Box; name: string; role: string; type: string; autocomplete: string; payment: boolean }[] = [];
+/** links: the labels of the links the person was handed, in the journey's order. */
+export async function collectOptions(page: Page, moves: Move[], tabCount: number, links: string[] = []): Promise<Option[]> {
+  const found: { h: ElementHandle; kind: "element" | "area"; box: Box; name: string; role: string; type: string; autocomplete: string; payment: boolean; state?: string }[] = [];
   for (const h of await page.$$(SELECTOR)) {
     if (!(await h.evaluate(visible))) continue;
     const info = await h.evaluate((el: Element, paymentSelector: string) => {
@@ -36,8 +37,18 @@ export async function collectOptions(page: Page, moves: Move[], tabCount: number
         : tag === "button" || (tag === "input" && ["submit", "button"].includes(type)) ? "button"
         : tag === "select" ? "combobox" : tag === "textarea" ? "textbox"
         : tag === "input" ? (["checkbox", "radio"].includes(type) ? type : "textbox") : tag);
+      // What a screen reader says after the name: pressed, checked, selected, expanded, current, unavailable, invalid.
+      const a = (n: string) => el.getAttribute(n); const st: string[] = [];
+      if (a("aria-pressed") === "true" || a("aria-pressed") === "mixed") st.push("pressed"); else if (a("aria-pressed") === "false") st.push("not pressed");
+      const checked = ["checkbox", "radio"].includes(type) && tag === "input" ? String((el as HTMLInputElement).checked) : a("aria-checked");
+      if (checked === "true" || checked === "mixed") st.push("checked"); else if (checked === "false") st.push("not checked");
+      if (a("aria-selected") === "true") st.push("selected");
+      if (a("aria-expanded") === "true") st.push("expanded"); else if (a("aria-expanded") === "false") st.push("collapsed");
+      if (a("aria-current") && a("aria-current") !== "false") st.push("current");
+      if ((el as HTMLButtonElement).disabled || a("aria-disabled") === "true") st.push("unavailable");
+      if (a("aria-invalid") && a("aria-invalid") !== "false") st.push("invalid");
       return { box: { x: r.x, y: r.y, w: r.width, h: r.height }, name, role, type, autocomplete: (el.getAttribute("autocomplete") ?? "").toLowerCase(),
-        payment: el.matches(paymentSelector) };
+        payment: el.matches(paymentSelector), state: st.join(", ") || undefined };
     }, PAYMENT_SELECTOR);
     found.push({ h, kind: "element", ...info });
   }
@@ -51,7 +62,7 @@ export async function collectOptions(page: Page, moves: Move[], tabCount: number
   } finally { await areas.dispose(); }
   const opts: Option[] = readingOrder(found.map(f => f.box)).map((i, k) => {
     const f = found[i];
-    return { n: k + 1, kind: f.kind, role: f.role, name: f.name.slice(0, NAME_DISPLAY_MAX) || `[unlabeled ${f.role}]`, key: f.name, unlabeled: !f.name, inputType: f.type, autocomplete: f.autocomplete, payment: f.payment, handle: f.h };
+    return { n: k + 1, kind: f.kind, role: f.role, name: f.name.slice(0, NAME_DISPLAY_MAX) || `[unlabeled ${f.role}]`, key: f.name, unlabeled: !f.name, inputType: f.type, autocomplete: f.autocomplete, payment: f.payment, ...(f.state ? { state: f.state } : {}), handle: f.h };
   });
   // The sideways moves are always there, like scroll down: a person can always try to swipe or scroll sideways,
   // and offering them only on a wide page would tell the Walker what the screen may not.
@@ -60,5 +71,6 @@ export async function collectOptions(page: Page, moves: Move[], tabCount: number
   if (moves.includes("switch-tab") && tabCount > 1) fixed.push("switch-tab");
   if (moves.includes("wait")) fixed.push("wait");
   for (const m of fixed) opts.push({ n: opts.length + 1, kind: "move", role: "move", name: m.replace("-", " "), key: m, unlabeled: false, move: m });
+  links.forEach((label, i) => opts.push({ n: opts.length + 1, kind: "move", role: "move", name: `open link: ${label}`, key: `open-link:${label}`, unlabeled: false, move: "open-link", link: i }));
   return opts;
 }

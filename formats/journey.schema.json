@@ -181,6 +181,28 @@
         "additionalProperties": false
       }
     },
+    "links": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "label",
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
     "viewports": {
       "type": "array",
       "items": {
@@ -256,6 +278,11 @@
               "minimum": 100,
               "maximum": 400
             },
+            "zoom": {
+              "type": "integer",
+              "minimum": 100,
+              "maximum": 500
+            },
             "color_scheme": {
               "type": "string",
               "enum": [
@@ -323,6 +350,7 @@
     "payment_origins",
     "read_channels",
     "socket_channels",
+    "links",
     "planned"
   ],
   "additionalProperties": false

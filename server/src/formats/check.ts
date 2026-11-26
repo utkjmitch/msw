@@ -25,6 +25,8 @@ export async function check(args: string[]): Promise<string[]> {
     const listed = new Set([j.start_url, ...j.origins].map(u => new URL(u).origin));
     for (const c of j.socket_channels) if (!listed.has(new URL(c.origin.replace(/^ws/, "http")).origin))
       problems.push(`${path}: socket channel ${c.origin}${c.path} is on an origin not in the journey's origins, so it would never open`);
+    for (const l of j.links) if (!listed.has(new URL(l.url).origin))
+      problems.push(`${path}: link "${l.label}" (${l.url}) is on an origin not in the journey's origins, so the guard would stop it`);
     const w = walkers.get(j.walker);
     if (!w) { if (walkers.size) problems.push(`${path}: walker "${j.walker}" is not among the Walkers checked`); continue; }
     if (!audienceAllowed(w.role, j.audience)) problems.push(`${path}: audience "${j.audience}" is above walker "${w.id}"'s role "${w.role}"`);

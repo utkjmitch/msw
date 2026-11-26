@@ -1,0 +1,12 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Gift</title>
+<style>.sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);border:0;appearance:none}
+label{position:relative;display:inline-block;padding:14px 24px;border:2px solid #333;margin:6px;cursor:pointer;background:#fff}</style></head>
+<body><main><h1>Give</h1>
+<label><input class="sr" type="radio" name="freq" value="monthly" checked>Monthly</label>
+<label><input class="sr" type="radio" name="freq" value="once">One time</label>
+<label><input class="sr" type="checkbox" name="fees">Cover the fees</label>
+<p id="out">Give $5 every month</p>
+<script>for (const i of document.querySelectorAll("input")) i.addEventListener("change", () => {
+  const once = document.querySelector("input[value=once]").checked, fees = document.querySelector("input[name=fees]").checked;
+  document.getElementById("out").textContent = (once ? "Give $5 today" : "Give $5 every month") + (fees ? " plus fees" : "");
+});</script></main></body></html>
