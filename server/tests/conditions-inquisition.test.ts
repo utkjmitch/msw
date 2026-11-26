@@ -12,6 +12,16 @@ test("contextOptions maps viewport, locale and conditions", () => {
     viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, locale: "es-419",
     colorScheme: "dark", reducedMotion: "reduce", extraHTTPHeaders: { "Accept-Language": "es-419" } });
 });
+test("zoom lays the page out for a narrower window and draws it at the zoom's pixel ratio", async () => {
+  expect(contextOptions("tablet", "en-US", { zoom: 150 })).toMatchObject({ viewport: { width: 512, height: 683 }, deviceScaleFactor: 1.5 });
+  expect(contextOptions("tablet", "en-US", {})).not.toHaveProperty("deviceScaleFactor");
+  const ctx = await browser.newContext(contextOptions("tablet", "en-US", { zoom: 150 })); const p = await ctx.newPage();
+  await p.goto(s.url);
+  expect(await p.evaluate(() => [innerWidth, devicePixelRatio])).toEqual([512, 1.5]);
+  const png = await p.screenshot();
+  expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([768, 1025]);
+  await ctx.close();
+});
 test("rotate at step swaps the viewport", async () => {
   const ctx = await browser.newContext(contextOptions("phone", "en-US", {})); const p = await ctx.newPage();
   expect(await applyStepConditions(ctx, p, 1, { rotate_at_step: 2 })).toEqual([]);
@@ -33,6 +43,17 @@ test("the inquisition records console errors, 404s, axe violations and vitals", 
   expect(f.find(x => x.title.startsWith("Console error"))?.severity).toBe(3);
   expect(f.find(x => x.kind === "accessibility")?.severity).toBe(3);
   expect(f.find(x => x.kind === "content")?.severity).toBe(2);
+  await ctx.close();
+});
+test("a page over the element limit skips axe, keeps vitals and becomes a performance finding", async () => {
+  const ctx = await browser.newContext(); await ctx.addInitScript(VITALS_INIT); const p = await ctx.newPage();
+  await p.goto(s.url + "about.html");
+  const recs: InstrumentRecord[] = []; await inspectPage(p, r => recs.push(r), 3);
+  expect(recs.map(r => r.type)).toEqual(["inspect-skipped", "vitals"]);
+  expect(recs[0].detail).toMatchObject({ limit: 3 }); expect(recs[0].detail.elements).toBeGreaterThan(3);
+  const f = instrumentFindings(recs.map((r, i) => ({ ...r, step: 1, event: i + 1 })),
+    { run: "r", walker: "w", journey: "j", viewport: "desktop", locale: "en-US" });
+  expect(f.find(x => x.title.startsWith("Page too big"))).toMatchObject({ kind: "performance", severity: 2 });
   await ctx.close();
 });
 test("session expiry also drops journey-host cookies on deep paths and parent domains", async () => {
